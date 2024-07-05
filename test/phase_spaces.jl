@@ -1,6 +1,5 @@
 using Random
 using StaticArrays
-using QEDbase
 using QEDcore
 
 include("test_implementation/TestImplementation.jl")

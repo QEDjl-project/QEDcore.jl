@@ -41,7 +41,7 @@ Representation of a particle with a state. It has four fields:
 Overloads for `is_fermion`, `is_boson`, `is_particle`, `is_anti_particle`, `is_incoming`, `is_outgoing`, `mass`, and `charge` are provided, delegating the call to the correct field and thus implementing the `AbstractParticle` interface.
 
 ```jldoctest
-julia> using QEDcore; using QEDbase
+julia> using QEDcore
 
 julia> ParticleStateful(Incoming(), Electron(), SFourMomentum(1, 0, 0, 0))
 ParticleStateful: incoming electron
@@ -76,7 +76,7 @@ Representation of a point in the phase space of a process. Contains the process 
 The legality of the combination of the given process and the incoming and outgoing particles is checked on construction. If the numbers of particles mismatch, the types of particles mismatch (note that order is important), or incoming particles have an `Outgoing` direction, an error is thrown.
 
 ```jldoctest
-julia> using QEDcore; using QEDbase; using QEDprocesses
+julia> using QEDcore; using QEDprocesses
 
 julia> PhaseSpacePoint(
             Compton(),

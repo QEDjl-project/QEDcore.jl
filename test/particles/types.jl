@@ -1,4 +1,3 @@
-using QEDbase
 using QEDcore
 using StaticArrays
 using Random

@@ -26,7 +26,6 @@ export TestProcess, TestProcess_FAIL
 export TestPhasespaceDef, TestPhasespaceDef_FAIL
 
 using Random
-using QEDbase
 using QEDcore
 using StaticArrays
 
