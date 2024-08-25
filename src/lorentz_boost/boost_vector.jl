@@ -37,8 +37,8 @@ function Base.isapprox(
     norm::Function=abs,
 )
     return isapprox(b1.x, b2.x; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
-               isapprox(b1.y, b2.y; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
-               isapprox(b1.z, b2.z; atol=atol, rtol=rtol, nans=nans, norm=norm)
+           isapprox(b1.y, b2.y; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
+           isapprox(b1.z, b2.z; atol=atol, rtol=rtol, nans=nans, norm=norm)
 end
 
 @inline function _mul(p::AbstractFourMomentum, beta::BetaVector)
