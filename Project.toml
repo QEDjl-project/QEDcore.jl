@@ -8,6 +8,7 @@ version = "0.1.1"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+LorentzVectors = "3f54b04b-17fc-5cd4-9758-90c048d965e3"
 QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
@@ -29,10 +30,4 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = [
-    "Random",
-    "LinearAlgebra",
-    "SafeTestsets",
-    "Test",
-    "SparseArrays",
-]
+test = ["Random", "LinearAlgebra", "SafeTestsets", "Test", "SparseArrays"]
