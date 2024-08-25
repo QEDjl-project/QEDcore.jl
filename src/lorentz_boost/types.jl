@@ -25,19 +25,23 @@ function _transform end
 
 # make the transform callable
 @inline function (trafo::AbstractCoordinateTransformation)(p::AbstractFourMomentum)
-    _transform(trafo,p)
+    return _transform(trafo, p)
 end
 
-@inline function (trafo::AbstractCoordinateTransformation)(psf::PSF) where {PSF<:ParticleStateful}
-    p_prime = _transform(trafo,momentum(psf))
+@inline function (trafo::AbstractCoordinateTransformation)(
+    psf::PSF
+) where {PSF<:ParticleStateful}
+    p_prime = _transform(trafo, momentum(psf))
     return PSF(p_prime)
 end
 
 # FIXME: incoming and outgoing particles
-@inline function (trafo::AbstractCoordinateTransformation)(psp::PSP) where {PSP<:PhasespacePoint}
+@inline function (trafo::AbstractCoordinateTransformation)(
+    psp::PSP
+) where {PSP<:PhasespacePoint}
     moms = momenta(psp)
-    moms_prime = _transform.(trafo,moms)
-    PSP(moms_prime)
+    moms_prime = _transform.(trafo, moms)
+    return PSP(moms_prime)
 end
 # TODO: 
 # - add convenient function `trafo(::ParticleStateful)`
@@ -57,19 +61,19 @@ abstract type AbstractBoostParameter end
 """
 TBW
 """
-struct Boost{V<:AbstractBoostParameter} <: AbstractLorentzBoost 
+struct Boost{V<:AbstractBoostParameter} <: AbstractLorentzBoost
     param::V
 end
-boost_type(::Boost{V}) where V = V
+boost_type(::Boost{V}) where {V} = V
 Boost(x::Real) = Boost(BetaX(x))
-Boost(x::Real,y::Real,z::Real) = Boost(BetaVector(x,y,z))
+Boost(x::Real, y::Real, z::Real) = Boost(BetaVector(x, y, z))
 
 # TODO: 
 # - add more convenient functions (type of the boost_param, ... )
 # - interaction between several boosts? -> product trafo (for later)
 
-function _transform(boost::Boost,p::AbstractFourMomentum)
-    _transform(boost.param,p)
+function _transform(boost::Boost, p::AbstractFourMomentum)
+    return _transform(boost.param, p)
 end
 
 function Base.inv(boost::Boost)
