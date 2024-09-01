@@ -4,7 +4,6 @@
 # - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
 # - add convenient constructors: Boost(::RestFrame,::AbstractFourMomentum)
 
-
 """
 TBW
 """

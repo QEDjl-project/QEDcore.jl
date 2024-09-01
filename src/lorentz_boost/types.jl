@@ -38,15 +38,15 @@ end
 @inline function (trafo::AbstractCoordinateTransformation)(
     psp::PSP
 ) where {PSP<:AbstractPhaseSpacePoint}
-    in_moms = momenta(psp,Incoming())
-    out_moms = momenta(psp,Outgoing())
+    in_moms = momenta(psp, Incoming())
+    out_moms = momenta(psp, Outgoing())
     in_moms_prime = _transform.(trafo, in_moms)
     out_moms_prime = _transform.(trafo, out_moms)
 
     proc = process(psp)
     mod = model(psp)
     ps_def = phase_space_definition(psp)
-    return PhaseSpacePoint(proc,mod,ps_def,in_moms_prime,out_moms_prime)
+    return PhaseSpacePoint(proc, mod, ps_def, in_moms_prime, out_moms_prime)
 end
 
 #######

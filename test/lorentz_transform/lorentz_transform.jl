@@ -8,7 +8,9 @@ const RNG = MersenneTwister(12345)
 const ATOL = 1e-15
 
 const test_mom = rand(RNG, SFourMomentum)
-const test_psf = ParticleStateful(Incoming(),rand(RNG,TestImplementation.PARTICLE_SET),test_mom)
+const test_psf = ParticleStateful(
+    Incoming(), rand(RNG, TestImplementation.PARTICLE_SET), test_mom
+)
 const test_mass_square = test_mom * test_mom
 
 const TESTMODEL = TestImplementation.TestModel()
@@ -32,7 +34,9 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
             test_mom_prime = boost(test_mom)
             test_psf_prime = boost(test_psf)
             @test isapprox(test_mom_prime * test_mom_prime, test_mass_square)
-            @test isapprox(momentum(test_psf_prime)* momentum(test_psf_prime), test_mass_square)
+            @test isapprox(
+                momentum(test_psf_prime) * momentum(test_psf_prime), test_mass_square
+            )
         end
 
         @testset "inversion" begin
@@ -44,28 +48,34 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
         end
 
         @testset "phase space point" begin
-
-        test_param = _rand(RNG, boost_type)
-        boost = Boost(test_param)
-            @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in Iterators.product(
+            test_param = _rand(RNG, boost_type)
+            boost = Boost(test_param)
+            @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in
+                                                     Iterators.product(
                 (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
             )
-                INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
-                OUTGOING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_OUTGOING))
+                INCOMING_PARTICLES = Tuple(
+                    rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING)
+                )
+                OUTGOING_PARTICLES = Tuple(
+                    rand(RNG, TestImplementation.PARTICLE_SET, N_OUTGOING)
+                )
 
-                TESTPROC = TestImplementation.TestProcess(INCOMING_PARTICLES, OUTGOING_PARTICLES)
+                TESTPROC = TestImplementation.TestProcess(
+                    INCOMING_PARTICLES, OUTGOING_PARTICLES
+                )
                 IN_PS = TestImplementation._rand_momenta(RNG, N_INCOMING)
                 OUT_PS = TestImplementation._rand_momenta(RNG, N_OUTGOING)
                 PSP = PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, IN_PS, OUT_PS)
 
                 PSP_prime = boost(PSP)
                 @test isapprox(
-                    [getMass2.(momenta(PSP,Incoming()))...],
-                    [getMass2.(momenta(PSP_prime,Incoming()))...]
+                    [getMass2.(momenta(PSP, Incoming()))...],
+                    [getMass2.(momenta(PSP_prime, Incoming()))...],
                 )
                 @test isapprox(
-                    [getMass2.(momenta(PSP,Outgoing()))...],
-                    [getMass2.(momenta(PSP_prime,Outgoing()))...]
+                    [getMass2.(momenta(PSP, Outgoing()))...],
+                    [getMass2.(momenta(PSP_prime, Outgoing()))...],
                 )
             end
         end
