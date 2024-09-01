@@ -30,27 +30,36 @@ end
 
 @inline function (trafo::AbstractCoordinateTransformation)(
     psf::PSF
-) where {PSF<:ParticleStateful}
+) where {PSF<:AbstractParticleStateful}
     p_prime = _transform(trafo, momentum(psf))
     return PSF(p_prime)
 end
 
-# FIXME: incoming and outgoing particles
 @inline function (trafo::AbstractCoordinateTransformation)(
     psp::PSP
-) where {PSP<:PhasespacePoint}
-    moms = momenta(psp)
-    moms_prime = _transform.(trafo, moms)
-    return PSP(moms_prime)
+) where {PSP<:AbstractPhaseSpacePoint}
+    in_moms = momenta(psp,Incoming())
+    out_moms = momenta(psp,Outgoing())
+    in_moms_prime = _transform.(trafo, in_moms)
+    out_moms_prime = _transform.(trafo, out_moms)
+
+    proc = process(psp)
+    mod = model(psp)
+    ps_def = phase_space_definition(psp)
+    return PhaseSpacePoint(proc,mod,ps_def,in_moms_prime,out_moms_prime)
 end
-# TODO: 
-# - add convenient function `trafo(::ParticleStateful)`
-# - add convenient function `trafo(::PhasespacePoint)`
 
 #######
 # Lorentz Boosts
 #######
+"""
+TBW
+"""
 abstract type AbstractLorentzTransformation <: AbstractCoordinateTransformation end
+
+"""
+TBW
+"""
 abstract type AbstractLorentzBoost <: AbstractLorentzTransformation end
 
 """
@@ -65,6 +74,8 @@ struct Boost{V<:AbstractBoostParameter} <: AbstractLorentzBoost
     param::V
 end
 boost_type(::Boost{V}) where {V} = V
+
+# defaults
 Boost(x::Real) = Boost(BetaX(x))
 Boost(x::Real, y::Real, z::Real) = Boost(BetaVector(x, y, z))
 

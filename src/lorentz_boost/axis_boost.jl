@@ -1,3 +1,13 @@
+# TODO: 
+# - test conversions
+# - add convenient constructors: Boost(:x,::Real)
+# - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
+# - add convenient constructors: Boost(::RestFrame,::AbstractFourMomentum)
+
+
+"""
+TBW
+"""
 abstract type AbstractAxisBoostParameter{T} <: AbstractBoostParameter end
 function convert(
     ::Type{B}, param::S
@@ -18,6 +28,9 @@ end
 ###########
 # Axis Beta
 ###########
+"""
+TBW
+"""
 abstract type AbstractAxisBeta{T} <: AbstractAxisBoostParameter{T} end
 
 -(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
@@ -98,8 +111,3 @@ function _transform(boost_param::BetaZ, p::M) where {M<:AbstractFourMomentum}
     en_prime, pz_prime = _generic_axis_boost(en, pz, boost_param.param)
     return M(en_prime, getX(p), getY(p), pz_prime)
 end
-
-# TODO: 
-# - add convenient constructors: Boost(:x,::Real)
-# - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
-# - add convenient constructors: Boost(::RestFrame,::AbstractFourMomentum)

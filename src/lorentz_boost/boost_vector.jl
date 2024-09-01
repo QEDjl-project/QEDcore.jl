@@ -2,6 +2,10 @@
 # TODO: 
 # - add interaction with axis boosts
 # - add convenient constructors BetaVector(p) for the rest system?
+# - test constructor error
+"""
+TBW
+"""
 abstract type AbstractBoostVector <: AbstractBoostParameter end
 
 """
@@ -44,6 +48,8 @@ end
 @inline function _mul(p::AbstractFourMomentum, beta::BetaVector)
     return p[2] * beta.x + p[3] * beta.y + p[4] * beta.z
 end
+
+# FIXME: not every component has commutative product
 _mul(beta::BetaVector, p::AbstractFourMomentum) = _mul(p, beta)
 
 function _square(beta_vec::BetaVector)
