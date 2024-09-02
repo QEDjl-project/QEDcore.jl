@@ -24,4 +24,4 @@ makedocs(;
     pages=["Home" => "index.md"],
 )
 
-deploydocs(; repo="github.com/QEDjl-project/QEDcore.jl", devbranch="main")
+deploydocs(; repo="github.com/QEDjl-project/QEDcore.jl", push_preview=false)
