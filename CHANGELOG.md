@@ -1,5 +1,21 @@
 # Changelog
 
+## Version 0.1.1
+
+This release contains some minor fixes and CI work. No breaking changes have been introduced.
+
+[diff since 0.1.0](https://github.com/QEDjl-project/QEDcore.jl/compare/release-0.1.0...release-0.1.1)
+
+### Fixes
+
+- [#42](https://github.com/QEDjl-project/QEDcore.jl/pull/42): Make `mul` function private since `*` should be used instead
+- [#47](https://github.com/QEDjl-project/QEDcore.jl/pull/47): Fix docs building to deploy to gh-pages correctly
+
+### Maintenance
+
+- [#44](https://github.com/QEDjl-project/QEDcore.jl/pull/44): Add docs building job to the CI 
+- [#46](https://github.com/QEDjl-project/QEDcore.jl/pull/46): Remove `Suppressor.jl` dependency which is not needed anymore
+
 ## Version 0.1.0
 
 **Initial Release**
