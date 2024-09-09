@@ -3,6 +3,7 @@
 # - add convenient constructors: Boost(:x,::Real)
 # - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
 # - add convenient constructors: Boost(::RestFrame,::AbstractFourMomentum)
+# - decompose into separate files
 
 """
 
