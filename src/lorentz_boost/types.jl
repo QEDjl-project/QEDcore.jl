@@ -5,7 +5,7 @@
 """
     AbstractCoordinateTransformation
 
-Abstract base type for coordinate transformations supposed to be acting on four-momenta. 
+Abstract base type for coordinate transformations supposed to be acting on four-momenta.
 Every subtype of `trafo::AbstractCoordianteTransformation` should implement the following interface functions:
 
 * `QEDcore._transform(trafo,p)`: transfroms `p`
@@ -13,12 +13,12 @@ Every subtype of `trafo::AbstractCoordianteTransformation` should implement the 
 
 ## Example
 
-Implementing the interface by defining the interface functions: 
+Implementing the interface by defining the interface functions:
 
 ```jldoctest trafo_interface
 julia> using QEDcore
 
-julia> struct TestTrafo{T} <: QEDcore.AbstractCoordinateTransformation   
+julia> struct TestTrafo{T} <: QEDcore.AbstractCoordinateTransformation
            a::T
        end
 
@@ -41,14 +41,14 @@ julia> p = SFourMomentum(4,3,2,1)
  2.0
  1.0
 
-julia> trafo(p)
+julia> trafo(p) # multiply every component with 2.0
 4-element SFourMomentum with indices SOneTo(4):
  8.0
  6.0
  4.0
  2.0
 
-julia> inv(trafo)(p)
+julia> inv(trafo)(p) # divide every component by 2.0
 4-element SFourMomentum with indices SOneTo(4):
  2.0
  1.5
@@ -62,7 +62,7 @@ Base.broadcastable(trafo::AbstractCoordinateTransformation) = Ref(trafo)
 """
     _transform(trafo::AbstractCoordinateTransformation,p::AbstractFourMomentum)
 
-Interface function for the application of the transformation to the four-momentum `p`. Must return a four-momentum 
+Interface function for the application of the transformation to the four-momentum `p`. Must return a four-momentum
 of the same type as `p`.
 """
 function _transform end
@@ -123,7 +123,7 @@ boost_type(::Boost{V}) where {V} = V
 Boost(x::Real) = Boost(BetaX(x))
 Boost(x::Real, y::Real, z::Real) = Boost(BetaVector(x, y, z))
 
-# TODO: 
+# TODO:
 # - add more convenient functions (type of the boost_param, ... )
 # - interaction between several boosts? -> product trafo (for later)
 

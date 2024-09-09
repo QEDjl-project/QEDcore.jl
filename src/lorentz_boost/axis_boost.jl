@@ -1,4 +1,4 @@
-# TODO: 
+# TODO:
 # - test conversions
 # - add convenient constructors: Boost(:x,::Real)
 # - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
@@ -56,7 +56,7 @@ end
 
     BetaX(beta::T) where {T<:Real}
 
-Beta parameter associated to the x-axis, commonly referred to as ``\\beta_x``. 
+Beta parameter associated to the x-axis, commonly referred to as ``\\beta_x``.
 The corresponding Lorentz boost reads
 
 ```math
@@ -80,11 +80,6 @@ where the kinematic factor is given as ``\\gamma = 1/\\sqrt{1-\\beta_x^2}``)
 ```jldoctest
 julia> using QEDcore
 
-julia> using Random
-
-julia> RNG = MersenneTwister(1234)
-MersenneTwister(1234)
-
 julia> beta_x = BetaX(0.5)
 BetaX{Float64}(0.5)
 
@@ -105,7 +100,7 @@ julia> p_prime = boost(p)
  2.0
  1.0
 
-julia> @assert isapprox(p*p,p_prime*p_prime) 
+julia> @assert isapprox(p*p,p_prime*p_prime)
 ```
 
 ## External link
@@ -137,7 +132,7 @@ end
 
     BetaY(beta::T) where {T<:Real}
 
-Beta parameter associated to the y-axis, commonly referred to as ``\\beta_y``. 
+Beta parameter associated to the y-axis, commonly referred to as ``\\beta_y``.
 The corresponding Lorentz boost reads
 
 ```math
@@ -186,7 +181,7 @@ julia> p_prime = boost(p)
  0.0
  1.0
 
-julia> @assert isapprox(p*p,p_prime*p_prime) 
+julia> @assert isapprox(p*p,p_prime*p_prime)
 ```
 
 ## External link
@@ -218,7 +213,7 @@ end
 
     BetaZ(beta::T) where {T<:Real}
 
-Beta parameter associated to the z-axis, commonly referred to as ``\\beta_z``. 
+Beta parameter associated to the z-axis, commonly referred to as ``\\beta_z``.
 The corresponding Lorentz boost reads
 
 ```math
@@ -267,7 +262,7 @@ julia> p_prime = boost(p)
   2.0
  -1.1547005383792517
 
-julia> @assert isapprox(p*p,p_prime*p_prime) 
+julia> @assert isapprox(p*p,p_prime*p_prime)
 
 ```
 
