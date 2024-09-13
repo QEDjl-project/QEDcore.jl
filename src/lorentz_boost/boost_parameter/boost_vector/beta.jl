@@ -1,22 +1,13 @@
 
-# TODO:
-# - add interaction with axis boosts
-# - add convenient constructors BetaVector(p) for the rest system?
-# - test constructor error
-"""
-
-    AbstractBoostVector<:AbstractBoostParameter
-
-Abstract base type for vector-like boost parameters, modelling boosts in any spatial dimension.
-"""
-abstract type AbstractBoostVector <: AbstractBoostParameter end
-
 """
 
     BetaVector(x::Real,y::Real,z::Real)
 
-Spatial vector of beta parameters associated with the three chartesian directions: ``\\vec\\beta = (\\beta_x,\\beta_y,\\beta_z)``.
-The corresponding Lorentz boost transformation reads
+Represents the spatial vector of velocity parameters (denoted as the "beta" vector) associated with motion in the three Cartesian directions, i.e.,
+``\\vec\\beta = (\\beta_x, \\beta_y, \\beta_z)``. These components correspond to the velocity of an object (in units of the speed of light) in each of the
+``x``, ``y``, and ``z`` directions.
+
+The Lorentz boost along the direction of the beta vector ``\\vec\\beta`` transforms the four-momentum as follows:
 
 ```math
 \\begin{pmatrix}
@@ -35,7 +26,7 @@ p_2 + (\\frac{\\gamma - 1}{\\beta^2} \\vec\\beta\\vec p - \\gamma  p_0)
  \\beta_z\\\\
 \\end{pmatrix}
 ```
-where the kinematic factor is given as ``\\gamma = 1/\\sqrt{1-\\beta_x^2}``)
+where the kinematic factor is given as ``\\gamma = 1/\\sqrt{1-\\beta_x^2}``.
 
 ## Example
 
@@ -62,7 +53,7 @@ julia> p_prime = boost(p)
  0.9242054036545237
  0.6414018012181746
 
-julia> @assert isapprox(p*p,p_prime*p_prime)
+julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 ```
 
 ## External link
@@ -90,30 +81,16 @@ end
 BetaVector(x, y, z) = BetaVector(promote(x, y, z)...)
 
 import Base: -
-
 -(b::BetaVector) = BetaVector(-b.x, -b.y, -b.z)
 
-function Base.isapprox(
-    b1::BetaVector,
-    b2::BetaVector;
-    atol::Real=0,
-    rtol::Real=Base.rtoldefault(b1.x, b1.y, atol),
-    nans::Bool=false,
-    norm::Function=abs,
-)
-    return isapprox(b1.x, b2.x; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
-           isapprox(b1.y, b2.y; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
-           isapprox(b1.z, b2.z; atol=atol, rtol=rtol, nans=nans, norm=norm)
-end
-
-@inline function _mul(p::AbstractFourMomentum, beta::BetaVector)
+@inline function _spatial_mul(p::AbstractFourMomentum, beta::BetaVector)
     return p[2] * beta.x + p[3] * beta.y + p[4] * beta.z
 end
 
-# FIXME: not every component has commutative product
-_mul(beta::BetaVector, p::AbstractFourMomentum) = _mul(p, beta)
+# assumption: beta vector components are communte with four momentum components
+_spatial_mul(beta::BetaVector, p::AbstractFourMomentum) = _spatial_mul(p, beta)
 
-function _square(beta_vec::BetaVector)
+function _three_vector_square(beta_vec::BetaVector)
     bx = beta_vec.x
     by = beta_vec.y
     bz = beta_vec.z
@@ -121,7 +98,7 @@ function _square(beta_vec::BetaVector)
 end
 
 @inline function _transform(beta_vec::BetaVector, p::M) where {M<:AbstractFourMomentum}
-    b2 = _square(beta_vec)
+    b2 = _three_vector_square(beta_vec)
     if b2 == one(b2)
         return p
     end
@@ -131,7 +108,7 @@ end
     px = getX(p)
     py = getY(p)
     pz = getZ(p)
-    bp = _mul(p, beta_vec)
+    bp = _spatial_mul(p, beta_vec)
     gamma2 = (gamma - one(b2)) / b2
     fac = gamma2 * bp - gamma * en
     px_prime = px + fac * beta_vec.x
@@ -142,4 +119,5 @@ end
     return M(en_prime, px_prime, py_prime, pz_prime)
 end
 
+# inverse is just a boost with -beta
 _inv(beta_vec::BetaVector) = BetaVector(-beta_vec.x, -beta_vec.y, -beta_vec.z)

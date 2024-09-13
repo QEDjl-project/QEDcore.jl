@@ -1,32 +1,3 @@
-# TODO:
-# - test conversions
-# - add convenient constructors: Boost(:x,::Real)
-# - add convenient constructors: Boost(:rest_frame,::AbstractFourMomentum)
-# - add convenient constructors: Boost(::RestFrame,::AbstractFourMomentum)
-# - decompose into separate files
-
-"""
-
-    AbstractAxisBoostParameter{T}
-
-Abstract base type for boost parameter of type `T` associated to a certain axis in space.
-"""
-abstract type AbstractAxisBoostParameter{T} <: AbstractBoostParameter end
-function convert(
-    ::Type{B}, param::S
-) where {T<:Real,B<:AbstractAxisBoostParameter{T},S<:Real}
-    return B(T(param))
-end
-function Base.convert(
-    ::Type{B1}, d::B2
-) where {B1<:AbstractAxisBoostParameter,B2<:AbstractAxisBoostParameter}
-    return B1(d.param)
-end
-function Base.convert(
-    ::Type{B1}, d::B2
-) where {T<:Real,B1<:AbstractAxisBoostParameter{T},B2<:AbstractAxisBoostParameter{T}}
-    return d
-end
 
 ###########
 # Axis Beta
@@ -35,7 +6,19 @@ end
 
     AbstractAxisBeta{T} <: AbstractAxisBoostParameter{T}
 
-Abstact base type for boost beta parameter of type `T` associated to an axis in space.
+An abstract base type for the beta (velocity) parameter of type `T`, representing a Lorentz boost along a specific spatial axis.
+
+`AbstractAxisBeta{T}` extends `AbstractAxisBoostParameter{T}` and provides a general framework for defining beta parameters associated with individual Cartesian axes (x, y, z) in special relativity. The parameter `T` typically represents the numeric type (e.g., `Float64`, `Float32`) used for the beta value.
+
+### Usage
+
+Concrete subtypes of `AbstractAxisBeta{T}` define the beta parameters for Lorentz boosts along the x, y, and z axes:
+- [`BetaX{T}`](@ref): Boost parameter for the x-axis.
+- [`BetaY{T}`](@ref): Boost parameter for the y-axis.
+- [`BetaZ{T}`](@ref): Boost parameter for the z-axis.
+
+These beta parameters are essential for performing axis-specific Lorentz boosts, which transform physical quantities such as four-momentum between different inertial frames.
+
 """
 abstract type AbstractAxisBeta{T} <: AbstractAxisBoostParameter{T} end
 
@@ -57,8 +40,9 @@ end
 
     BetaX(beta::T) where {T<:Real}
 
-Beta parameter associated to the x-axis, commonly referred to as ``\\beta_x``.
-The corresponding Lorentz boost reads
+Represents the beta parameter associated with a Lorentz boost along the x-axis, commonly denoted as ``\\beta_x``.
+
+The transformation for a boost along the x-axis is:
 
 ```math
 \\begin{pmatrix}
@@ -101,7 +85,7 @@ julia> p_prime = boost(p)
  2.0
  1.0
 
-julia> @assert isapprox(p*p,p_prime*p_prime)
+julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 ```
 
 ## External link
@@ -133,8 +117,9 @@ end
 
     BetaY(beta::T) where {T<:Real}
 
-Beta parameter associated to the y-axis, commonly referred to as ``\\beta_y``.
-The corresponding Lorentz boost reads
+Represents the beta parameter associated with a Lorentz boost along the y-axis, commonly denoted as ``\\beta_y``.
+
+The transformation for a boost along the y-axis is:
 
 ```math
 \\begin{pmatrix}
@@ -182,7 +167,7 @@ julia> p_prime = boost(p)
  0.0
  1.0
 
-julia> @assert isapprox(p*p,p_prime*p_prime)
+julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 ```
 
 ## External link
@@ -191,9 +176,9 @@ julia> @assert isapprox(p*p,p_prime*p_prime)
 * [Kinematics in PDG review](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf)
 
 """
-struct BetaY{T} <: AbstractAxisBeta{T}
+struct BetaY{T<:Real} <: AbstractAxisBeta{T}
     param::T
-    function BetaY{T}(beta::T) where {T}
+    function BetaY{T}(beta::T) where {T<:Real}
         -one(beta) <= beta < one(beta) ||
             throw(InvalidInputError("beta parameter <$beta> must be between zero and one"))
         return new{T}(beta)
@@ -214,8 +199,9 @@ end
 
     BetaZ(beta::T) where {T<:Real}
 
-Beta parameter associated to the z-axis, commonly referred to as ``\\beta_z``.
-The corresponding Lorentz boost reads
+Represents the beta parameter associated with a Lorentz boost along the z-axis, commonly denoted as ``\\beta_z``.
+
+The transformation for a boost along the z-axis is:
 
 ```math
 \\begin{pmatrix}
@@ -263,7 +249,7 @@ julia> p_prime = boost(p)
   2.0
  -1.1547005383792517
 
-julia> @assert isapprox(p*p,p_prime*p_prime)
+julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 
 ```
 
@@ -273,9 +259,9 @@ julia> @assert isapprox(p*p,p_prime*p_prime)
 * [Kinematics in PDG review](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf)
 
 """
-struct BetaZ{T} <: AbstractAxisBeta{T}
+struct BetaZ{T<:Real} <: AbstractAxisBeta{T}
     param::T
-    function BetaZ{T}(beta::T) where {T}
+    function BetaZ{T}(beta::T) where {T<:Real}
         -one(beta) <= beta < one(beta) ||
             throw(InvalidInputError("beta parameter <$beta> must be between zero and one"))
         return new{T}(beta)

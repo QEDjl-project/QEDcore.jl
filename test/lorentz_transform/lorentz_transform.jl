@@ -18,7 +18,9 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
 
 @testset "beta boost" begin
     @testset "defaults" begin
-        x, y, z = rand(RNG, 3)
+        xyz = rand(RNG, 3)
+        xyz = @. (2 * xyz - 1) / sqrt(3)
+        x, y, z = xyz
         boost_x_default = Boost(x)
         @test boost_x_default.param == BetaX(x)
 
@@ -26,8 +28,36 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
         @test boost_vec_default.param == BetaVector(x, y, z)
     end
 
-    @testset "$boost_type" for boost_type in (BetaVector, BetaX, BetaY, BetaZ)
-        test_param = _rand(RNG, boost_type)
+    @testset "$val_type" for val_type in (Float64, Float32)
+        @testset "axis beta" begin
+            @testset "$beta_param_type" for beta_param_type in (BetaX, BetaY, BetaZ)
+                test_beta_val = 2 * rand(RNG, val_type) - 1
+                test_beta = beta_param_type(test_beta_val)
+
+                @testset "element type" begin
+                    @test eltype(test_beta) == val_type
+                end
+
+                # test converts
+                for comp_val_type in (Float64, Float32)
+                    comp_beta = beta_param_type(comp_val_type(test_beta_val))
+
+                    @testset "convert element" begin
+                        test_beta_after = beta_param_type{comp_val_type}(test_beta_val)
+                        @test test_beta_after == comp_beta
+                    end
+
+                    @testset "convert type" begin
+                        test_beta_after = convert(beta_param_type{comp_val_type}, test_beta)
+                        @test test_beta_after == comp_beta
+                    end
+                end
+            end
+        end
+    end
+
+    @testset "$boost_param_type" for boost_param_type in (BetaVector, BetaX, BetaY, BetaZ)
+        test_param = _rand(RNG, boost_param_type)
         boost = Boost(test_param)
 
         @testset "invariance" begin
@@ -48,7 +78,7 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
         end
 
         @testset "phase space point" begin
-            test_param = _rand(RNG, boost_type)
+            test_param = _rand(RNG, boost_param_type)
             boost = Boost(test_param)
             @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in
                                                      Iterators.product(

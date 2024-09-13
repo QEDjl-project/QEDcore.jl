@@ -47,6 +47,8 @@ using SimpleTraits
 
 @reexport using QEDbase
 
+include("patch_QEDbase.jl")
+
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 
@@ -60,10 +62,13 @@ include("algebraic_objects/four_momentum.jl")
 include("algebraic_objects/lorentz_vector.jl")
 include("algebraic_objects/gamma_matrices.jl")
 
-include("lorentz_boost/general_trafo.jl")
 include("lorentz_boost/types.jl")
-include("lorentz_boost/boost_parameter/boost_axis/axis_boost.jl")
-include("lorentz_boost/boost_parameter/boost_vector/boost_vector.jl")
+include("lorentz_boost/boost_parameter/boost_axis/types.jl")
+include("lorentz_boost/boost_parameter/boost_axis/convert.jl")
+include("lorentz_boost/boost_parameter/boost_axis/beta.jl")
+include("lorentz_boost/boost_parameter/boost_vector/types.jl")
+include("lorentz_boost/boost_parameter/boost_vector/beta.jl")
+include("lorentz_boost/boost_parameter/boost_vector/utils.jl")
 
 include("particles/particle_types.jl")
 include("particles/propagators.jl")
