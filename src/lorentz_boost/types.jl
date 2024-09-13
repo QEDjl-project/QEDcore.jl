@@ -31,33 +31,35 @@ Depending on the boost parameter `V`, the boost can be:
 To create a Lorentz boost along the x-axis using the `BetaX` boost parameter:
 
 ```jldoctest example_boost_x
-using QEDcore
+julia> using QEDcore
+
 julia> beta_x = BetaX(0.5)
 BetaX{Float64}(0.5)
 
 julia> boost_x = Boost(beta_x)
 Boost{BetaX{Float64}}(BetaX{Float64}(0.5))
 ```
-
 To perform a Lorentz boost using the `boost_x` object, you can apply it to a four-vector,
 such as four-momentum:
 
 ```jldoctest example_boost_x
 julia> p = SFourMomentum(4, 3, 2, 1)
 4-element SFourMomentum with indices SOneTo(4):
-    4.0
-    3.0
-    2.0
-    1.0
+ 4.0
+ 3.0
+ 2.0
+ 1.0
 
 julia> p_prime = boost_x(p)  # Perform the boost
 4-element SFourMomentum with indices SOneTo(4):
-    2.886751345948129
-    1.1547005383792517
-    2.0
-    1.0
+ 2.886751345948129
+ 1.1547005383792517
+ 2.0
+ 1.0
 
-julia> @assert isapprox(p*p, p_prime*p_prime)  # The spacetime interval is preserved
+julia> @assert isapprox(p*p, p_prime*p_prime)  # The invariant mass is preserved
+
+
 ```
 
 ## Notes
