@@ -1,9 +1,6 @@
 name = "QEDcore"
 uuid = "35dc0263-cb5f-4c33-a114-1d7f54ab753e"
-authors = [
-    "Uwe Hernandez Acosta <u.hernandez@hzdr.de>",
-    "Anton Reinhard <a.reinhard@hzdr.de>",
-]
+authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>", "Anton Reinhard <a.reinhard@hzdr.de>"]
 version = "0.1.1"
 
 [deps]
@@ -29,10 +26,4 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = [
-    "Random",
-    "LinearAlgebra",
-    "SafeTestsets",
-    "Test",
-    "SparseArrays",
-]
+test = ["Random", "LinearAlgebra", "SafeTestsets", "Test", "SparseArrays"]
