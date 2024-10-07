@@ -85,10 +85,6 @@ Base.eltype(boost::Boost) = eltype(boost.param)
 Boost(x::Real) = Boost(BetaX(x))
 Boost(x::Real, y::Real, z::Real) = Boost(BetaVector(x, y, z))
 
-# TODO:
-# - add more convenient functions (type of the boost_param, ... )
-# - interaction between several boosts? -> product trafo (for later)
-
 function _transform(boost::Boost, p::AbstractFourMomentum)
     return _transform(boost.param, p)
 end

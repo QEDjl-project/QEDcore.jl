@@ -1,3 +1,5 @@
+# This can be removed, if https://github.com/QEDjl-project/QEDbase.jl/pull/129 is merged
+# and released.
 
 #######
 # General coordinate transformations

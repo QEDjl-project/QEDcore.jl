@@ -1,8 +1,3 @@
-# TODO:
-# - add interaction with axis boosts
-# - add convenient constructors BetaVector(p) for the rest system?
-# - test constructor error
-
 """
     AbstractBoostVector <: AbstractBoostParameter
 
