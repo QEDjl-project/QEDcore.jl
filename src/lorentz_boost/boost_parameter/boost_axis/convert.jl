@@ -1,7 +1,7 @@
 
 function Base.convert(
-    ::Type{B}, param::S
-) where {T<:Real,B<:AbstractAxisBoostParameter{T},S<:Real}
+    ::Type{B}, param::Real
+) where {T<:Real,B<:AbstractAxisBoostParameter{T}}
     return B(T(param))
 end
 function Base.convert(

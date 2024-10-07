@@ -38,7 +38,7 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
                     @test eltype(test_beta) == val_type
                 end
 
-                # test converts
+                # test conversions
                 for comp_val_type in (Float64, Float32)
                     comp_beta = beta_param_type(comp_val_type(test_beta_val))
 

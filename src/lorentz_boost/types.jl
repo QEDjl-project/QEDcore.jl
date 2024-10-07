@@ -5,7 +5,7 @@
 
 A concrete type representing a Lorentz boost transformation, parameterized by a boost
 parameter `V`. The boost parameter can be either axis-specific or vector-like, depending
-on the subtype of `AbstractBoostParameter` used. The `Boost` type is used to perform
+on the subtype of [`AbstractBoostParameter`](@ref) used. The `Boost` type is used to perform
 Lorentz boosts on four-vectors (such as four-momentum or four-position) between different
 inertial frames in special relativity.
 
@@ -58,8 +58,6 @@ julia> p_prime = boost_x(p)  # Perform the boost
  1.0
 
 julia> @assert isapprox(p*p, p_prime*p_prime)  # The invariant mass is preserved
-
-
 ```
 
 ## Notes
@@ -67,7 +65,7 @@ julia> @assert isapprox(p*p, p_prime*p_prime)  # The invariant mass is preserved
 The `Boost` type provides a unified and flexible interface for applying Lorentz boosts,
 with the boost parameter `V` determining the specific form of the transformation.
 Lorentz boosts preserve the spacetime interval, meaning that applying the boost to a
-four-vector will not change the invariant quantity
+four-vector will not change the invariant quantity.
 
 ## See Also
 

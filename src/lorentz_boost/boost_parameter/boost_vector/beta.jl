@@ -80,14 +80,13 @@ struct BetaVector{T<:Real} <: AbstractBoostVector
 end
 BetaVector(x, y, z) = BetaVector(promote(x, y, z)...)
 
-import Base: -
--(b::BetaVector) = BetaVector(-b.x, -b.y, -b.z)
+Base.:-(b::BetaVector) = BetaVector(-b.x, -b.y, -b.z)
 
 @inline function _spatial_mul(p::AbstractFourMomentum, beta::BetaVector)
     return p[2] * beta.x + p[3] * beta.y + p[4] * beta.z
 end
 
-# assumption: beta vector components are communte with four momentum components
+# assumption: beta vector components commute with four-momentum components
 _spatial_mul(beta::BetaVector, p::AbstractFourMomentum) = _spatial_mul(p, beta)
 
 function _three_vector_square(beta_vec::BetaVector)

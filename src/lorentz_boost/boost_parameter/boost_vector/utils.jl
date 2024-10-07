@@ -2,7 +2,7 @@
 function Base.isapprox(
     b1::BetaVector,
     b2::BetaVector;
-    atol::Real=0,
+    atol::Real=0.0,
     rtol::Real=Base.rtoldefault(b1.x, b1.y, atol),
     nans::Bool=false,
     norm::Function=abs,

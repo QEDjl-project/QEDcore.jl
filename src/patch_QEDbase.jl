@@ -7,9 +7,9 @@
     AbstractCoordinateTransformation
 
 Abstract base type for coordinate transformations supposed to be acting on four-momenta.
-Every subtype of `trafo::AbstractCoordianteTransformation` should implement the following interface functions:
+Every subtype of `trafo::AbstractCoordinateTransformation` should implement the following interface functions:
 
-* `QEDcore._transform(trafo,p)`: transfroms `p`
+* `QEDcore._transform(trafo,p)`: transforms `p`
 * `Base.inv(trafo)`: returns the inverted transform
 
 ## Example
@@ -115,7 +115,7 @@ inertial frames.
 
 Subtypes of `AbstractLorentzTransformation` implement specific kinds of Lorentz transformations.
 For example:
-- [`Boost{T}`](@ref): A concrete implementation of Lorentz boosts with boost parameter `T` (see also [`AbstractBoostParameter`]@ref).
+- [`Boost{T}`](@ref): A concrete implementation of Lorentz boosts with boost parameter `T` (see also [`AbstractBoostParameter`](@ref)).
 
 These subtypes perform transformations on four-vectors (such as [`SFourMomentum`](@ref)) between different inertial reference frames.
 """
@@ -133,7 +133,7 @@ for all types of boost transformations in special relativity. Lorentz boosts des
 four-vectors (such as [`SFourMomentum`](@ref)) change when transitioning between two reference frames moving at constant velocities (in units of the speed of light) relative to each other.
 
 For example:
-- [`Boost{T}`](@ref): A concrete implementation of Lorentz boosts with boost parameter `T` (see also [`AbstractBoostParameter`]@ref).
+- [`Boost{T}`](@ref): A concrete implementation of Lorentz boosts with boost parameter `T` (see also [`AbstractBoostParameter`](@ref)).
 
 """
 abstract type AbstractLorentzBoost <: AbstractLorentzTransformation end

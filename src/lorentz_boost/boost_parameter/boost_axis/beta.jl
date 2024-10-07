@@ -22,7 +22,7 @@ These beta parameters are essential for performing axis-specific Lorentz boosts,
 """
 abstract type AbstractAxisBeta{T} <: AbstractAxisBoostParameter{T} end
 
--(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
+Base.:-(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
 
 _inv(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
 

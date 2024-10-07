@@ -39,7 +39,6 @@ export PhasespaceDefinition
 export ParticleStateful, PhaseSpacePoint, InPhaseSpacePoint, OutPhaseSpacePoint
 export spin, polarization, momenta, getindex
 
-import Base: -
 using Reexport
 using DocStringExtensions
 using StaticArrays
