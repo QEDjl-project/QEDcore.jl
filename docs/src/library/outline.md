@@ -1,10 +1,5 @@
-```@meta
-CurrentModule = QEDcore
-```
+## API Outline
 
-# QEDcore
-
-API index for [QEDcore](https://github.com/QEDjl-project/QEDcore.jl).
-
-```@index
+```@contents
+Pages = ["particles.md", "phasespacedef.md", "phasespacepoint.md", "vectors.md"]
 ```

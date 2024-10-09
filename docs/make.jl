@@ -37,14 +37,31 @@ open(readme_path, "r") do readme_in
     end
 end
 
+# setup examples using Literate.jl
+using Literate
+
+literate_paths = [
+    (
+        Base.Filesystem.joinpath(project_path, "docs/src/particles_manual.jl"),
+        Base.Filesystem.joinpath(project_path, "docs/src/"),
+    ),
+]
+
+for (file, output_dir) in literate_paths
+    Literate.markdown(file, output_dir; documenter=true)
+    Literate.notebook(file, output_dir)
+end
+
 pages = [
     "Home" => "index.md",
+    "Particles and Phase Space Points" => "particles_manual.md",
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
         "Phase Space Definition" => "library/phasespacedef.md",
         "Phase Space Points" => "library/phasespacepoint.md",
         "Vector Types" => "library/vectors.md",
+        "Index" => "library/index.md",
     ],
 ]
 
@@ -61,6 +78,7 @@ try
             assets=String[],
         ),
         pages=pages,
+        plugins=[links],
     )
 finally
     @info "Garbage collection: remove landing page"
