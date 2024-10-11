@@ -31,8 +31,3 @@ DiracMatrix
 ```@docs
 _mul
 ```
-
-## Deprecated
-```@docs
-AbstractParticleSpinor
-```
