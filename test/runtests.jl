@@ -3,6 +3,10 @@ using Test
 using SafeTestsets
 
 begin
+    @time @safetestset "Lorentz transform" begin
+        include("lorentz_transform/lorentz_transform.jl")
+    end
+
     @time @safetestset "phase spaces" begin
         include("phase_spaces.jl")
     end
