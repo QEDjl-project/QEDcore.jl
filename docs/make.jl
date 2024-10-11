@@ -11,6 +11,7 @@ using QEDprocesses
 
 using Documenter
 using DocumenterInterLinks
+using Literate
 
 # setup interlinks
 links = InterLinks(
@@ -38,23 +39,18 @@ open(readme_path, "r") do readme_in
 end
 
 # setup examples using Literate.jl
-using Literate
+literate_paths = [Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl")]
 
-literate_paths = [
-    (
-        Base.Filesystem.joinpath(project_path, "docs/src/particles_manual.jl"),
-        Base.Filesystem.joinpath(project_path, "docs/src/"),
-    ),
-]
+tutorial_output_dir = joinpath(project_path, "docs/src/generated/")
+!ispath(tutorial_output_dir) && mkdir(tutorial_output_dir)
+@info "Literate: create temp dir at $tutorial_output_dir"
 
-for (file, output_dir) in literate_paths
-    Literate.markdown(file, output_dir; documenter=true)
-    Literate.notebook(file, output_dir)
-end
+tutorial_output_dir_name = splitpath(tutorial_output_dir)[end]
 
 pages = [
     "Home" => "index.md",
-    "Particles and Phase Space Points" => "particles_manual.md",
+    "Particles and Phase Space Points" =>
+        joinpath(tutorial_output_dir_name, "particles.md"),
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
@@ -66,6 +62,12 @@ pages = [
 ]
 
 try
+    # generate markdown files with Literate.jl
+    for file in literate_paths
+        Literate.markdown(file, tutorial_output_dir; documenter=true)
+    end
+    # geneate docs with Documenter.jl
+
     makedocs(;
         modules=[QEDcore],
         checkdocs=:exports,
@@ -81,8 +83,11 @@ try
         plugins=[links],
     )
 finally
-    @info "Garbage collection: remove landing page"
+    # doing some garbage collection
+    @info "GarbageCollection: remove generated landing page"
     rm(index_path)
+    @info "GarbageCollection: remove generated tutorial files"
+    rm(tutorial_output_dir; recursive=true)
 end
 
 deploydocs(; repo="github.com/QEDjl-project/QEDcore.jl", push_preview=false)
