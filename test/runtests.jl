@@ -10,7 +10,6 @@ begin
     @time @safetestset "Lorentz transform" begin
         include("lorentz_transform/lorentz_transform.jl")
     end
-
     # TODO: move this to QEDbase
     @time @safetestset "phase space layout" begin
         include("interfaces/phase_space_layout.jl")
