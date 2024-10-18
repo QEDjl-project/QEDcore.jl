@@ -5,6 +5,13 @@ using SafeTestsets
 begin
     @time @safetestset "Lorentz transform" begin
         include("lorentz_transform/lorentz_transform.jl")
+    # TODO: move this to QEDbase
+    @time @safetestset "phase space layout" begin
+        include("interfaces/phase_space_layout.jl")
+    end
+
+    @time @safetestset "coordinate map" begin
+        include("coordinate_map.jl")
     end
 
     # TODO: move this to QEDbase
