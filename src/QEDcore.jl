@@ -24,6 +24,10 @@ export Electron, Positron, Photon
 # particle base states
 export base_state
 
+# coordinates
+export AbstractCoordinateSet, AbstractUnivariateCoordinates, AbstractBivariateCoordinates
+export Energy, Rapidity, CosTheta, CMSEnergy
+
 # phase space layout
 export CoordinateMap
 export CoordinateMapCached
@@ -49,6 +53,10 @@ include("patch_QEDbase.jl")
 >>>>>>> 8c8795a (added psl interface, coordiante maps, coordinate maps with cache)
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
+
+include("coordinates/coordinate_sets.jl")
+include("coordinates/univariate.jl")
+include("coordinates/multivariate.jl")
 
 include("coordinate_map/map.jl")
 include("coordinate_map/cached.jl")
