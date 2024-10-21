@@ -96,7 +96,9 @@ function _three_vector_square(beta_vec::BetaVector)
     return bx^2 + by^2 + bz^2
 end
 
-@inline function _transform(beta_vec::BetaVector, p::M) where {M<:AbstractFourMomentum}
+@inline function QEDbase._transform(
+    beta_vec::BetaVector, p::M
+) where {M<:AbstractFourMomentum}
     b2 = _three_vector_square(beta_vec)
     if b2 == one(b2)
         return p

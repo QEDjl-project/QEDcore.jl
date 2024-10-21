@@ -105,7 +105,7 @@ end
 
 BetaX(beta::T) where {T<:Real} = BetaX{T}(beta)
 
-function _transform(boost_param::BetaX, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaX, p::M) where {M<:AbstractFourMomentum}
     en = getE(p)
     px = getX(p)
 
@@ -187,7 +187,7 @@ end
 
 BetaY(beta::T) where {T} = BetaY{T}(beta)
 
-function _transform(boost_param::BetaY, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaY, p::M) where {M<:AbstractFourMomentum}
     en = getE(p)
     py = getY(p)
 
@@ -269,7 +269,7 @@ struct BetaZ{T<:Real} <: AbstractAxisBeta{T}
 end
 
 BetaZ(beta::T) where {T} = BetaZ{T}(beta)
-function _transform(boost_param::BetaZ, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaZ, p::M) where {M<:AbstractFourMomentum}
     en = getE(p)
     pz = getZ(p)
 

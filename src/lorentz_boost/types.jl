@@ -1,11 +1,10 @@
 
 """
-
-    Boost{V<:AbstractBoostParameter} <: AbstractLorentzBoost
+    Boost{V<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
 
 A concrete type representing a Lorentz boost transformation, parameterized by a boost
 parameter `V`. The boost parameter can be either axis-specific or vector-like, depending
-on the subtype of [`AbstractBoostParameter`](@ref) used. The `Boost` type is used to perform
+on the subtype of `QEDbase.AbstractBoostParameter` used. The `Boost` type is used to perform
 Lorentz boosts on four-vectors (such as four-momentum or four-position) between different
 inertial frames in special relativity.
 
@@ -69,13 +68,13 @@ four-vector will not change the invariant quantity.
 
 ## See Also
 
-* [`AbstractBoostParameter`](@ref): Base type for specific kinds of boost parameters.
+* `QEDbase.AbstractBoostParameter`: Base type for specific kinds of boost parameters.
 * [`BetaX`](@ref): Boost parameter for the x-axis.
 * [`BetaY`](@ref): Boost parameter for the y-axis.
 * [`BetaZ`](@ref): Boost parameter for the z-axis.
 * [`BetaVector`](@ref): Vector of boost parameters for boosts in multiple spatial directions.
 """
-struct Boost{T<:AbstractBoostParameter} <: AbstractLorentzBoost
+struct Boost{T<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
     param::T
 end
 boost_type(::Boost{T}) where {T} = T
@@ -85,8 +84,8 @@ Base.eltype(boost::Boost) = eltype(boost.param)
 Boost(x::Real) = Boost(BetaX(x))
 Boost(x::Real, y::Real, z::Real) = Boost(BetaVector(x, y, z))
 
-function _transform(boost::Boost, p::AbstractFourMomentum)
-    return _transform(boost.param, p)
+function QEDbase._transform(boost::Boost, p::AbstractFourMomentum)
+    return QEDbase._transform(boost.param, p)
 end
 
 function Base.inv(boost::Boost)

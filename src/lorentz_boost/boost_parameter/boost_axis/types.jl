@@ -12,7 +12,7 @@ Subtypes of `AbstractAxisBoostParameter{T}` are used to define specific boost tr
 This abstract type is meant to be extended by concrete types to represent boosts along different Cartesian axes.
 
 """
-abstract type AbstractAxisBoostParameter{T} <: AbstractBoostParameter end
+abstract type AbstractAxisBoostParameter{T} <: QEDbase.AbstractBoostParameter end
 
 function (::Type{BP})(boost_val::Real) where {T<:Real,BP<:AbstractAxisBoostParameter{T}}
     return BP(T(boost_val))

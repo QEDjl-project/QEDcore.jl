@@ -38,8 +38,6 @@ using SimpleTraits
 
 @reexport using QEDbase
 
-include("patch_QEDbase.jl")
-
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 

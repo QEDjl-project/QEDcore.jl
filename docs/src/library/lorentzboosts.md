@@ -12,5 +12,4 @@ BetaVector
 BetaX
 BetaY
 BetaZ
-AbstractCoordinateTransformation
 ```
