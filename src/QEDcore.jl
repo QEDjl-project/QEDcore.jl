@@ -26,9 +26,16 @@ export base_state
 
 # coordinates
 export AbstractCoordinateSet, AbstractUnivariateCoordinates, AbstractBivariateCoordinates
-export Energy, Rapidity, CosTheta, CMSEnergy
+export CoordinateSet
+export coordinate_names
+export Energy, Rapidity, CosTheta, CMSEnergy, SpatialMagnitude
+export coordinate_name, particle_index
 
-# phase space layout
+# phase space layouts
+export AbstractTwoBodyInPhaseSpaceLayout
+export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
+
+# coordinate maps
 export CoordinateMap
 export CoordinateMapCached
 
@@ -56,6 +63,9 @@ include("coordinates/multivariate.jl")
 
 include("coordinate_map/map.jl")
 include("coordinate_map/cached.jl")
+
+include("phase_space_layouts/in_channel/two_body/general.jl")
+include("phase_space_layouts/in_channel/two_body/rest_system.jl")
 
 include("phase_spaces/types.jl")
 include("phase_spaces/access.jl")

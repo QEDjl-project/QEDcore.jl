@@ -14,7 +14,12 @@ struct CoordinateSet{N,D<:Tuple} <: AbstractCoordinateSet{N}
     # skip check if length is not given
     CoordinateSet(coords::D) where {D<:Tuple} = new{length(coords),D}(coords)
 end
+function CoordinateSet{N}(coords::AbstractUnivariateCoordinates...) where {N}
+    return CoordinateSet{N}(coords)
+end
 CoordinateSet(coords::AbstractUnivariateCoordinates...) = CoordinateSet(coords)
+
+phase_space_dimension(::CoordinateSet{N}) where {N} = N
 
 BivariateCoordiantes(coords::Tuple) = CoordinateSet{2}(coords)
 TrivariateCoordiantes(coords::Tuple) = CoordinateSet{3}(coords)

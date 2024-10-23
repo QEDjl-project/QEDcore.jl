@@ -12,6 +12,10 @@ begin
         include("interfaces/phase_space_layout.jl")
     end
 
+    @time @safetestset "coordinates" begin
+        include("coordinates.jl")
+    end
+
     @time @safetestset "coordinate map" begin
         include("coordinate_map.jl")
     end
