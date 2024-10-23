@@ -68,7 +68,7 @@ out_coord_map(out_coords)
 """
 struct CoordinateMapCached{
     P<:AbstractProcessDefinition,M<:AbstractModelDefinition,PSL<:AbstractPhaseSpaceLayout,TM
-} <: AbstractCoordianteMap
+} <: AbstractCoordinateMap
     proc::P
     model::M
     psl::PSL

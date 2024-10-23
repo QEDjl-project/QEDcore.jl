@@ -1,4 +1,4 @@
-abstract type AbstractCoordianteMap end
+abstract type AbstractCoordinateMap end
 
 """
     CoordinateMap{P,M,PSL}(proc::P, model::M, psl::PSL)
@@ -66,7 +66,7 @@ coord_map(in_coords, out_coords)
     and momentum conservation for the process.
 
 """
-struct CoordinateMap{P,M,PSL<:AbstractPhaseSpaceLayout} <: AbstractCoordianteMap
+struct CoordinateMap{P,M,PSL<:AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
     proc::P
     model::M
     psl::PSL
