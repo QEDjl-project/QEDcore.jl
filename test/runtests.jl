@@ -3,6 +3,10 @@ using Test
 using SafeTestsets
 
 begin
+    @time @safetestset "two body rest system" begin
+        include("phase_space_layouts/in_channel/two_body/rest_system.jl")
+    end
+
     @time @safetestset "Lorentz transform" begin
         include("lorentz_transform/lorentz_transform.jl")
     end

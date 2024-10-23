@@ -14,6 +14,8 @@ COORD_BASE_NAMES = Dict(
     Rapidity => "rapidity",
 )
 
+# TODO: add tests for CMSEnergy
+
 UNI_COORDS = (Energy, CosTheta, SpatialMagnitude, Rapidity)
 @testset "univariate" begin
     @testset "$COORD" for COORD in UNI_COORDS

@@ -64,6 +64,7 @@ include("coordinates/multivariate.jl")
 include("coordinate_map/map.jl")
 include("coordinate_map/cached.jl")
 
+include("phase_space_layouts/in_channel/two_body/utils.jl")
 include("phase_space_layouts/in_channel/two_body/general.jl")
 include("phase_space_layouts/in_channel/two_body/rest_system.jl")
 
