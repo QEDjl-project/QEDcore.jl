@@ -70,9 +70,6 @@ struct CoordinateMap{P,M,PSL<:AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
     proc::P
     model::M
     psl::PSL
-
-    # TODO: validity check
-    # - compatibility of proc, model, psl
 end
 
 # make the transform callable

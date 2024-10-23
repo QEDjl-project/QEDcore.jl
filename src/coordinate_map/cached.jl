@@ -73,8 +73,6 @@ struct CoordinateMapCached{
     model::M
     psl::PSL
     in_moms::TM
-
-    # TODO: consider compat check for (proc,model,psl)
 end
 
 function CoordinateMapCached(
