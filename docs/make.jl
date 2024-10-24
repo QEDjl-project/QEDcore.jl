@@ -62,6 +62,7 @@ pages = [
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
+        "Coordinates" => "library/coordinates.md",
         "Phase Space Definition" => "library/phasespacedef.md",
         "Phase Space Layout" => "library/phase_space_layout.md",
         "Phase Space Points" => "library/phasespacepoint.md",
