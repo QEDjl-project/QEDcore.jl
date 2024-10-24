@@ -1,8 +1,3 @@
-# dummy particles
-struct TestParticleFermion <: FermionLike end
-struct TestParticleBoson <: BosonLike end
-
-const PARTICLE_SET = [TestParticleFermion(), TestParticleBoson()]
 
 """
     TestProcess(rng,incoming_particles,outgoing_particles)
@@ -14,8 +9,8 @@ struct TestProcess{IP<:Tuple,OP<:Tuple} <: AbstractProcessDefinition
 end
 
 function TestProcess(rng::AbstractRNG, N_in::Int, N_out::Int)
-    in_particles = rand(rng, PARTICLE_SET, N_in)
-    out_particles = rand(rng, PARTICLE_SET, N_out)
+    in_particles = Tuple(rand(rng, PARTICLE_SET, N_in))
+    out_particles = Tuple(rand(rng, PARTICLE_SET, N_out))
     return TestProcess(in_particles, out_particles)
 end
 
@@ -55,7 +50,7 @@ function TestProcess_FAIL_ALL(rng::AbstractRNG, N_in::Int, N_out::Int)
 end
 
 """
-Test process with no implemented interface except the incoming and outgoing particles. 
+Test process with no implemented interface except the incoming and outgoing particles.
 Should fail every usage except construction of itself and the respective phase space point for given four-momenta.
 """
 struct TestProcess_FAIL_DIFFCS{IP<:Tuple,OP<:Tuple} <: AbstractProcessDefinition
