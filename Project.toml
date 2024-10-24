@@ -11,11 +11,11 @@ SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
-DocStringExtensions = "^0.9"
-QEDbase = "0.2.2"
-Reexport = "^1.2"
-SimpleTraits = "^0.9"
-StaticArrays = "^1.9"
+DocStringExtensions = "0.9"
+QEDbase = "0.3"
+Reexport = "1.2"
+SimpleTraits = "0.9"
+StaticArrays = "1.9"
 julia = "1.10"
 
 [extras]
