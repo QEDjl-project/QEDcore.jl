@@ -6,3 +6,8 @@ Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
 QEDcore = "35dc0263-cb5f-4c33-a114-1d7f54ab753e"
 QEDprocesses = "46de9c38-1bb3-4547-a1ec-da24d767fdad"
+
+[compat]
+QEDcore = "0.1.1"
+QEDprocesses = "0.2"
+QEDbase = "0.2.2"
