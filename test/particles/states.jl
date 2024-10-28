@@ -4,15 +4,8 @@ using Random
 
 include("../utils.jl")
 
-FERMION_STATES_GROUNDTRUTH_FACTORY = Dict(
-    (Incoming, Electron) => IncomingFermionSpinor,
-    (Outgoing, Electron) => OutgoingFermionSpinor,
-    (Incoming, Positron) => IncomingAntiFermionSpinor,
-    (Outgoing, Positron) => OutgoingAntiFermionSpinor,
-)
-
 RNG = MersenneTwister(708583836976)
-ATOL = eps()
+ATOL = 1e-14
 RTOL = 0.0
 PHOTON_ENERGIES = (0.0, rand(RNG), rand(RNG) * 10)
 COS_THETAS = (-1.0, -rand(RNG), 0.0, rand(RNG), 1.0)
@@ -48,21 +41,76 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
                          Iterators.product((Electron, Positron), (Incoming, Outgoing))
         mom = SFourMomentum(sqrt(mass(p()) + X^2 + Y^2 + Z^2), X, Y, Z)
         particle_mass = mass(p())
-        groundtruth_states = FERMION_STATES_GROUNDTRUTH_FACTORY[(d, p)](mom, particle_mass)
-        groundtruth_tuple = SVector(groundtruth_states(1), groundtruth_states(2))
-        @test base_state(p(), d(), mom, AllSpin()) == groundtruth_tuple
-        @test base_state(p(), d(), mom, SpinUp()) == groundtruth_tuple[1]
-        @test base_state(p(), d(), mom, SpinDown()) == groundtruth_tuple[2]
 
-        @test QEDbase._as_svec(base_state(p(), d(), mom, AllSpin())) isa SVector
-        @test QEDbase._as_svec(base_state(p(), d(), mom, SpinUp())) isa SVector
-        @test QEDbase._as_svec(base_state(p(), d(), mom, SpinDown())) isa SVector
+        @testset "tooling" begin
+            @test QEDbase._as_svec(base_state(p(), d(), mom, AllSpin())) isa SVector
+            @test QEDbase._as_svec(base_state(p(), d(), mom, SpinUp())) isa SVector
+            @test QEDbase._as_svec(base_state(p(), d(), mom, SpinDown())) isa SVector
+        end
+    end
+    @testset "spinor properties" begin
+        x, y, z = rand(RNG, 3)
+        m = mass(Electron())
+        P = SFourMomentum(sqrt(x^2 + y^2 + z^2 + m^2), x, y, z)
 
-        @test QEDbase._as_svec(base_state(p(), d(), mom, AllSpin())) == groundtruth_tuple
-        @test QEDbase._as_svec(base_state(p(), d(), mom, SpinUp()))[1] ==
-            groundtruth_tuple[1]
-        @test QEDbase._as_svec(base_state(p(), d(), mom, SpinDown()))[1] ==
-            groundtruth_tuple[2]
+        U = base_state(Electron(), Incoming(), P, AllSpin())
+        Ubar = base_state(Electron(), Outgoing(), P, AllSpin())
+        V = base_state(Positron(), Outgoing(), P, AllSpin())
+        Vbar = base_state(Positron(), Incoming(), P, AllSpin())
+
+        @testset "normalization" begin
+            for s1 in (1, 2)
+                for s2 in (1, 2)
+                    @test isapprox(Ubar[s1] * U[s2], 2 * m * (s1 == s2))
+                    @test isapprox(Vbar[s1] * V[s2], -2 * m * (s1 == s2))
+                    @test isapprox(Ubar[s1] * V[s2], 0.0)
+                    @test isapprox(Vbar[s1] * U[s2], 0.0)
+                end
+            end
+        end # normatlisation
+
+        @testset "completeness" begin
+            sumU = zero(DiracMatrix)
+            sumV = zero(DiracMatrix)
+            for spin in (1, 2)
+                sumU += U[spin] * Ubar[spin]
+                sumV += V[spin] * Vbar[spin]
+            end
+
+            @test isapprox(sumU, (slashed(P) + m * one(DiracMatrix)))
+            @test isapprox(sumV, (slashed(P) - m * one(DiracMatrix)))
+        end # completeness
+
+        @testset "diracs equation" begin
+            for spin in (1, 2)
+                @test isapprox(
+                    (slashed(P) - m * one(DiracMatrix)) * U[spin], zero(BiSpinor), atol=ATOL
+                )
+                @test isapprox(
+                    (slashed(P) + m * one(DiracMatrix)) * V[spin], zero(BiSpinor), atol=ATOL
+                )
+                @test isapprox(
+                    Ubar[spin] * (slashed(P) - m * one(DiracMatrix)),
+                    zero(AdjointBiSpinor),
+                    atol=ATOL,
+                )
+                @test isapprox(
+                    Vbar[spin] * (slashed(P) + m * one(DiracMatrix)),
+                    zero(AdjointBiSpinor),
+                    atol=ATOL,
+                )
+            end
+        end #diracs equation
+
+        @testset "sandwich" begin
+            for s1 in (1, 2)
+                for s2 in (1, 2)
+                    @test isapprox(
+                        SFourMomentum(Ubar[s1] * (GAMMA * U[s2])), 2 * P * (s1 == s2)
+                    )
+                end
+            end
+        end #sandwich
     end
 end
 

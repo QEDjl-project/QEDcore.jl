@@ -1,2 +1,5 @@
 *Manifest.toml
 docs/build/
+
+docs/src/particles_manual.ipynb
+docs/src/particles_manual.md

@@ -1,16 +1,9 @@
 ###############
-# The particle types 
+# The particle types
 #
 # In this file, we define the types of particles, their states and directions, and
-# implement the abstact particle interface accordingly. 
+# implement the abstact particle interface accordingly.
 ###############
-
-"""
-    AbstractParticleSpinor
-
-TBW
-"""
-abstract type AbstractParticleSpinor end
 
 """
 Abstract base types for particle species that act like fermions in the sense of particle statistics.
@@ -24,10 +17,10 @@ QEDbase.is_fermion(::FermionLike) = true
 
 """
 Abstract base type for fermions as distinct from [`AntiFermion`](@ref)s.
-    
+
 !!! note "particle interface"
     All subtypes of `Fermion` have
-    ```julia 
+    ```julia
     is_fermion(::Fermion) = true
     is_particle(::Fermion) = true
     is_anti_particle(::Fermion) = false
@@ -44,8 +37,8 @@ QEDbase.is_anti_particle(::Fermion) = false
 Abstract base type for anti-fermions as distinct from its particle counterpart `Fermion`.
 
 !!! note "particle interface"
-    All subtypes of `AntiFermion` have 
-    ```julia 
+    All subtypes of `AntiFermion` have
+    ```julia
     is_fermion(::AntiFermion) = true
     is_particle(::AntiFermion) = false
     is_anti_particle(::AntiFermion) = true
@@ -61,13 +54,13 @@ QEDbase.is_anti_particle(::AntiFermion) = true
 Abstract base type for majorana-fermions, i.e. fermions which are their own anti-particles.
 
 !!! note "particle interface"
-    All subtypes of `MajoranaFermion` have 
-    ```julia 
+    All subtypes of `MajoranaFermion` have
+    ```julia
     is_fermion(::MajoranaFermion) = true
     is_particle(::MajoranaFermion) = true
     is_anti_particle(::MajoranaFermion) = true
     ```
-    
+
 """
 abstract type MajoranaFermion <: FermionLike end
 
@@ -76,7 +69,7 @@ QEDbase.is_particle(::MajoranaFermion) = true
 QEDbase.is_anti_particle(::MajoranaFermion) = true
 
 """
-Concrete type for *electrons* as a particle species. Mostly used for dispatch. 
+Concrete type for *electrons* as a particle species. Mostly used for dispatch.
 
 ```jldoctest
 julia> using QEDcore
@@ -99,7 +92,7 @@ QEDbase.charge(::Electron) = -1.0
 Base.show(io::IO, ::Electron) = print(io, "electron")
 
 """
-Concrete type for *positrons* as a particle species. Mostly used for dispatch. 
+Concrete type for *positrons* as a particle species. Mostly used for dispatch.
 
 ```jldoctest
 julia> using QEDcore
@@ -122,8 +115,8 @@ QEDbase.charge(::Positron) = 1.0
 Base.show(io::IO, ::Positron) = print(io, "positron")
 
 """
-Abstract base types for particle species that act like bosons in the sense of particle statistics. 
-    
+Abstract base types for particle species that act like bosons in the sense of particle statistics.
+
 !!! note "particle interface"
     Every concrete subtype of `BosonLike` has `is_boson(::BosonLike) = true`.
 """
@@ -133,10 +126,10 @@ QEDbase.is_boson(::BosonLike) = true
 
 """
 Abstract base type for bosons as distinct from its anti-particle counterpart [`AntiBoson`](@ref).
-    
+
 !!! note "particle interface"
     All subtypes of `Boson` have
-    ```julia 
+    ```julia
     is_boson(::Boson) = true
     is_particle(::Boson) = true
     is_anti_particle(::Boson) = false
@@ -148,10 +141,10 @@ QEDbase.is_anti_particle(::Boson) = false
 
 """
 Abstract base type for anti-bosons as distinct from its particle counterpart [`Boson`](@ref).
-    
+
 !!! note "particle interface"
     All subtypes of `AntiBoson` have
-    ```julia 
+    ```julia
     is_boson(::AntiBoson) = true
     is_particle(::AntiBoson) = false
     is_anti_particle(::AntiBoson) = true
@@ -165,8 +158,8 @@ QEDbase.is_anti_particle(::AntiBoson) = true
 Abstract base type for majorana-bosons, i.e. bosons which are their own anti-particles.
 
 !!! note "particle interface"
-    All subtypes of `MajoranaBoson` have 
-    ```julia 
+    All subtypes of `MajoranaBoson` have
+    ```julia
     is_boson(::MajoranaBoson) = true
     is_particle(::MajoranaBoson) = true
     is_anti_particle(::MajoranaBoson) = true
@@ -177,7 +170,7 @@ QEDbase.is_particle(::MajoranaBoson) = true
 QEDbase.is_anti_particle(::MajoranaBoson) = true
 
 """
-Concrete type for the *photons* as a particle species. Mostly used for dispatch. 
+Concrete type for the *photons* as a particle species. Mostly used for dispatch.
 
 ```jldoctest
 julia> using QEDcore
