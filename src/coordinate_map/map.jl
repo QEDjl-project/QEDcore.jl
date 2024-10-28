@@ -86,7 +86,6 @@ end
     in_moms = build_momenta(
         coord_map.proc, coord_map.model, in_phase_space_layout(coord_map.psl), in_coords
     )
-    Ptot = sum(in_moms)
     return in_moms,
-    build_momenta(coord_map.proc, coord_map.model, Ptot, coord_map.psl, out_coords)
+    build_momenta(coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords)
 end

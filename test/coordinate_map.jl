@@ -21,12 +21,10 @@ include("test_implementation/TestImplementation.jl")
     TESTINCOORDS = Tuple(rand(RNG, 4 * N_INCOMING))
     groundtruth_in_moms = TestImplementation._groundtruth_in_moms(TESTINCOORDS)
 
-    groundtruth_total_moms = sum(groundtruth_in_moms)
-
     TESTOUTPSL = TestImplementation.TrivialOutPSL(TESTINPSL)
     TESTOUTCOORDS = Tuple(rand(RNG, 4 * N_OUTGOING - 4))
     groundtruth_out_moms = TestImplementation._groundtruth_out_moms(
-        groundtruth_total_moms, TESTOUTCOORDS
+        groundtruth_in_moms, TESTOUTCOORDS
     )
 
     @testset "building directly" begin

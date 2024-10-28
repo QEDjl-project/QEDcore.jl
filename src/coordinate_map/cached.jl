@@ -1,4 +1,3 @@
-
 """
     CoordinateMapCached{P,M,PSL,TM}(proc::P, model::M, psl::PSL, in_moms::TM)
 
@@ -107,6 +106,7 @@ end
     out_coords::Tuple
 ) where {P,M,PSL<:AbstractOutPhaseSpaceLayout}
     in_moms = coord_map.in_moms
-    Ptot = sum(in_moms)
-    return build_momenta(coord_map.proc, coord_map.model, Ptot, coord_map.psl, out_coords)
+    return build_momenta(
+        coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords
+    )
 end

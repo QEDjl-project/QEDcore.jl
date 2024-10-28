@@ -22,15 +22,13 @@ include("../test_implementation/TestImplementation.jl")
     test_in_moms = @inferred build_momenta(TESTPROC, TESTMODEL, TESTINPSL, TESTINCOORDS)
     groundtruth_in_moms = TestImplementation._groundtruth_in_moms(TESTINCOORDS)
 
-    test_total_mom = sum(test_in_moms)
-
     TESTOUTPSL = TestImplementation.TrivialOutPSL(TESTINPSL)
     TESTOUTCOORDS = Tuple(rand(RNG, 4 * N_OUTGOING - 4))
     test_out_moms = @inferred build_momenta(
-        TESTPROC, TESTMODEL, test_total_mom, TESTOUTPSL, TESTOUTCOORDS
+        TESTPROC, TESTMODEL, test_in_moms, TESTOUTPSL, TESTOUTCOORDS
     )
     groundtruth_out_moms = TestImplementation._groundtruth_out_moms(
-        test_total_mom, TESTOUTCOORDS
+        test_in_moms, TESTOUTCOORDS
     )
 
     @testset "build momenta" begin
@@ -61,17 +59,13 @@ include("../test_implementation/TestImplementation.jl")
             if N_OUTGOING != 1
                 # not enough coordinates
                 @test_throws InvalidInputError build_momenta(
-                    TESTPROC, TESTMODEL, test_total_mom, TESTOUTPSL, TESTOUTCOORDS[2:end]
+                    TESTPROC, TESTMODEL, test_in_moms, TESTOUTPSL, TESTOUTCOORDS[2:end]
                 )
             end
 
             # too many coordinates
             @test_throws InvalidInputError build_momenta(
-                TESTPROC,
-                TESTMODEL,
-                test_total_mom,
-                TESTOUTPSL,
-                (TESTOUTCOORDS..., rand(RNG)),
+                TESTPROC, TESTMODEL, test_in_moms, TESTOUTPSL, (TESTOUTCOORDS..., rand(RNG))
             )
         end
     end

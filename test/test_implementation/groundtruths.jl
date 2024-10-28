@@ -15,7 +15,8 @@ end
 Test implementation for building outgoing momenta. Maps all components into four momenta and adds
 the last momentum via energy momentum conservation.
 """
-function _groundtruth_out_moms(Ptot, out_coords)
+function _groundtruth_out_moms(in_moms, out_coords)
+    Ptot = sum(in_moms)
     n = Int(length(out_coords) / 4)
     if length(out_coords) == 0
         return (Ptot,)

@@ -2,10 +2,12 @@
 # Interface: Phase space layout
 #############
 
+abstract type AbstractPerturbativeModel <: AbstractModelDefinition end
+
 export AbstractPhaseSpaceLayout
 export AbstractInPhaseSpaceLayout
 export AbstractOutPhaseSpaceLayout
-export build_momenta
+export build_momenta, phase_space_dimension, in_phase_space_layout
 
 """
     AbstractPhaseSpaceLayout
@@ -96,14 +98,6 @@ when calculating or sampling phase space points in scattering processes.
 function in_phase_space_layout end
 
 """
-
-    _build_momenta(proc,model,in_psl, in_coords)
-    _build_momenta(proc,model,Ptot,out_psl,out_coords)
-
-TBW
-"""
-
-"""
     _build_momenta(proc, model, in_psl::AbstractInPhaseSpaceLayout, in_coords::Tuple)
     _build_momenta(proc, model, Ptot::AbstractFourMomentum, out_psl::AbstractOutPhaseSpaceLayout, out_coords::Tuple)
 
@@ -131,14 +125,14 @@ four-momenta for the incoming particles based on the specified phase space coord
 
 ### Outgoing Phase Space Layout
 The second function, `_build_momenta(proc, model, Ptot, out_psl, out_coords)`, constructs the
-four-momenta for the outgoing particles. It uses the total four-momentum (`Ptot`) from the
+four-momenta for the outgoing particles. It uses the incoming four-momenta (`in_moms`) from the
 incoming state and applies the phase space coordinates (`out_coords`) to compute the outgoing
 momenta, ensuring they adhere to energy and momentum conservation laws.
 
 - **Arguments**:
     - `proc`: The scattering process definition, subtype of `AbstractProcessDefinition`.
     - `model`: The physics model, subtype of `AbstractModelDefinition`.
-    - `Ptot`: The total incoming four-momentum, which is used to compute the momenta of the
+    - `in_moms`: The incoming four-momenta, which is used to compute the momenta of the
         outgoing particles.
     - `out_psl`: The outgoing phase space layout, subtype of `AbstractOutPhaseSpaceLayout`,
         that maps the coordinates to momenta.
@@ -254,10 +248,10 @@ function _build_momenta(
     ::Val{Nc},
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
-    Ptot::AbstractFourMomentum,
+    in_moms::NTuple{NIN,<:AbstractFourMomentum},
     out_psl::AbstractOutPhaseSpaceLayout,
     out_coords::NTuple{N},
-) where {Nc,N}
+) where {Nc,N,NIN}
     throw(
         InvalidInputError(
             "number of coordinates <$N> must be the same as the out-phase-space dimension <$Nc>",
@@ -269,11 +263,11 @@ function _build_momenta(
     ::Val{Nc},
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
-    Ptot::AbstractFourMomentum,
+    in_moms::NTuple{NIN,<:AbstractFourMomentum},
     out_psl::AbstractOutPhaseSpaceLayout,
     out_coords::NTuple{Nc,T},
-) where {Nc,T<:Real}
-    return _build_momenta(proc, model, Ptot, out_psl, out_coords)
+) where {Nc,NIN,T<:Real}
+    return _build_momenta(proc, model, in_moms, out_psl, out_coords)
 end
 
 """
@@ -288,7 +282,7 @@ consistent with the physics model in use.
 # Arguments
 - `proc`: The scattering process definition, subtype of `AbstractProcessDefinition`.
 - `model`: The physics model, subtype of `AbstractModelDefinition`.
-- `Ptot`: The total incoming four-momentum, used to compute the outgoing momenta.
+- `in_moms`: The incoming four-momenta, used to compute the outgoing momenta.
 - `out_psl`: The outgoing phase space layout, subtype of `AbstractOutPhaseSpaceLayout.
 - `out_coords`: A tuple of phase space coordinates that parametrize the outgoing particle momenta.
 
@@ -299,15 +293,15 @@ consistent with the physics model in use.
 function build_momenta(
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
-    Ptot::AbstractFourMomentum,
+    in_moms::NTuple{NIN,<:AbstractFourMomentum},
     out_psl::AbstractOutPhaseSpaceLayout,
     out_coords::NTuple{Nc,T},
-) where {Nc,T}
+) where {Nc,NIN,T}
     return _build_momenta(
         Val(phase_space_dimension(proc, model, out_psl)),
         proc,
         model,
-        Ptot,
+        in_moms,
         out_psl,
         out_coords,
     )

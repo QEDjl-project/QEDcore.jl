@@ -27,9 +27,9 @@ end
 @inline function QEDcore._build_momenta(
     proc::TestProcess,
     model::TestModel,
-    Ptot::AbstractFourMomentum,
+    in_moms::NTuple{NIN,AbstractFourMomentum},
     out_psl::TrivialOutPSL,
     out_coords,
-)
-    return _groundtruth_out_moms(Ptot, out_coords)
+) where {NIN}
+    return _groundtruth_out_moms(in_moms, out_coords)
 end
