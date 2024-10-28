@@ -68,8 +68,6 @@ unit_tests_nightly:
 
 generate_integration_tests:
   image: julia:1.10
-generate_integration_tests:
-  image: julia:1.10
   stage: generate_integration_test
   script:
     # extract package name
