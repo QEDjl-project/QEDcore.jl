@@ -8,12 +8,12 @@
 @assert !is_boson(Electron())
 @assert !is_anti_particle(Electron())
 @assert !is_fermion(Photon())</code></pre><p>These functions are part of QEDbase.jl&#39;s <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/particles/#Particle-Interface">particle interface</a>.</p><h2 id="ParticleStateful"><a class="docs-heading-anchor" href="#ParticleStateful">ParticleStateful</a><a id="ParticleStateful-1"></a><a class="docs-heading-anchor-permalink" href="#ParticleStateful" title="Permalink"></a></h2><p><a href="#ParticleStateful"><code>ParticleStateful</code></a> is the implementation of QEDbase&#39;s <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.AbstractParticleStateful"><code>QEDbase.AbstractParticleStateful</code></a> interface. It represents a particle with a <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.ParticleDirection"><code>direction</code></a> (as used in the context of scattering processes, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.Incoming"><code>QEDbase.Incoming</code></a>, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.Outgoing"><code>QEDbase.Outgoing</code></a>, or <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.UnknownDirection"><code>QEDbase.UnknownDirection</code></a>), a particle species (<a href="../../library/particles/#QEDcore.Electron"><code>Electron</code></a>, <a href="../../library/particles/#QEDcore.Positron"><code>Positron</code></a>, <a href="../../library/particles/#QEDcore.Photon"><code>Photon</code></a>, ...), and a 4-momentum vector.</p><pre><code class="language-julia hljs">ps = ParticleStateful(Incoming(), Electron(), rand(SFourMomentum))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">ParticleStateful: incoming electron
-    momentum: [0.9569918988589702, 0.07760048520272822, 0.21425509330027892, 0.18528230914766053]
+    momentum: [0.9207980140286027, 0.1873078570540022, 0.5630599278577584, 0.8287094624456253]
 </code></pre><p>The relevant accessor functions for the interface are implemented:</p><pre><code class="language-julia hljs">particle_direction(ps)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">incoming</code></pre><pre><code class="language-julia hljs">particle_species(ps)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">electron</code></pre><pre><code class="language-julia hljs">momentum(ps)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element SFourMomentum with indices SOneTo(4):
- 0.9569918988589702
- 0.07760048520272822
- 0.21425509330027892
- 0.18528230914766053</code></pre><h2 id="Phase-Space-Points"><a class="docs-heading-anchor" href="#Phase-Space-Points">Phase Space Points</a><a id="Phase-Space-Points-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Space-Points" title="Permalink"></a></h2><p>A <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a> is the combination of incoming and outgoing <a href="#ParticleStateful"><code>ParticleStateful</code></a>s. It also contains information about the <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.AbstractProcessDefinition">scattering process</a>, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/model/#QEDbase.AbstractModelDefinition">model</a>, and <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.AbstractPhasespaceDefinition">phase space</a> that it is created for.</p><h3 id="Constructors"><a class="docs-heading-anchor" href="#Constructors">Constructors</a><a id="Constructors-1"></a><a class="docs-heading-anchor-permalink" href="#Constructors" title="Permalink"></a></h3><pre><code class="language-julia hljs">psp = PhaseSpacePoint(
+ 0.9207980140286027
+ 0.1873078570540022
+ 0.5630599278577584
+ 0.8287094624456253</code></pre><h2 id="Phase-Space-Points"><a class="docs-heading-anchor" href="#Phase-Space-Points">Phase Space Points</a><a id="Phase-Space-Points-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Space-Points" title="Permalink"></a></h2><p>A <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a> is the combination of incoming and outgoing <a href="#ParticleStateful"><code>ParticleStateful</code></a>s. It also contains information about the <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/process/#QEDbase.AbstractProcessDefinition">scattering process</a>, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/model/#QEDbase.AbstractModelDefinition">model</a>, and <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.AbstractPhasespaceDefinition">phase space</a> that it is created for.</p><h3 id="Constructors"><a class="docs-heading-anchor" href="#Constructors">Constructors</a><a id="Constructors-1"></a><a class="docs-heading-anchor-permalink" href="#Constructors" title="Permalink"></a></h3><pre><code class="language-julia hljs">psp = PhaseSpacePoint(
     Compton(),                      # scattering process
     PerturbativeQED(),              # physics model
     PhasespaceDefinition(           # phase space definition
@@ -33,11 +33,11 @@
     model: perturbative QED
     phasespace definition: spherical coordinates in electron rest frame
     incoming particles:
-     -&gt; incoming electron: [0.35423236448843953, 0.9407922670508786, 0.8212282291294348, 0.49045834741314387]
-     -&gt; incoming photon: [0.38024017683620903, 0.6812568923021677, 0.38033147307086523, 0.30862451229599575]
+     -&gt; incoming electron: [0.2947080630278588, 0.03507629876935081, 0.566473114232827, 0.3577133381318527]
+     -&gt; incoming photon: [0.8246419093832789, 0.9451467858668945, 0.12304231798112097, 0.17206648882372233]
     outgoing particles:
-     -&gt; outgoing electron: [0.0577104634020521, 0.8401735166752616, 0.2608268776442296, 0.2448239832187803]
-     -&gt; outgoing photon: [0.17797561363562864, 0.1531026297589514, 0.6456305154184618, 0.7620080024572331]
+     -&gt; outgoing electron: [0.06683773770675738, 0.7382257752998856, 0.5352427511510176, 0.7767290920577566]
+     -&gt; outgoing photon: [0.1084668625643781, 0.7651653837289694, 0.04875568864592694, 0.22447251989109063]
 </code></pre><p>This version of the constructor automatically creates <a href="#ParticleStateful"><code>ParticleStateful</code></a> obejcts from the momenta, matching the particles of the process. In the case of <a href="https://qedjl-project.github.io/QEDprocesses.jl/dev/#QEDprocesses.Compton"><code>Compton</code></a>, this is means an incoming electron and photon, and outgoing electron and photon.</p><p>Automatic checks make sure that the number of 4-momenta given matches the necessary number of 4-momenta for the process (this adds 0 overhead at runtime because it is inferred from type information alone).</p><pre><code class="language-julia hljs">    PhaseSpacePoint(
         Compton(),
         PerturbativeQED(),
@@ -65,11 +65,11 @@
     model: perturbative QED
     phasespace definition: spherical coordinates in electron rest frame
     incoming particles:
-     -&gt; incoming electron: [0.26576808951939, 0.7626645470108925, 0.12490461614312898, 0.5492601524333256]
-     -&gt; incoming photon: [0.948088986883594, 0.3673051973755801, 0.6401848882335733, 0.5892613871950422]
+     -&gt; incoming electron: [0.8613535976537721, 0.9874923620069096, 0.39650365382031505, 0.039625793155142475]
+     -&gt; incoming photon: [0.576061904267752, 0.2874121893840812, 0.06735028505052087, 0.5885071154183842]
     outgoing particles:
-     -&gt; outgoing electron: [0.8595241553329138, 0.1851205486550379, 0.9487853667301399, 0.8421930376884328]
-     -&gt; outgoing photon: [0.1624665536405362, 0.7620377974048664, 0.8751931034635594, 0.028562617840293125]
+     -&gt; outgoing electron: [0.9274403392773384, 0.922339000590848, 0.09370342055284098, 0.7279452060614243]
+     -&gt; outgoing photon: [0.6640782288164258, 0.9136549803108958, 0.12282465319476299, 0.7898555376241391]
 </code></pre><p>Similar to the constructor from momenta, this checks that the given <a href="#ParticleStateful"><code>ParticleStateful</code></a>s fit to the given process and throws otherwise. Again, since this can be infered from type information alone, it adds no overhead.</p><pre><code class="language-julia hljs">    PhaseSpacePoint(
         Compton(),
         PerturbativeQED(),
@@ -84,19 +84,19 @@
         ),
     )</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌ Error: InvalidInputError(&quot;expected incoming electron but got incoming positron&quot;)
 └ @ Main particles.md:162</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>While these constructors check that the given types make sense and work together, they do <em>not</em> check whether the given momenta make a physical phase space point or that the incoming or outgoing particles have on-shell 4-momenta.</p></div></div><h3 id="Accessors"><a class="docs-heading-anchor" href="#Accessors">Accessors</a><a id="Accessors-1"></a><a class="docs-heading-anchor-permalink" href="#Accessors" title="Permalink"></a></h3><p>The phase space point provides some convenient accessors to the stateful particles within:</p><pre><code class="language-julia hljs">psp[Incoming(), 1]  # the first incoming particle</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">ParticleStateful: incoming electron
-    momentum: [0.26576808951939, 0.7626645470108925, 0.12490461614312898, 0.5492601524333256]
+    momentum: [0.8613535976537721, 0.9874923620069096, 0.39650365382031505, 0.039625793155142475]
 </code></pre><pre><code class="language-julia hljs">psp[Outgoing(), 2]  # the second outgoing particle</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">ParticleStateful: outgoing photon
-    momentum: [0.1624665536405362, 0.7620377974048664, 0.8751931034635594, 0.028562617840293125]
-</code></pre><pre><code class="language-julia hljs">particles(psp, Incoming()) # all incoming particles as a tuple</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(incoming electron: [0.26576808951939, 0.7626645470108925, 0.12490461614312898, 0.5492601524333256], incoming photon: [0.948088986883594, 0.3673051973755801, 0.6401848882335733, 0.5892613871950422])</code></pre><p>Momentum accessors:</p><pre><code class="language-julia hljs">momentum(psp, Incoming(), Electron(), 1) # the momentum of the first incoming electron</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element SFourMomentum with indices SOneTo(4):
- 0.26576808951939
- 0.7626645470108925
- 0.12490461614312898
- 0.5492601524333256</code></pre><p>When only one particle of the species exists in the particle set, the 1 can be ommitted for convenience.</p><pre><code class="language-julia hljs">@assert ans == momentum(psp, Incoming(), Electron())</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>This method throws when multiple (or zero) particles of the given direction and species exist in the phase space point.</p></div></div><p>When the index of the required momentum is known at compile time, a <code>Val(N)</code> can be used instead of <code>N</code>. This performs bounds checks at compile time and removes loops from the runtime execution</p><pre><code class="language-julia hljs">using BenchmarkTools
+    momentum: [0.6640782288164258, 0.9136549803108958, 0.12282465319476299, 0.7898555376241391]
+</code></pre><pre><code class="language-julia hljs">particles(psp, Incoming()) # all incoming particles as a tuple</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(incoming electron: [0.8613535976537721, 0.9874923620069096, 0.39650365382031505, 0.039625793155142475], incoming photon: [0.576061904267752, 0.2874121893840812, 0.06735028505052087, 0.5885071154183842])</code></pre><p>Momentum accessors:</p><pre><code class="language-julia hljs">momentum(psp, Incoming(), Electron(), 1) # the momentum of the first incoming electron</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element SFourMomentum with indices SOneTo(4):
+ 0.8613535976537721
+ 0.9874923620069096
+ 0.39650365382031505
+ 0.039625793155142475</code></pre><p>When only one particle of the species exists in the particle set, the 1 can be ommitted for convenience.</p><pre><code class="language-julia hljs">@assert ans == momentum(psp, Incoming(), Electron())</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>This method throws when multiple (or zero) particles of the given direction and species exist in the phase space point.</p></div></div><p>When the index of the required momentum is known at compile time, a <code>Val(N)</code> can be used instead of <code>N</code>. This performs bounds checks at compile time and removes loops from the runtime execution</p><pre><code class="language-julia hljs">using BenchmarkTools
 judge(
     median(@benchmark momentum($psp, Incoming(), Photon(), Val(1))),
     median(@benchmark momentum($psp, Incoming(), Photon(), 1)),
 )</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">BenchmarkTools.TrialJudgement: 
-  time:   -89.18% =&gt; <span class="sgr32">improvement</span> (5.00% tolerance)
+  time:   -89.66% =&gt; <span class="sgr32">improvement</span> (5.00% tolerance)
   memory: -100.00% =&gt; <span class="sgr32">improvement</span> (1.00% tolerance)
 </code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>This is only faster when <code>N</code> is actually known at compile time, for example when it is a literal integer or a function&#39;s type parameter. For dynamic values of <code>N</code>, prefer the <code>Int</code> variant or in case of loops, directly loop over the tuple of <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.momenta"><code>momenta</code></a>.</p></div></div><p>Some more overloads for the momentum function exist, for a complete list please refer to its documentation: <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.momentum"><code>QEDbase.momentum</code></a>, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.momenta"><code>QEDbase.momenta</code></a>.</p><p>Finally, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.process"><code>process</code></a>, <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.model"><code>model</code></a>, and <a href="https://qedjl-project.github.io/QEDbase.jl/dev/library/phase_space/#QEDbase.phase_space_definition"><code>phase_space_definition</code></a> can be used to request the object in question:</p><pre><code class="language-julia hljs">process(psp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">one-photon Compton scattering
     incoming: electron (all spins), photon (all polarizations)
@@ -116,10 +116,10 @@ psp = InPhaseSpacePoint(
 )
 
 in_sum(psp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element SFourMomentum with indices SOneTo(4):
- 1.1949672380064866
- 1.1921120590183354
- 0.8103562098795261
- 0.2585601446347877</code></pre><p>Every full <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a> is both an <a href="../../library/phasespacepoint/#QEDcore.InPhaseSpacePoint"><code>InPhaseSpacePoint</code></a> and an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a>, too. For example, the <code>in_sum</code> function defined above still works with a full <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a>:</p><pre><code class="language-julia hljs">psp = PhaseSpacePoint(
+ 0.3843950080333689
+ 0.3936677524508685
+ 1.4189123446628993
+ 1.5752495443048655</code></pre><p>Every full <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a> is both an <a href="../../library/phasespacepoint/#QEDcore.InPhaseSpacePoint"><code>InPhaseSpacePoint</code></a> and an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a>, too. For example, the <code>in_sum</code> function defined above still works with a full <a href="../../library/phasespacepoint/#QEDcore.PhaseSpacePoint"><code>PhaseSpacePoint</code></a>:</p><pre><code class="language-julia hljs">psp = PhaseSpacePoint(
     Compton(),
     PerturbativeQED(),
     PhasespaceDefinition(SphericalCoordinateSystem(), ElectronRestFrame()),
@@ -128,15 +128,15 @@ in_sum(psp)</code></pre><pre class="documenter-example-output"><code class="nohi
 )
 
 in_sum(psp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element SFourMomentum with indices SOneTo(4):
- 1.5010384657275968
- 0.8083752812986125
- 0.9878386455557592
- 0.29289964923566414</code></pre><p>But an <a href="../../library/phasespacepoint/#QEDcore.InPhaseSpacePoint"><code>InPhaseSpacePoint</code></a> is not an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a> and vice versa. We cannot call <code>in_sum</code> on an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a>:</p><pre><code class="language-julia hljs">psp = OutPhaseSpacePoint(
+ 1.3437828459551764
+ 1.8130427255382728
+ 1.2250215013562928
+ 0.4986106258214651</code></pre><p>But an <a href="../../library/phasespacepoint/#QEDcore.InPhaseSpacePoint"><code>InPhaseSpacePoint</code></a> is not an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a> and vice versa. We cannot call <code>in_sum</code> on an <a href="../../library/phasespacepoint/#QEDcore.OutPhaseSpacePoint"><code>OutPhaseSpacePoint</code></a>:</p><pre><code class="language-julia hljs">psp = OutPhaseSpacePoint(
     Compton(),
     PerturbativeQED(),
     PhasespaceDefinition(SphericalCoordinateSystem(), ElectronRestFrame()),
     (rand(SFourMomentum), rand(SFourMomentum)),
 )
 
-    in_sum(psp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌ Error: MethodError(Main.in_sum, (PhaseSpacePoint of one-photon Compton scattering,), 0x0000000000007b3d)
-└ @ Main particles.md:280</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../ps_def/">« Phase Space Definitions</a><a class="docs-footer-nextpage" href="../vectors/">Matrix and Vector Types »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Monday 28 October 2024 18:23">Monday 28 October 2024</span>. Using Julia version 1.10.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    in_sum(psp)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌ Error: MethodError(Main.in_sum, (PhaseSpacePoint of one-photon Compton scattering,), 0x0000000000007b40)
+└ @ Main particles.md:280</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../ps_def/">« Phase Space Definitions</a><a class="docs-footer-nextpage" href="../vectors/">Matrix and Vector Types »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Monday 28 October 2024 20:06">Monday 28 October 2024</span>. Using Julia version 1.10.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
