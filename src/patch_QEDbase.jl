@@ -1,3 +1,5 @@
+# this will be eventually part of QEDbase.jl
+# see https://github.com/QEDjl-project/QEDbase.jl/pull/134 for details
 #############
 # Interface: Phase space layout
 #############
