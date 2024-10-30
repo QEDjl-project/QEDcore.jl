@@ -24,6 +24,10 @@ export Electron, Positron, Photon
 # particle base states
 export base_state
 
+# phase space layout
+export CoordinateMap
+export CoordinateMapCached
+
 # phase space
 export SphericalCoordinateSystem
 export CenterOfMomentumFrame, ElectronRestFrame
@@ -38,8 +42,13 @@ using SimpleTraits
 
 @reexport using QEDbase
 
+include("patch_QEDbase.jl")
+
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
+
+include("coordinate_map/map.jl")
+include("coordinate_map/cached.jl")
 
 include("phase_spaces/types.jl")
 include("phase_spaces/access.jl")
