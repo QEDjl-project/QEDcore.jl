@@ -35,16 +35,15 @@ This function is typically implemented for subtypes of `AbstractCoordinateSet` a
 """
 function coordinate_names end
 
-# TODO: think about moving to singular "AbstractCoordinate"
-const AbstractUnivariateCoordinates = AbstractCoordinateSet{1}
+const AbstractUnivariateCoordinate = AbstractCoordinateSet{1}
 
 """
-    coordinate_name(coord::AbstractUnivariateCoordinates)
+    coordinate_name(coord::AbstractUnivariateCoordinate)
 
 Retrieve the name of a single univariate coordinate.
 
 # Arguments
-- `coord::AbstractUnivariateCoordinates`: A single univariate coordinate, which is a subtype of `AbstractCoordinateSet{1}` representing a coordinate system with one degree of freedom.
+- `coord::AbstractUnivariateCoordinate`: A single univariate coordinate, which is a subtype of `AbstractCoordinateSet{1}` representing a coordinate system with one degree of freedom.
 
 # Returns
 - A string representing the name of the coordinate.
@@ -52,4 +51,4 @@ Retrieve the name of a single univariate coordinate.
 This function provides a human-readable label for a single coordinate and is generally used for naming individual coordinates in a scattering process or phase space.
 """
 function coordinate_name end
-@inline coordinate_names(coord::AbstractUnivariateCoordinates) = (coordinate_name(coord),)
+@inline coordinate_names(coord::AbstractUnivariateCoordinate) = (coordinate_name(coord),)

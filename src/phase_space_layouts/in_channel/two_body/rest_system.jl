@@ -24,7 +24,7 @@ phase_space_dimension(proc, model, ::AbstractTwoBodyRestSystem) = 1
 ### Two body target system
 
 """
-    TwoBodyRestSystem{RESTIDX, COORD<:AbstractUnivariateCoordinates}
+    TwoBodyRestSystem{RESTIDX, COORD<:AbstractUnivariateCoordinate}
 
 Represents a two-body scattering system in the rest frame of one of the particles, where one particle (identified by `RESTIDX`) is at rest and the other particle's momentum is described by a coordinate system `COORD`. The system uses various univariate coordinates, such as energy, rapidity, or center-of-momentum energy, to parameterize the momentum of the moving particle.
 
@@ -86,7 +86,7 @@ In this case, the rapidity of particle 2 is given, and its energy and momentum a
 # Notes
 - `RESTIDX` is the index of the particle that is at rest in the system.
 - `COORD` specifies the coordinate type of the non-resting particle and must be a subtype of
-    `AbstractUnivariateCoordinates`.
+    `AbstractUnivariateCoordinate`.
 - The coordinate system should be compatible with the given particles and their masses,
     otherwise, an error may occur during momentum construction.
 
@@ -94,7 +94,7 @@ In this case, the rapidity of particle 2 is given, and its energy and momentum a
 - `ArgumentError` if invalid coordinates are used (e.g., unsupported coordinate types or
     incompatible indices).
 """
-struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinates} <:
+struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinate} <:
        AbstractTwoBodyRestSystem
     coord::COORD
 
@@ -129,10 +129,10 @@ end
     TwoBodyRestSystem{_the_other(RUNIDX)}(coord)
 TwoBodyRestSystem() = TwoBodyRestSystem(1, Energy(2))
 const TwoBodyTargetSystem{COORD} =
-    TwoBodyRestSystem{1,COORD} where {COORD<:AbstractUnivariateCoordinates}
+    TwoBodyRestSystem{1,COORD} where {COORD<:AbstractUnivariateCoordinate}
 TwoBodyTargetSystem() = TwoBodyTargetSystem(Energy(2))
 const TwoBodyBeamSystem{COORD} =
-    TwoBodyRestSystem{2,COORD} where {COORD<:AbstractUnivariateCoordinates}
+    TwoBodyRestSystem{2,COORD} where {COORD<:AbstractUnivariateCoordinate}
 TwoBodyBeamSystem() = TwoBodyBeamSystem(Energy(1))
 
 function _build_momenta(

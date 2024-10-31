@@ -1,22 +1,22 @@
 """
-    CenterOfMomentumEnergy <: AbstractUnivariateCoordinates
+    CenterOfMomentumEnergy <: AbstractUnivariateCoordinate
 
 Represents the center-of-momentum (CoM) energy coordinate in the definion of a phase space
 layout.
 """
-struct CenterOfMomentumEnergy <: AbstractUnivariateCoordinates end
+struct CenterOfMomentumEnergy <: AbstractUnivariateCoordinate end
 const CMSEnergy = CenterOfMomentumEnergy
 @inline coordinate_name(::CMSEnergy) = "cms_energy"
 
 """
-    AbstractSingleParticleCoordinate{IDX} <: AbstractUnivariateCoordinates
+    AbstractSingleParticleCoordinate{IDX} <: AbstractUnivariateCoordinate
 
 An abstract type representing a coordinate associated with a single particle.
 The type parameter `IDX` indicates the index of the particle in an `AbstractProcessDefintion`,
 either for the in- or out-channel, depending on the phase phase layout.
 Specific types that inherit from this abstract type define various coordinates (e.g., energy, rapidity, etc.) for the particle.
 """
-abstract type AbstractSingleParticleCoordinate{IDX} <: AbstractUnivariateCoordinates end
+abstract type AbstractSingleParticleCoordinate{IDX} <: AbstractUnivariateCoordinate end
 
 """
     particle_index(coord::AbstractSingleParticleCoordinate{IDX})
