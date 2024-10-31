@@ -100,11 +100,22 @@ struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinates} <:
 
     function TwoBodyRestSystem{RESTIDX}(
         coord_name::COORD
-    ) where {RESTIDX,COORD<:AbstractUnivariateCoordinates}
-        # TODO: add validity check
-        # - only particle idx != RESTIDX are allowed
-        # - only Energy, CMSEnergy, Rapidity and SpatialMagnitude are allowed
+    ) where {RESTIDX,COORD<:AbstractSingleParticleCoordinate{RESTIDX}}
+        throw(
+            InvalidInputError(
+                "the particle at rest and the particle parameterize by the coordinate must not have the same index",
+            ),
+        )
+    end
+
+    function TwoBodyRestSystem{RESTIDX}(
+        coord_name::COORD
+    ) where {RESTIDX,RUNIDX,COORD<:AbstractSingleParticleCoordinate{RUNIDX}}
         return new{RESTIDX,COORD}(coord_name)
+    end
+
+    function TwoBodyRestSystem{RESTIDX}(coord_name::CMSEnergy) where {RESTIDX}
+        return new{RESTIDX,CMSEnergy}(coord_name)
     end
 end
 

@@ -38,6 +38,10 @@ UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
                 @test test_psl_default === test_psl_val
                 @test test_psl_default === test_psl_infered
             end
+
+            @testset "Error Handling" begin
+                @test_throws InvalidInputError TwoBodyRestSystem(RESTIDX, COORD(RESTIDX))
+            end
         end
 
         @testset "Energy" begin
