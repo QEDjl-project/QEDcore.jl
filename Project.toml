@@ -12,7 +12,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-DocStringExtensions = "^0.9"
+QEDbase = "0.3"
+DocStringExtensions = "0.9"
 Reexport = "1.2"
 SimpleTraits = "0.9"
 StaticArrays = "1.9"
