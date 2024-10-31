@@ -33,5 +33,7 @@ CoordinateMapCached
 ### Two-body Phase Space Layout
 
 ```@docs
+AbstractTwoBodyInPhaseSpaceLayout
+AbstractTwoBodyRestSystem
 TwoBodyRestSystem
 ```
