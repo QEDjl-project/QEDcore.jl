@@ -19,7 +19,7 @@ construction functions like [`_build_momenta`](@ref).
 """
 abstract type AbstractTwoBodyRestSystem <: AbstractTwoBodyInPhaseSpaceLayout end
 
-phase_space_dimension(proc, model, ::AbstractTwoBodyRestSystem) = 1
+QEDbase.phase_space_dimension(proc, model, ::AbstractTwoBodyRestSystem) = 1
 
 ### Two body target system
 
@@ -135,7 +135,7 @@ const TwoBodyBeamSystem{COORD} =
     TwoBodyRestSystem{2,COORD} where {COORD<:AbstractUnivariateCoordinate}
 TwoBodyBeamSystem() = TwoBodyBeamSystem(Energy(1))
 
-function _build_momenta(
+function QEDbase._build_momenta(
     proc::AbstractProcessDefinition,
     ::AbstractPerturbativeModel,
     ::TwoBodyRestSystem{RESTIDX,<:Energy{RUNIDX}},
@@ -154,7 +154,7 @@ function _build_momenta(
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
-function _build_momenta(
+function QEDbase._build_momenta(
     proc::AbstractProcessDefinition,
     ::AbstractPerturbativeModel,
     ::TwoBodyRestSystem{RESTIDX,<:SpatialMagnitude{RUNIDX}},
@@ -173,7 +173,7 @@ function _build_momenta(
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
-function _build_momenta(
+function QEDbase._build_momenta(
     proc::AbstractProcessDefinition,
     model::AbstractPerturbativeModel,
     in_psl::TwoBodyRestSystem{RESTIDX,<:CMSEnergy},
@@ -196,7 +196,7 @@ function _build_momenta(
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
-function _build_momenta(
+function QEDbase._build_momenta(
     proc::AbstractProcessDefinition,
     model::AbstractPerturbativeModel,
     in_psl::TwoBodyRestSystem{RESTIDX,<:Rapidity{RUNIDX}},

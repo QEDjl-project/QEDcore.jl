@@ -1,3 +1,6 @@
+
+abstract type AbstractPerturbativeModel <: AbstractModelDefinition end
+
 """
     AbstractTwoBodyInPhaseSpaceLayout <: AbstractInPhaseSpaceLayout
 
