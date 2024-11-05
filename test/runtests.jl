@@ -24,14 +24,6 @@ begin
         include("coordinate_map.jl")
     end
 
-    @time @safetestset "coordinates" begin
-        include("coordinates.jl")
-    end
-
-    @time @safetestset "coordinate map" begin
-        include("coordinate_map.jl")
-    end
-
     @time @safetestset "phase spaces" begin
         include("phase_spaces.jl")
     end
@@ -56,10 +48,6 @@ begin
     # particles
     @time @safetestset "particle types" begin
         include("particles/types.jl")
-    end
-
-    @time @safetestset "particle states" begin
-        include("particles/states.jl")
     end
 
     @time @safetestset "particle base states" begin
