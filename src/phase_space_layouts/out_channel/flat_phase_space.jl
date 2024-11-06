@@ -22,15 +22,14 @@ function QEDcore._build_momenta(
     out_coords::Tuple,
 )
     # preparing inchannel
-    # TODO: build trafo to boost the result back to the Ptot system
     Ptot = sum(in_moms)
+    boost_from_rest = inv(_unsafe_rest_boost(Ptot))
+
     sqrt_s = Base.sqrt_llvm(Ptot * Ptot)
 
-    return out_moms = _massive_rambo_moms(
-        out_coords, sqrt_s, mass.(outgoing_particles(proc))
-    )
+    out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(outgoing_particles(proc)))
 
-    # TODO: trafo out_moms to the Ptot system
+    return boost_from_rest.(out_moms)
 end
 
 function _massive_rambo_moms(c, ss, masses)
