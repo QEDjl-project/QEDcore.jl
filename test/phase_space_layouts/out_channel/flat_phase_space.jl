@@ -9,18 +9,23 @@ include("../../test_implementation/TestImplementation.jl")
 
 TESTMODEL = TestImplementation.TestModel()
 TESTINPSL = TestImplementation.TrivialInPSL()
+N_INCOMING = 2
+INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
+IN_MASSES = mass.(INCOMING_PARTICLES)
 
-@testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in Iterators.product(
-    (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
-)
-    INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
+#@testset "$N_OUTGOING" for N_OUTGOING in (2, rand(RNG,3:8))
+@testset "$N_OUTGOING" for N_OUTGOING in 2:10
     OUTGOING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_OUTGOING))
+
+    OUT_MASSES = mass.(OUTGOING_PARTICLES)
+    SUM_OUT_MASSES = sum(OUT_MASSES)
+    TESTSQRTS = (1 + rand(RNG)) * (SUM_OUT_MASSES + sum(IN_MASSES))
 
     TESTPROC = TestImplementation.TestProcess(INCOMING_PARTICLES, OUTGOING_PARTICLES)
 
-    # TODO: generate onshell momenta
-    TESTINCOORDS = Tuple(rand(RNG, 4 * N_INCOMING))
-    TESTINMOMS = build_momenta(TESTPROC, TESTMODEL, TESTINPSL, TESTINCOORDS)
+    TESTINMOMS = TestImplementation._generate_onshell_two_body_moms(
+        RNG, IN_MASSES, TESTSQRTS
+    )
 
     test_out_psl = FlatPhaseSpaceLayout(TESTINPSL)
 
@@ -36,6 +41,8 @@ TESTINPSL = TestImplementation.TrivialInPSL()
             TESTPROC, TESTMODEL, TESTINMOMS, test_out_psl, TESTOUTCOORDS
         )
 
-        @test length(test_out_psl) == N_OUTGOING
+        @test length(test_out_moms) == N_OUTGOING
+        @test isapprox(getMass.(test_out_moms), [OUT_MASSES...], atol=ATOL, rtol=RTOL)
+        @test isapprox(sum(test_out_moms), sum(TESTINMOMS), atol=ATOL, rtol=RTOL)
     end
 end

@@ -26,6 +26,15 @@ function QEDcore._build_momenta(
     boost_from_rest = inv(_unsafe_rest_boost(Ptot))
 
     sqrt_s = Base.sqrt_llvm(Ptot * Ptot)
+    out_mass_sum = sum(mass.(outgoing_particles(proc)))
+    sqrt_s >= out_mass_sum || throw(
+        InvalidInputError(
+            """
+            sum of the masses of the outgoing particles <$out_mass_sum> must not exceed the
+            center-of-momentum energy <$sqrt_s>!
+            """,
+        ),
+    )
 
     out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(outgoing_particles(proc)))
 
@@ -75,7 +84,7 @@ build tuple of partition by four of a given tuple
 function _tuple_partition_by_four(c)
     N = length(c)
     m = Int(N / 4)
-    return NTuple{m}(c[i:(i + 4)] for i in 1:m)
+    return NTuple{m}(c[i:(i + 3)] for i in 1:m)
 end
 
 @inline function scale_spatial(lv, fac)
@@ -109,7 +118,6 @@ function _transform2conserved(bvec, scale, mom)
 end
 
 function _massless_rambo_moms(c, ss)
-    # use moms_test4 here
     _moms = _unconserved_momenta(c)
     Q = sum(_moms)
     M = getMass(Q)
