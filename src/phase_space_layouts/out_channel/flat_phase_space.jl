@@ -21,17 +21,26 @@ function QEDcore._build_momenta(
     psl::FlatPhaseSpaceLayout,
     out_coords::Tuple,
 )
+
+    # TODO: move this to input validation
+    number_outgoing_particles(proc) >= 2 || throw(
+        InvalidInputError(
+            "the number of particles <$(number_outgoing_particles(proc)) must be at least two",
+        ),
+    )
     # preparing inchannel
     Ptot = sum(in_moms)
     boost_from_rest = inv(_unsafe_rest_boost(Ptot))
 
     sqrt_s = Base.sqrt_llvm(Ptot * Ptot)
     out_mass_sum = sum(mass.(outgoing_particles(proc)))
+
+    # TODO: move this to input validation
     sqrt_s >= out_mass_sum || throw(
         InvalidInputError(
             """
             sum of the masses of the outgoing particles <$out_mass_sum> must not exceed the
-            center-of-momentum energy <$sqrt_s>!
+            center-of-momentum energy <$sqrt_s>
             """,
         ),
     )
