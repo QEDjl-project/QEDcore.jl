@@ -38,7 +38,7 @@ function QEDcore._build_momenta(
     Ptot = sum(in_moms)
     boost_from_rest = inv(_unsafe_rest_boost(Ptot))
 
-    sqrt_s = Base.sqrt_llvm(Ptot * Ptot)
+    sqrt_s = sqrt(Ptot * Ptot)
     out_mass_sum = sum(mass.(outgoing_particles(proc)))
 
     # TODO: move this to input validation
@@ -78,9 +78,7 @@ function _massive_rambo_moms(c, ss, masses)
 end
 
 function _to_be_solved(xi, masses, p0s, ss)
-    s = mapreduce(
-        x -> Base.sqrt_llvm(@inbounds x[1]^2 + xi^2 * x[2]^2), +, zip(masses, p0s)
-    )
+    s = mapreduce(x -> sqrt(@inbounds x[1]^2 + xi^2 * x[2]^2), +, zip(masses, p0s))
     return s - ss
 end
 
@@ -118,7 +116,7 @@ Assumes massless particle as an intermediate step in RAMBO.
 function _single_rambo_mom(single_coords)
     a, b, c, d = single_coords
     cth = 2 * c - 1
-    sth = Base.sqrt_llvm(1 - cth^2)
+    sth = sqrt(1 - cth^2)
     phi = 2 * pi * d
     p0 = -log(a) - log(b)
     p1 = p0 * sth * cos(phi)
@@ -140,8 +138,8 @@ Partitions a tuple of coordinates by four, generating sub-tuples of four values 
 """
 function _tuple_partition_by_four(c)
     N = length(c)
-    m = Int(N / 4)
-    return NTuple{m}(c[i:(i + 3)] for i in 1:m)
+    m = div(N, 4)
+    return NTuple{m}(c[i:(i + 3)] for i in 1:4:N)
 end
 
 @inline function scale_spatial(lv, fac)
@@ -207,7 +205,7 @@ end
 
 function _scale_single_rambo_mom(xi, mass, massless_mom)
     return SFourMomentum(
-        Base.sqrt_llvm(getT(massless_mom)^2 * xi^2 + mass^2),
+        sqrt(getT(massless_mom)^2 * xi^2 + mass^2),
         xi * getX(massless_mom),
         xi * getY(massless_mom),
         xi * getZ(massless_mom),
