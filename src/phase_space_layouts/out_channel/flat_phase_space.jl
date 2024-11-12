@@ -4,6 +4,12 @@ struct FlatPhaseSpaceLayout{INPSL} <: QEDcore.AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
 end
 
+"""
+    QEDcore.phase_space_dimension(proc::AbstractProcessDefinition, model::AbstractModelDefinition, psl::FlatPhaseSpaceLayout)
+
+Calculates the phase space dimensionality for a given process, model, and phase space layout.
+This dimension is derived as four times the number of outgoing particles.
+"""
 function QEDcore.phase_space_dimension(
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
@@ -50,6 +56,20 @@ function QEDcore._build_momenta(
     return boost_from_rest.(out_moms)
 end
 
+"""
+
+   _massive_rambo_moms(c::Tuple, ss::Float64, masses::Tuple)
+
+Computes the massive outgoing momenta using RAMBO for given coordinates, center-of-momentum energy, and particle masses.
+
+# Arguments
+- `c::Tuple`: Tuple of uniformly distributed coordinates.
+- `ss::Float64`: Center-of-momentum energy.
+- `masses::Tuple` Vector of particle masses for each outgoing particle.
+
+# Returns
+- A tuple of four-momenta for outgoing particles.
+"""
 function _massive_rambo_moms(c, ss, masses)
     massless_moms = _massless_rambo_moms(c, ss)
     energies = getT.(massless_moms)
@@ -64,6 +84,19 @@ function _to_be_solved(xi, masses, p0s, ss)
     return s - ss
 end
 
+"""
+    _find_scaling_factor(masses::Tuple, energies::Tuple, ss::Float64)
+
+Finds a scaling factor for particle momenta to enforce conservation of energy-momentum in massive RAMBO.
+
+# Arguments
+- `masses::Tuple`: Vector of outgoing particle masses.
+- `energies::Tuple`: Vector of outgoing particle energies.
+- `ss::Float64`: Center-of-momentum energy.
+
+# Returns
+- The computed scaling factor as a float.
+"""
 function _find_scaling_factor(masses, energies, ss)
     f = x -> _to_be_solved(x, masses, energies, ss)
     xi = find_zero(f, 2, Order1())
@@ -71,8 +104,16 @@ function _find_scaling_factor(masses, energies, ss)
 end
 
 """
+    _single_rambo_mom(single_coords::Tuple)
 
-massless momentum of a single particle from uniformly distributed coordinates
+Generates the four-momentum of a single particle from uniformly distributed coordinates.
+Assumes massless particle as an intermediate step in RAMBO.
+
+# Arguments
+- `single_coords::Tuple`: Tuple of coordinates used to generate the particle's momentum.
+
+# Returns
+- A four-momentum (`SFourMomentum`) for a single particle.
 """
 function _single_rambo_mom(single_coords)
     a, b, c, d = single_coords
@@ -87,8 +128,15 @@ function _single_rambo_mom(single_coords)
 end
 
 """
+    _tuple_partition_by_four(c::Tuple)
 
-build tuple of partition by four of a given tuple
+Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory.
+
+# Arguments
+- `c::Tuple`: Tuple of coordinates.
+
+# Returns
+- NTuple containing four-element tuples.
 """
 function _tuple_partition_by_four(c)
     N = length(c)
@@ -101,7 +149,15 @@ end
 end
 
 """
-build momenta from uniform coordinates, which not necessarily satisfies energy-momentum conservation
+    _unconserved_momenta(c::Tuple)
+
+Builds an initial set of momenta from uniform coordinates that do not necessarily conserve energy-momentum.
+
+# Arguments
+- `c::Tuple`: Tuple of uniformly distributed coordinates.
+
+# Returns
+- Tuple of four-momenta representing unconserved momenta.
 """
 function _unconserved_momenta(c)
     return map(_single_rambo_mom, _tuple_partition_by_four(c))
@@ -126,6 +182,19 @@ function _transform2conserved(bvec, scale, mom)
     )
 end
 
+"""
+    _massless_rambo_moms(c::Tuple, ss::Float64)
+
+Generates a set of massless momenta based on uniformly distributed coordinates.
+Ensures energy-momentum conservation.
+
+# Arguments
+- `c::Tuple`: Tuple of uniformly distributed coordinates.
+- `ss::Float64`: Center-of-momentum energy.
+
+# Returns
+- Tuple of massless four-momenta, which satisfy energy-momentum conservation.
+"""
 function _massless_rambo_moms(c, ss)
     _moms = _unconserved_momenta(c)
     Q = sum(_moms)
@@ -144,6 +213,7 @@ function _scale_single_rambo_mom(xi, mass, massless_mom)
         xi * getZ(massless_mom),
     )
 end
+
 function _scale_rambo_moms(xi, masses, massless_moms)
     return map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms))
 end
