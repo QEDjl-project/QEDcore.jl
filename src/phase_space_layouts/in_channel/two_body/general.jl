@@ -22,4 +22,4 @@ processes can be modeled flexibly and accurately within phase space calculations
 - [`AbstractTwoBodyRestSystem`](@ref): A subtype representing two-body systems where one
     particle is at rest.
 """
-abstract type AbstractTwoBodyInPhaseSpaceLayout <: AbstractInPhaseSpaceLayout end
+abstract type AbstractTwoBodyInPhaseSpaceLayout <: QEDbase.AbstractInPhaseSpaceLayout end

@@ -62,7 +62,7 @@ end
 
         @testset "utility" begin
             @test coordinate_names(test_coord_set) == COORD_NAMES
-            @test phase_space_dimension(test_coord_set) == DIM
+            @test QEDbase.phase_space_dimension(test_coord_set) == DIM
         end
 
         @testset "error handling" begin
