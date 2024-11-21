@@ -46,6 +46,9 @@ export PhasespaceDefinition
 export ParticleStateful, PhaseSpacePoint, InPhaseSpacePoint, OutPhaseSpacePoint
 export spin, polarization, momenta, getindex
 
+# TODO: move this to QEDbase
+export AbstractPerturbativeModel
+
 using Reexport
 using DocStringExtensions
 using StaticArrays
@@ -53,7 +56,6 @@ using SimpleTraits
 
 @reexport using QEDbase
 
-include("patch_QEDbase.jl")
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 

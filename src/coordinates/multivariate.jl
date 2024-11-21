@@ -41,7 +41,7 @@ function CoordinateSet{N}(coords::AbstractUnivariateCoordinate...) where {N}
 end
 CoordinateSet(coords::AbstractUnivariateCoordinate...) = CoordinateSet(coords)
 
-phase_space_dimension(::CoordinateSet{N}) where {N} = N
+QEDbase.phase_space_dimension(::CoordinateSet{N}) where {N} = N
 
 BivariateCoordiantes(coords::Tuple) = CoordinateSet{2}(coords)
 TrivariateCoordiantes(coords::Tuple) = CoordinateSet{3}(coords)

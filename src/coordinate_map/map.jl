@@ -19,7 +19,7 @@ phase space coordinates into four-momenta.
 ### Incoming Coordinates
 The `CoordinateMap` can be called with a tuple of incoming phase space coordinates
 (`in_coords`), which are used to compute the corresponding incoming particle four-momenta.
-This is done by calling the phase space construction function [`build_momenta`](@ref) using
+This is done by calling the phase space construction function [`QEDbase.build_momenta`](@extref) using
 the `proc`, `model`, and `psl` provided in the `CoordinateMap`.
 
 ```julia
@@ -66,7 +66,7 @@ coord_map(in_coords, out_coords)
     and momentum conservation for the process.
 
 """
-struct CoordinateMap{P,M,PSL<:AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
+struct CoordinateMap{P,M,PSL<:QEDbase.AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
     proc::P
     model::M
     psl::PSL
@@ -75,17 +75,22 @@ end
 # make the transform callable
 @inline function (coord_map::CoordinateMap{P,M,PSL})(
     in_coords::Tuple
-) where {P,M,PSL<:AbstractInPhaseSpaceLayout}
-    return build_momenta(coord_map.proc, coord_map.model, coord_map.psl, in_coords)
+) where {P,M,PSL<:QEDbase.AbstractInPhaseSpaceLayout}
+    return QEDbase.build_momenta(coord_map.proc, coord_map.model, coord_map.psl, in_coords)
 end
 
 # make the transform callable
 @inline function (coord_map::CoordinateMap{P,M,PSL})(
     in_coords::Tuple, out_coords::Tuple
-) where {P,M,PSL<:AbstractOutPhaseSpaceLayout}
-    in_moms = build_momenta(
-        coord_map.proc, coord_map.model, in_phase_space_layout(coord_map.psl), in_coords
+) where {P,M,PSL<:QEDbase.AbstractOutPhaseSpaceLayout}
+    in_moms = QEDbase.build_momenta(
+        coord_map.proc,
+        coord_map.model,
+        QEDbase.in_phase_space_layout(coord_map.psl),
+        in_coords,
     )
     return in_moms,
-    build_momenta(coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords)
+    QEDbase.build_momenta(
+        coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords
+    )
 end
