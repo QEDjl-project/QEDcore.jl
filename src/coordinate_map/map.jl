@@ -19,7 +19,7 @@ phase space coordinates into four-momenta.
 ### Incoming Coordinates
 The `CoordinateMap` can be called with a tuple of incoming phase space coordinates
 (`in_coords`), which are used to compute the corresponding incoming particle four-momenta.
-This is done by calling the phase space construction function [`build_momenta`](@ref) using
+This is done by calling the phase space construction function [`QEDbase.build_momenta`](@extref) using
 the `proc`, `model`, and `psl` provided in the `CoordinateMap`.
 
 ```julia

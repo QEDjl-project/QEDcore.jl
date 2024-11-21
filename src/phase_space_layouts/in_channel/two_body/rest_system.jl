@@ -11,7 +11,7 @@ incoming particles are constructed.
 
 This type serves as a base for defining custom layouts that rely on rest-frame assumptions
 for two-body scattering or decay processes, and it facilitates method dispatch in momentum
-construction functions like [`_build_momenta`](@ref).
+construction functions like [`QEDbase._build_momenta`](@extref).
 
 # See Also
 - [`TwoBodyRestSystem`](@ref): A concrete implementation of `AbstractTwoBodyRestSystem` that
