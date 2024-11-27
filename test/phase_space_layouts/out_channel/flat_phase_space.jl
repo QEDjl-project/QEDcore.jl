@@ -32,12 +32,13 @@ SUM_IN_MASSES = sum(IN_MASSES)
     TESTOUTCOORDS = Tuple(rand(RNG, 4 * N_OUTGOING))
 
     @testset "properties" begin
-        @test phase_space_dimension(TESTPROC, TESTMODEL, test_out_psl) == 4 * N_OUTGOING
-        @test in_phase_space_layout(test_out_psl) == TESTINPSL
+        @test QEDbase.phase_space_dimension(TESTPROC, TESTMODEL, test_out_psl) ==
+            4 * N_OUTGOING
+        @test QEDbase.in_phase_space_layout(test_out_psl) == TESTINPSL
     end
 
     @testset "momentum generation" begin
-        test_out_moms = build_momenta(
+        test_out_moms = QEDbase.build_momenta(
             TESTPROC, TESTMODEL, TESTINMOMS, test_out_psl, TESTOUTCOORDS
         )
 
@@ -74,7 +75,7 @@ end
             valid_in_particles, invalid_out_particles
         )
         out_coords = Tuple(rand(RNG, 4))
-        @test_throws InvalidInputError build_momenta(
+        @test_throws InvalidInputError QEDbase.build_momenta(
             invalid_process, TESTMODEL, valid_in_moms, test_out_psl, out_coords
         )
     end
@@ -85,7 +86,7 @@ end
             RNG, mass.(valid_in_particles), invalid_sqrt_s
         )
 
-        @test_throws InvalidInputError build_momenta(
+        @test_throws InvalidInputError QEDbase.build_momenta(
             valid_process, TESTMODEL, invalid_in_moms, test_out_psl, valid_out_coords
         )
     end

@@ -1,7 +1,7 @@
 # here we implement RAMBO
 
 """
-    FlatPhaseSpaceLayout{INPSL} <: QEDcore.AbstractOutPhaseSpaceLayout{INPSL}
+    FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
 
 Defines a flat phase space layout for generating outgoing particle momenta. This layout assumes
 that outgoing particles are uniformly distributed in phase space, subject to constraints on
@@ -17,9 +17,9 @@ and massive particles.
 # Usage
 `FlatPhaseSpaceLayout` is commonly used in high-energy physics to define phase space configurations
 for event generators and cross-section calculations. Key functions include:
-- `QEDcore.phase_space_dimension`: Calculates the phase space dimension based on the number of
+- `QEDbase.phase_space_dimension`: Calculates the phase space dimension based on the number of
   outgoing particles.
-- `QEDcore._build_momenta`: Constructs the outgoing momenta using the provided phase space layout
+- `QEDbase._build_momenta`: Constructs the outgoing momenta using the provided phase space layout
   and RAMBO-based algorithms, ensuring the momenta satisfy energy and momentum conservation laws.
 
 # Example
@@ -30,19 +30,19 @@ build_momenta(process, model, incoming_momenta, psl, out_coords)
 ```
 
 `FlatPhaseSpaceLayout` provides a robust setup for defining the final-state phase space in particle
-physics simulations, allowing for modularity and compatibility with `QEDcore` routines.
+physics simulations, allowing for modularity and compatibility with `QEDbase` routines.
 """
-struct FlatPhaseSpaceLayout{INPSL} <: QEDcore.AbstractOutPhaseSpaceLayout{INPSL}
+struct FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
 end
 
 """
-    QEDcore.phase_space_dimension(proc::AbstractProcessDefinition, model::AbstractModelDefinition, psl::FlatPhaseSpaceLayout)
+    QEDbase.phase_space_dimension(proc::AbstractProcessDefinition, model::AbstractModelDefinition, psl::FlatPhaseSpaceLayout)
 
 Calculates the phase space dimensionality for a given process, model, and phase space layout.
 This dimension is derived as four times the number of outgoing particles.
 """
-function QEDcore.phase_space_dimension(
+function QEDbase.phase_space_dimension(
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
     psl::FlatPhaseSpaceLayout,
@@ -50,9 +50,9 @@ function QEDcore.phase_space_dimension(
     return 4 * number_outgoing_particles(proc)
 end
 
-QEDcore.in_phase_space_layout(psl::FlatPhaseSpaceLayout) = psl.in_psl
+QEDbase.in_phase_space_layout(psl::FlatPhaseSpaceLayout) = psl.in_psl
 
-function QEDcore._build_momenta(
+function QEDbase._build_momenta(
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
     in_moms::Tuple,
