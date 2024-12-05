@@ -34,6 +34,7 @@ export coordinate_name, particle_index
 # phase space layouts
 export AbstractTwoBodyInPhaseSpaceLayout
 export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
+export FlatPhaseSpaceLayout
 
 # coordinate maps
 export CoordinateMap
@@ -53,11 +54,19 @@ using Reexport
 using DocStringExtensions
 using StaticArrays
 using SimpleTraits
+using LinearAlgebra
+using Roots
 
 @reexport using QEDbase
 
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
+
+include("phase_spaces/types.jl")
+include("phase_spaces/access.jl")
+include("phase_spaces/create.jl")
+include("phase_spaces/print.jl")
+include("phase_spaces/utility.jl")
 
 include("coordinates/coordinate_sets.jl")
 include("coordinates/univariate.jl")
@@ -70,11 +79,7 @@ include("phase_space_layouts/in_channel/two_body/utils.jl")
 include("phase_space_layouts/in_channel/two_body/general.jl")
 include("phase_space_layouts/in_channel/two_body/rest_system.jl")
 
-include("phase_spaces/types.jl")
-include("phase_spaces/access.jl")
-include("phase_spaces/create.jl")
-include("phase_spaces/print.jl")
-include("phase_spaces/utility.jl")
+include("phase_space_layouts/out_channel/flat_phase_space.jl")
 
 include("algebraic_objects/four_momentum.jl")
 include("algebraic_objects/lorentz_vector.jl")
