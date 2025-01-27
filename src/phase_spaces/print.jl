@@ -1,30 +1,3 @@
-function Base.show(io::IO, ::SphericalCoordinateSystem)
-    print(io, "spherical coordinates")
-    return nothing
-end
-
-function Base.show(io::IO, ::CenterOfMomentumFrame)
-    print(io, "center-of-momentum frame")
-    return nothing
-end
-
-function Base.show(io::IO, ::ElectronRestFrame)
-    print(io, "electron rest frame")
-    return nothing
-end
-
-function Base.show(io::IO, m::MIME"text/plain", ps_def::PhasespaceDefinition)
-    println(io, "PhasespaceDefinition")
-    println(io, "    coordinate system: $(ps_def.coord_sys)")
-    println(io, "    frame: $(ps_def.frame)")
-    return nothing
-end
-
-function Base.show(io::IO, ps_def::PhasespaceDefinition)
-    print(io, "$(ps_def.coord_sys) in $(ps_def.frame)")
-    return nothing
-end
-
 function Base.show(io::IO, particle::ParticleStateful)
     print(io, "$(particle.dir) $(particle.species): $(particle.mom)")
     return nothing

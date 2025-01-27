@@ -24,7 +24,7 @@ end
 
 QEDbase.process(psp::PhaseSpacePoint) = psp.proc
 QEDbase.model(psp::PhaseSpacePoint) = psp.model
-QEDbase.phase_space_definition(psp::PhaseSpacePoint) = psp.ps_def
+QEDbase.phase_space_layout(psp::PhaseSpacePoint) = psp.psl
 
 QEDbase.particles(psp::PhaseSpacePoint, ::Incoming) = psp.in_particles
 QEDbase.particles(psp::PhaseSpacePoint, ::Outgoing) = psp.out_particles

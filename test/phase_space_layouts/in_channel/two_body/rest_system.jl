@@ -8,7 +8,6 @@ RTOL = sqrt(eps())
 include("../../../test_implementation/TestImplementation.jl")
 
 TESTMODEL = TestImplementation.TestPerturbativeModel()
-TESTPSDEF = TestImplementation.TestPhasespaceDef()
 
 N_OUTGOING = 2
 OUTPARTICLE = Tuple(rand(TestImplementation.PARTICLE_SET, N_OUTGOING))
