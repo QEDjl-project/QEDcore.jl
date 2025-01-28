@@ -43,7 +43,7 @@ Representation of a point in the phase space of a process. Contains the process 
 
 The legality of the combination of the given process and the incoming and outgoing particles is checked on construction. If the numbers of particles mismatch, the types of particles mismatch (note that order is important), or incoming particles have an `Outgoing` direction, an error is thrown.
 
-```juila
+```julia
 julia> using QEDcore; using QEDprocesses
 
 julia> PhaseSpacePoint(
