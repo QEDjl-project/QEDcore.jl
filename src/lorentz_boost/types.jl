@@ -91,3 +91,19 @@ end
 function Base.inv(boost::Boost)
     return Boost(_inv(boost.param))
 end
+
+"""
+    _unsafe_rest_boost(p::AbstractFourMomentum)
+
+Compute the boost transformation to the rest frame of the specified momentum `p`, such that `boost(p) == SFourMomentum(getMass(p), 0, 0, 0)`.
+
+## Notes
+
+This function is considered "unsafe" because it does not verify that `p` has a non-zero mass, which is required for the existence of a valid rest frame.
+"""
+function _unsafe_rest_boost(p::AbstractFourMomentum)
+    E = @inbounds p[1]
+    beta_val = SVector{3}(view(p, 2:4)) / E
+    beta = @inbounds BetaVector(beta_val...)
+    return Boost(beta)
+end
