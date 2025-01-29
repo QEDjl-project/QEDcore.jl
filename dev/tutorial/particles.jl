@@ -48,7 +48,7 @@ particle_direction(ps)
 particle_species(ps)
 #
 momentum(ps)
-# 
+#
 
 # ## Phase Space Points
 
@@ -75,7 +75,7 @@ psp = PhaseSpacePoint(
 
 # This version of the constructor automatically creates [`ParticleStateful`](@ref) obejcts from the momenta, matching the particles of the process. In the case of [`Compton`](@extref QEDprocesses.Compton), this is means an incoming electron and photon, and outgoing electron and photon.
 
-# Automatic checks make sure that the number of 4-momenta given matches the necessary number of 4-momenta for the process (this adds 0 overhead at runtime because it is inferred from type information alone). 
+# Automatic checks make sure that the number of 4-momenta given matches the necessary number of 4-momenta for the process (this adds 0 overhead at runtime because it is inferred from type information alone).
 
 try # hide
     PhaseSpacePoint(
@@ -167,12 +167,12 @@ judge(
     median(@benchmark momentum($psp, Incoming(), Photon(), 1)),
 )
 
-# !!! note 
+# !!! note
 #     This is only faster when `N` is actually known at compile time, for example when it is a literal integer or a function's type parameter. For dynamic values of `N`, prefer the `Int` variant or in case of loops, directly loop over the tuple of [`momenta`](@extref QEDbase.momenta).
 
 # Some more overloads for the momentum function exist, for a complete list please refer to its documentation: [`QEDbase.momentum`](@extref), [`QEDbase.momenta`](@extref).
 
-# Finally, [`process`](@ref), [`model`](@ref), and [`phase_space_definition`](@ref) can be used to request the object in question:
+# Finally, [`process`](@ref), [`model`](@ref), and `phase_space_definition` can be used to request the object in question:
 
 process(psp)
 #
