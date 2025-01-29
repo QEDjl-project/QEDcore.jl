@@ -36,12 +36,6 @@ struct FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
 end
 
-"""
-    QEDbase.phase_space_dimension(proc::AbstractProcessDefinition, model::AbstractModelDefinition, psl::FlatPhaseSpaceLayout)
-
-Calculates the phase space dimensionality for a given process, model, and phase space layout.
-This dimension is derived as four times the number of outgoing particles.
-"""
 function QEDbase.phase_space_dimension(
     proc::AbstractProcessDefinition,
     model::AbstractModelDefinition,
