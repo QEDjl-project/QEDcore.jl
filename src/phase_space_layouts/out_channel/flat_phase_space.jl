@@ -248,11 +248,42 @@ function _scale_rambo_moms(xi, masses, massless_moms)
     return map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms))
 end
 
+# Kleiss 1985: 2.14
+function _massless_rambo_weight(ss, n)
+    return (pi / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
+end
+
+# Kleiss 1985: 4.11
+function _massive_rambo_weight(ss, out_moms, n)
+    Es = getE.(out_moms)
+    rhos = getRho.(out_moms)
+
+    rhos_over_Es = rhos ./ Es
+
+    fac1 = prod(rhos_over_Es)
+    fac2 = inv(sum(rhos_over_Es .* rhos))
+    fac3 = sum(rhos)^(2 * n - 3)
+    fac4 = ss^(3 - 2 * n)
+
+    return fac1 * fac2 * fac3 * fac4
+end
+
+function _center_of_momentum_energy(psp)
+    P_total = sum(momenta(psp, Incoming()))
+    return getMass(P_total)
+end
+
 function QEDbase._phase_space_factor(
     psp::PhaseSpacePoint{PROC,MODEL,PSL}
 ) where {
     PROC<:AbstractProcessDefinition,MODEL<:AbstractModelDefinition,PSL<:FlatPhaseSpaceLayout
 }
-    # TODO: implement rambo weights here
+    ss = _center_of_momentum_energy(psp)
+    n = number_incoming_particles(psp)
+    out_moms = momenta(psp, Outgoing())
 
+    massless_weight = _massless_rambo_weight(ss, n)
+    massive_weight = _massive_rambo_weight(ss, out_moms, n)
+
+    return massless_weight * massive_weight
 end
