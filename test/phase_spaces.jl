@@ -81,13 +81,11 @@ end
     print(BUF, psp)
     @test String(take!(BUF)) == "PhaseSpacePoint of $(process)"
 
-    #=
     show(BUF, MIME"text/plain"(), psp)
-    @test_broken match(
-        r"PhaseSpacePoint:\n    process: (.*)TestProcess(.*)\n    model: (.*)TestModel(.*)\n    phasespace definition: (.*)TestPhasespaceDef(.*)\n    incoming particles:\n     -> incoming electron: (.*)\n     -> incoming photon: (.*)\n    outgoing particles:\n     -> outgoing electron: (.*)\n     -> outgoing photon: (.*)\n",
+    @test match(
+        r"PhaseSpacePoint:\n    process: (.*)TestProcess(.*)\n    model: (.*)TestModel(.*)\n    phase space layout: (.*)TestOutPhaseSpaceLayout(.*)\n    incoming particles:\n     -> incoming electron: (.*)\n     -> incoming photon: (.*)\n    outgoing particles:\n     -> outgoing electron: (.*)\n     -> outgoing photon: (.*)\n",
         String(take!(BUF)),
     ) isa RegexMatch
-    =#
 
     @testset "Accessor" begin
         @test momentum(psp, Incoming(), 1) == in_el.mom
