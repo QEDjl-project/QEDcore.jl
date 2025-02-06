@@ -39,7 +39,7 @@ end
 """
     PhaseSpacePoint
 
-Representation of a point in the phase space of a process. Contains the process (`AbstractProcessDefinition`), the model (`AbstractModelDefinition`), the phase space layout (`AbstractPhaseSpaceLayout`), and stateful incoming and outgoing particles ([`ParticleStateful`](@ref)).
+Representation of a point in the phase space of a process. Contains the process ([`AbstractProcessDefinition`](@extref QEDbase.AbstractProcessDefinition)), the model ([`AbstractModelDefinition`](@extref QEDbase.AbstractModelDefinition)), the phase space layout ([`AbstractPhaseSpaceLayout`](@extref QEDbase.AbstractPhaseSpaceLayout)), and stateful incoming and outgoing particles ([`AbstractParticleStateful`](@extref QEDbase.AbstractParticleStateful)).
 
 The legality of the combination of the given process and the incoming and outgoing particles is checked on construction. If the numbers of particles mismatch, the types of particles mismatch (note that order is important), or incoming particles have an `Outgoing` direction, an error is thrown.
 
