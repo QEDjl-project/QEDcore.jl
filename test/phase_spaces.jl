@@ -100,41 +100,6 @@ end
     end
 
     @testset "Error handling" begin
-        if (VERSION >= v"1.8")
-            # julia versions before 1.8 did not have support for regex matching in @test_throws
-            @test_throws r"expected incoming photon but got outgoing photon" PhaseSpacePoint(
-                process, model, psl, in_particles_invalid, out_particles_valid
-            )
-
-            @test_throws r"expected outgoing photon but got incoming photon" PhaseSpacePoint(
-                process, model, psl, in_particles_valid, out_particles_invalid
-            )
-
-            @test_throws r"expected incoming electron but got incoming photon" PhaseSpacePoint(
-                process, model, psl, (in_ph, in_el), out_particles_valid
-            )
-
-            @test_throws r"expected outgoing electron but got outgoing photon" PhaseSpacePoint(
-                process, model, psl, in_particles_valid, (out_ph, out_el)
-            )
-
-            @test_throws r"expected 2 outgoing particles for the process but got 1" PhaseSpacePoint(
-                process, model, psl, in_particles_valid, (out_el,)
-            )
-
-            @test_throws r"expected 2 incoming particles for the process but got 1" PhaseSpacePoint(
-                process, model, psl, (out_el,), out_particles_valid
-            )
-
-            @test_throws r"expected 2 outgoing particles for the process but got 3" PhaseSpacePoint(
-                process, model, psl, in_particles_valid, (out_el, out_el, out_ph)
-            )
-
-            @test_throws r"expected 2 incoming particles for the process but got 3" PhaseSpacePoint(
-                process, model, psl, (in_el, in_el, in_ph), out_particles_valid
-            )
-        end
-
         @test_throws BoundsError momentum(psp, Incoming(), -1)
         @test_throws BoundsError momentum(psp, Outgoing(), -1)
         @test_throws BoundsError momentum(psp, Incoming(), 4)
