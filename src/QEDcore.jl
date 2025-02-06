@@ -92,4 +92,6 @@ include("particles/particle_types.jl")
 include("particles/propagators.jl")
 include("particles/states.jl")
 
+include("patch_QEDbase.jl")
+
 end

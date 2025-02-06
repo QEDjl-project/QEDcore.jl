@@ -18,7 +18,7 @@ function Base.show(io::IO, ::MIME"text/plain", psp::PhaseSpacePoint)
     println(io, "PhaseSpacePoint:")
     println(io, "    process: $(psp.proc)")
     println(io, "    model: $(psp.model)")
-    println(io, "    phasespace definition: $(psp.ps_def)")
+    println(io, "    phase space layout: $(psp.psl)")
     println(io, "    incoming particles:")
     for p in psp.in_particles
         println(io, "     -> $(p)")

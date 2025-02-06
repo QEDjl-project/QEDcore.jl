@@ -44,12 +44,14 @@ Representation of a point in the phase space of a process. Contains the process 
 The legality of the combination of the given process and the incoming and outgoing particles is checked on construction. If the numbers of particles mismatch, the types of particles mismatch (note that order is important), or incoming particles have an `Outgoing` direction, an error is thrown.
 
 ```julia
-julia> using QEDcore; using QEDprocesses
+julia> using QEDcore
+
+julia> using QEDbase.Mocks
 
 julia> PhaseSpacePoint(
-            Compton(),
-            PerturbativeQED(),
-            DefaultPhaseSpaceDefinition(),
+            MockProcess(),
+            MockModel(),
+            MockOutPhaseSpaceLayout(),
             (
                 ParticleStateful(Incoming(), Electron(), SFourMomentum(1, 0, 0, 0)),
                 ParticleStateful(Incoming(), Photon(), SFourMomentum(1, 0, 0, 0))
