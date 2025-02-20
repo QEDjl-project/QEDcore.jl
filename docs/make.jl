@@ -7,7 +7,6 @@ Pkg.develop(; path=project_path)
 
 using QEDbase
 using QEDcore
-using QEDprocesses
 
 using Documenter
 using DocumenterInterLinks
@@ -40,8 +39,7 @@ end
 
 # setup examples using Literate.jl
 literate_paths = [
-    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/ps_def.jl"),
-    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
+    #    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/vectors.jl"),
 ]
 
@@ -54,16 +52,14 @@ tutorial_output_dir_name = splitpath(tutorial_output_dir)[end]
 pages = [
     "Home" => "index.md",
     "Tutorials" => [
-        "Phase Space Definitions" => joinpath(tutorial_output_dir_name, "ps_def.md"),
-        "Particles and Phase Space Points" =>
-            joinpath(tutorial_output_dir_name, "particles.md"),
+        #        "Particles and Phase Space Points" =>
+        #joinpath(tutorial_output_dir_name, "particles.md"),
         "Matrix and Vector Types" => joinpath(tutorial_output_dir_name, "vectors.md"),
     ],
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
         "Coordinates" => "library/coordinates.md",
-        "Phase Space Definition" => "library/phasespacedef.md",
         "Phase Space Layout" => "library/phase_space_layout.md",
         "Phase Space Points" => "library/phasespacepoint.md",
         "Vector Types" => "library/vectors.md",
