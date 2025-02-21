@@ -39,7 +39,7 @@ end
 
 # setup examples using Literate.jl
 literate_paths = [
-    #    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
+    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/vectors.jl"),
 ]
 
@@ -52,8 +52,8 @@ tutorial_output_dir_name = splitpath(tutorial_output_dir)[end]
 pages = [
     "Home" => "index.md",
     "Tutorials" => [
-        #        "Particles and Phase Space Points" =>
-        #joinpath(tutorial_output_dir_name, "particles.md"),
+        "Particles and Phase Space Points" =>
+            joinpath(tutorial_output_dir_name, "particles.md"),
         "Matrix and Vector Types" => joinpath(tutorial_output_dir_name, "vectors.md"),
     ],
     "API reference" => [
