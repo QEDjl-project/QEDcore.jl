@@ -8,7 +8,7 @@ RTOL = sqrt(eps())
 include("../../test_implementation/TestImplementation.jl")
 
 TESTMODEL = TestImplementation.TestModel()
-TESTINPSL = TestImplementation.TrivialInPSL()
+TESTINPSL = TestImplementation.TestInPhaseSpaceLayout()
 N_INCOMING = 2
 INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
 IN_MASSES = mass.(INCOMING_PARTICLES)

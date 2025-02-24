@@ -3,7 +3,7 @@
 # There are three layers of abstraction from particles to phase space points in the QEDjl project:
 # - [`QEDbase.AbstractParticleType`](@extref): Base type for singleton particle type definitions. We also call these *species*.
 # - [`QEDbase.AbstractParticleStateful`](@extref): Base type for particles with a direction and carrying a momentum.
-# - [`QEDbase.AbstractPhaseSpacePoint`](@extref): Representation of a point in the phase space for a combination of an [`QEDbase.AbstractProcessDefinition`](@extref), [`QEDbase.AbstractModelDefinition`](@extref), and [`QEDbase.AbstractPhasespaceDefinition`](@extref).
+# - [`QEDbase.AbstractPhaseSpacePoint`](@extref): Representation of a point in the phase space for a combination of an [`QEDbase.AbstractProcessDefinition`](@extref), [`QEDbase.AbstractModelDefinition`](@extref), and [`QEDbase.AbstractPhaseSpaceLayout`](@extref).
 
 # This manual is intended to showcase the basic usage of these types and their implementations in QEDcore.
 
