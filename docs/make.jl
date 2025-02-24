@@ -10,6 +10,7 @@ using QEDcore
 
 using Documenter
 using DocumenterInterLinks
+using DocumenterCitations
 using Literate
 
 # setup interlinks
@@ -19,6 +20,9 @@ links = InterLinks(
     "QEDcore" => "https://qedjl-project.github.io/QEDcore.jl/dev/",
     "QEDprocesses" => "https://qedjl-project.github.io/QEDprocesses.jl/dev/",
 )
+
+# add Bibliography
+bib = CitationBibliography(joinpath(@__DIR__, "Bibliography.bib"))
 
 # some paths for links
 readme_path = joinpath(project_path, "README.md")
@@ -66,6 +70,7 @@ pages = [
         "Lorentz Boosts" => "library/lorentzboosts.md",
         "Index" => "library/index.md",
     ],
+    "refs.md",
 ]
 
 try
@@ -87,7 +92,7 @@ try
             assets=String[],
         ),
         pages=pages,
-        plugins=[links],
+        plugins=[bib, links],
     )
 finally
     # doing some garbage collection

@@ -7,6 +7,10 @@ begin
         include("phase_space_layouts/in_channel/two_body/rest_system.jl")
     end
 
+    @time @safetestset "flat phase space layout" begin
+        include("phase_space_layouts/out_channel/flat_phase_space.jl")
+    end
+
     @time @safetestset "Lorentz transform" begin
         include("lorentz_transform/lorentz_transform.jl")
     end
@@ -43,10 +47,6 @@ begin
     # particles
     @time @safetestset "particle types" begin
         include("particles/types.jl")
-    end
-
-    @time @safetestset "particle states" begin
-        include("particles/states.jl")
     end
 
     @time @safetestset "particle base states" begin
