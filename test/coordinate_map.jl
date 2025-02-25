@@ -18,11 +18,11 @@ include("test_implementation/TestImplementation.jl")
     TESTPROC = TestImplementation.TestProcess(INCOMING_PARTICLES, OUTGOING_PARTICLES)
     TESTMODEL = TestImplementation.TestModel()
 
-    TESTINPSL = TestImplementation.TrivialInPSL()
+    TESTINPSL = TestImplementation.TestInPhaseSpaceLayout()
     TESTINCOORDS = Tuple(rand(RNG, 4 * N_INCOMING))
     groundtruth_in_moms = TestImplementation._groundtruth_in_moms(TESTINCOORDS)
 
-    TESTOUTPSL = TestImplementation.TrivialOutPSL(TESTINPSL)
+    TESTOUTPSL = TestImplementation.TestOutPhaseSpaceLayout(TESTINPSL)
     TESTOUTCOORDS = Tuple(rand(RNG, 4 * N_OUTGOING - 4))
     groundtruth_out_moms = TestImplementation._groundtruth_out_moms(
         groundtruth_in_moms, TESTOUTCOORDS

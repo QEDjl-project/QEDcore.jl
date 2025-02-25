@@ -15,10 +15,10 @@ include("../test_implementation/TestImplementation.jl")
 
     TESTPROC = TestImplementation.TestProcess(INCOMING_PARTICLES, OUTGOING_PARTICLES)
     TESTMODEL = TestImplementation.TestModel()
-    TESTPSDEF = TestImplementation.TestPhasespaceDef()
+    TESTPSL = TestImplementation.TestOutPhaseSpaceLayout()
     IN_PS = TestImplementation._rand_momenta(RNG, N_INCOMING)
     OUT_PS = TestImplementation._rand_momenta(RNG, N_OUTGOING)
-    PSP = PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, IN_PS, OUT_PS)
+    PSP = PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS, OUT_PS)
 
     @testset "failed interface" begin
         TESTPROC_FAIL_ALL = TestImplementation.TestProcess_FAIL_ALL(
@@ -28,7 +28,7 @@ include("../test_implementation/TestImplementation.jl")
             INCOMING_PARTICLES, OUTGOING_PARTICLES
         )
         TESTMODEL_FAIL = TestImplementation.TestModel_FAIL()
-        TESTPSDEF_FAIL = TestImplementation.TestPhasespaceDef_FAIL()
+        TESTPSL_FAIL = TestImplementation.TestOutPhaseSpaceLayout_FAIL()
 
         @testset "failed process interface" begin
             @test_throws MethodError incoming_particles(TESTPROC_FAIL_ALL)
@@ -39,15 +39,15 @@ include("../test_implementation/TestImplementation.jl")
             (TESTPROC, TESTPROC_FAIL_DIFFCS), (TESTMODEL, TESTMODEL_FAIL)
         )
             if TestImplementation._any_fail(PROC, MODEL)
-                psp = PhaseSpacePoint(PROC, MODEL, TESTPSDEF, IN_PS, OUT_PS)
+                psp = PhaseSpacePoint(PROC, MODEL, TESTPSL, IN_PS, OUT_PS)
                 @test_throws MethodError QEDbase._incident_flux(psp)
                 @test_throws MethodError QEDbase._averaging_norm(psp)
                 @test_throws MethodError QEDbase._matrix_element(psp)
             end
 
-            for PS_DEF in (TESTPSDEF, TESTPSDEF_FAIL)
-                if TestImplementation._any_fail(PROC, MODEL, PS_DEF)
-                    psp = PhaseSpacePoint(PROC, MODEL, PS_DEF, IN_PS, OUT_PS)
+            for PSL in (TESTPSL, TESTPSL_FAIL)
+                if TestImplementation._any_fail(PROC, MODEL, PSL)
+                    psp = PhaseSpacePoint(PROC, MODEL, PSL, IN_PS, OUT_PS)
                     @test_throws MethodError QEDbase._phase_space_factor(psp)
                 end
             end
@@ -71,18 +71,18 @@ include("../test_implementation/TestImplementation.jl")
 
     @testset "incident flux" begin
         test_incident_flux = QEDbase._incident_flux(
-            InPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, IN_PS)
+            InPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS)
         )
         groundtruth = TestImplementation._groundtruth_incident_flux(IN_PS)
         @test isapprox(test_incident_flux, groundtruth, atol=ATOL, rtol=RTOL)
 
         test_incident_flux = QEDbase._incident_flux(
-            PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, IN_PS, OUT_PS)
+            PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS, OUT_PS)
         )
         @test isapprox(test_incident_flux, groundtruth, atol=ATOL, rtol=RTOL)
 
         @test_throws MethodError QEDbase._incident_flux(
-            OutPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, OUT_PS)
+            OutPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, OUT_PS)
         )
     end
 
@@ -107,13 +107,13 @@ include("../test_implementation/TestImplementation.jl")
         IN_PS_unphysical = (zero(SFourMomentum), IN_PS[2:end]...)
         OUT_PS_unphysical = (OUT_PS[1:(end - 1)]..., ones(SFourMomentum))
         PSP_unphysical_in_ps = PhaseSpacePoint(
-            TESTPROC, TESTMODEL, TESTPSDEF, IN_PS_unphysical, OUT_PS
+            TESTPROC, TESTMODEL, TESTPSL, IN_PS_unphysical, OUT_PS
         )
         PSP_unphysical_out_ps = PhaseSpacePoint(
-            TESTPROC, TESTMODEL, TESTPSDEF, IN_PS, OUT_PS_unphysical
+            TESTPROC, TESTMODEL, TESTPSL, IN_PS, OUT_PS_unphysical
         )
         PSP_unphysical = PhaseSpacePoint(
-            TESTPROC, TESTMODEL, TESTPSDEF, IN_PS_unphysical, OUT_PS_unphysical
+            TESTPROC, TESTMODEL, TESTPSL, IN_PS_unphysical, OUT_PS_unphysical
         )
 
         @test !QEDbase._is_in_phasespace(PSP_unphysical_in_ps)

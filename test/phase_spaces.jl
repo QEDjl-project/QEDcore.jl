@@ -4,14 +4,14 @@ using QEDcore
 
 include("test_implementation/TestImplementation.jl")
 TESTMODEL = TestImplementation.TestModel()
-TESTPSDEF = TestImplementation.TestPhasespaceDef()
+TESTPSL = TestImplementation.TestOutPhaseSpaceLayout()
 
 RNG = Random.MersenneTwister(727)
 BUF = IOBuffer()
 
 @testset "broadcast" begin
-    test_func(ps_def) = ps_def
-    @test test_func.(TESTPSDEF) == TESTPSDEF
+    test_func(psl) = psl
+    @test test_func.(TESTPSL) == TESTPSL
 end
 
 @testset "Stateful Particle" begin
@@ -73,11 +73,9 @@ end
 
     model = TESTMODEL
     process = TestImplementation.TestProcess((Electron(), Photon()), (Electron(), Photon()))
-    phasespace_def = TESTPSDEF
+    psl = TESTPSL
 
-    psp = PhaseSpacePoint(
-        process, model, phasespace_def, in_particles_valid, out_particles_valid
-    )
+    psp = PhaseSpacePoint(process, model, psl, in_particles_valid, out_particles_valid)
 
     take!(BUF)
     print(BUF, psp)
@@ -85,7 +83,7 @@ end
 
     show(BUF, MIME"text/plain"(), psp)
     @test match(
-        r"PhaseSpacePoint:\n    process: (.*)TestProcess(.*)\n    model: (.*)TestModel(.*)\n    phasespace definition: (.*)TestPhasespaceDef(.*)\n    incoming particles:\n     -> incoming electron: (.*)\n     -> incoming photon: (.*)\n    outgoing particles:\n     -> outgoing electron: (.*)\n     -> outgoing photon: (.*)\n",
+        r"PhaseSpacePoint:\n    process: (.*)TestProcess(.*)\n    model: (.*)TestModel(.*)\n    phase space layout: (.*)TestOutPhaseSpaceLayout(.*)\n    incoming particles:\n     -> incoming electron: (.*)\n     -> incoming photon: (.*)\n    outgoing particles:\n     -> outgoing electron: (.*)\n     -> outgoing photon: (.*)\n",
         String(take!(BUF)),
     ) isa RegexMatch
 
@@ -102,41 +100,6 @@ end
     end
 
     @testset "Error handling" begin
-        if (VERSION >= v"1.8")
-            # julia versions before 1.8 did not have support for regex matching in @test_throws
-            @test_throws r"expected incoming photon but got outgoing photon" PhaseSpacePoint(
-                process, model, phasespace_def, in_particles_invalid, out_particles_valid
-            )
-
-            @test_throws r"expected outgoing photon but got incoming photon" PhaseSpacePoint(
-                process, model, phasespace_def, in_particles_valid, out_particles_invalid
-            )
-
-            @test_throws r"expected incoming electron but got incoming photon" PhaseSpacePoint(
-                process, model, phasespace_def, (in_ph, in_el), out_particles_valid
-            )
-
-            @test_throws r"expected outgoing electron but got outgoing photon" PhaseSpacePoint(
-                process, model, phasespace_def, in_particles_valid, (out_ph, out_el)
-            )
-
-            @test_throws r"expected 2 outgoing particles for the process but got 1" PhaseSpacePoint(
-                process, model, phasespace_def, in_particles_valid, (out_el,)
-            )
-
-            @test_throws r"expected 2 incoming particles for the process but got 1" PhaseSpacePoint(
-                process, model, phasespace_def, (out_el,), out_particles_valid
-            )
-
-            @test_throws r"expected 2 outgoing particles for the process but got 3" PhaseSpacePoint(
-                process, model, phasespace_def, in_particles_valid, (out_el, out_el, out_ph)
-            )
-
-            @test_throws r"expected 2 incoming particles for the process but got 3" PhaseSpacePoint(
-                process, model, phasespace_def, (in_el, in_el, in_ph), out_particles_valid
-            )
-        end
-
         @test_throws BoundsError momentum(psp, Incoming(), -1)
         @test_throws BoundsError momentum(psp, Outgoing(), -1)
         @test_throws BoundsError momentum(psp, Incoming(), 4)
@@ -148,30 +111,30 @@ end
         @test_throws BoundsError psp[Outgoing(), 4]
 
         @test_throws InvalidInputError PhaseSpacePoint(
-            process, model, phasespace_def, in_particles_invalid, out_particles_valid
+            process, model, psl, in_particles_invalid, out_particles_valid
         )
 
         @test_throws InvalidInputError PhaseSpacePoint(
-            process, model, phasespace_def, in_particles_valid, out_particles_invalid
+            process, model, psl, in_particles_valid, out_particles_invalid
         )
 
         @test_throws InvalidInputError PhaseSpacePoint(
-            process, model, phasespace_def, (in_ph, in_el), out_particles_valid
+            process, model, psl, (in_ph, in_el), out_particles_valid
         )
 
         @test_throws InvalidInputError PhaseSpacePoint(
-            process, model, phasespace_def, in_particles_valid, (out_ph, out_el)
+            process, model, psl, in_particles_valid, (out_ph, out_el)
         )
     end
 
     @testset "Generation from momenta" begin
         test_psp = PhaseSpacePoint(
-            process, model, phasespace_def, (in_el_mom, in_ph_mom), (out_el_mom, out_ph_mom)
+            process, model, psl, (in_el_mom, in_ph_mom), (out_el_mom, out_ph_mom)
         )
 
         @test test_psp.proc == process
         @test test_psp.model == model
-        @test test_psp.ps_def == phasespace_def
+        @test test_psp.psl == psl
 
         @test test_psp[Incoming(), 1] == in_el
         @test test_psp[Incoming(), 2] == in_ph
@@ -184,7 +147,7 @@ end
         @test_throws InvalidInputError PhaseSpacePoint(
             process,
             model,
-            phasespace_def,
+            psl,
             TestImplementation._rand_momenta(RNG, i),
             TestImplementation._rand_momenta(RNG, o),
         )
@@ -195,13 +158,11 @@ end
         @test psp isa InPhaseSpacePoint
         @test psp isa OutPhaseSpacePoint
 
-        in_psp = InPhaseSpacePoint(process, model, phasespace_def, in_particles_valid)
-        out_psp = OutPhaseSpacePoint(process, model, phasespace_def, out_particles_valid)
-        in_psp_from_moms = InPhaseSpacePoint(
-            process, model, phasespace_def, (in_el_mom, in_ph_mom)
-        )
+        in_psp = InPhaseSpacePoint(process, model, psl, in_particles_valid)
+        out_psp = OutPhaseSpacePoint(process, model, psl, out_particles_valid)
+        in_psp_from_moms = InPhaseSpacePoint(process, model, psl, (in_el_mom, in_ph_mom))
         out_psp_from_moms = OutPhaseSpacePoint(
-            process, model, phasespace_def, (out_el_mom, out_ph_mom)
+            process, model, psl, (out_el_mom, out_ph_mom)
         )
 
         @test in_psp isa InPhaseSpacePoint
@@ -215,45 +176,19 @@ end
         @test !(out_psp_from_moms isa InPhaseSpacePoint)
 
         @test_throws InvalidInputError InPhaseSpacePoint(
-            process, model, phasespace_def, in_particles_invalid
+            process, model, psl, in_particles_invalid
         )
         @test_throws InvalidInputError OutPhaseSpacePoint(
-            process, model, phasespace_def, out_particles_invalid
+            process, model, psl, out_particles_invalid
         )
 
         @testset "Error handling from momenta" for i in [1, 3, 4, 5]
             @test_throws InvalidInputError InPhaseSpacePoint(
-                process, model, phasespace_def, TestImplementation._rand_momenta(RNG, i)
+                process, model, psl, TestImplementation._rand_momenta(RNG, i)
             )
             @test_throws InvalidInputError OutPhaseSpacePoint(
-                process, model, phasespace_def, TestImplementation._rand_momenta(RNG, i)
+                process, model, psl, TestImplementation._rand_momenta(RNG, i)
             )
         end
-    end
-end
-
-@testset "Coordinate System" begin
-    @testset "Pretty printing" begin
-        print(BUF, SphericalCoordinateSystem())
-        @test String(take!(BUF)) == "spherical coordinates"
-    end
-end
-@testset "Reference Frame" begin
-    @testset "Pretty printing" begin
-        print(BUF, ElectronRestFrame())
-        @test String(take!(BUF)) == "electron rest frame"
-        print(BUF, CenterOfMomentumFrame())
-        @test String(take!(BUF)) == "center-of-momentum frame"
-    end
-end
-
-@testset "Phasespace Definition" for (coord_sys, frame) in Iterators.product(
-    [SphericalCoordinateSystem()], [ElectronRestFrame(), CenterOfMomentumFrame()]
-)
-    ps_def = PhasespaceDefinition(coord_sys, frame)
-
-    @testset "Pretty printing" begin
-        print(BUF, ps_def)
-        @test String(take!(BUF)) == "$coord_sys in $frame"
     end
 end
