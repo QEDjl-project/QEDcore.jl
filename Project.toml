@@ -1,7 +1,7 @@
 name = "QEDcore"
 uuid = "35dc0263-cb5f-4c33-a114-1d7f54ab753e"
 authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>", "Anton Reinhard"]
-version = "0.2.0"
+version = "0.3.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -14,7 +14,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 DocStringExtensions = "0.9"
-QEDbase = "0.3.0"
+QEDbase = "0.4.0"
 Reexport = "1.2"
 Roots = "2"
 SimpleTraits = "0.9"
