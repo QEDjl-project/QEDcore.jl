@@ -1,8 +1,8 @@
-function _booster_fermion(mom::AbstractFourMomentum, mass::Real)
+@inline function _booster_fermion(mom::AbstractFourMomentum, mass::Real)
     return (slashed(mom) + mass * one(DiracMatrix)) / (sqrt(abs(getT(mom)) + mass))
 end
 
-function _booster_antifermion(mom::AbstractFourMomentum, mass::Real)
+@inline function _booster_antifermion(mom::AbstractFourMomentum, mass::Real)
     return (mass * one(DiracMatrix) - slashed(mom)) / (sqrt(abs(getT(mom)) + mass))
 end
 
@@ -10,21 +10,22 @@ function QEDbase.base_state(
     particle::Fermion, ::Incoming, mom::AbstractFourMomentum, spin::AbstractDefiniteSpin
 )
     booster = _booster_fermion(mom, mass(particle))
-    return BiSpinor(booster[:, QEDbase._spin_index(spin)])
+    return BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin)])
 end
 
 function QEDbase.base_state(
     particle::Fermion, ::Incoming, mom::AbstractFourMomentum, spin::AllSpin
 )
     booster = _booster_fermion(mom, mass(particle))
-    return SVector(BiSpinor(booster[:, 1]), BiSpinor(booster[:, 2]))
+    return SVector(BiSpinor(@inbounds booster[:, 1]), BiSpinor(@inbounds booster[:, 2]))
 end
 
 function QEDbase.base_state(
     particle::AntiFermion, ::Incoming, mom::AbstractFourMomentum, spin::AbstractDefiniteSpin
 )
     booster = _booster_antifermion(mom, mass(particle))
-    return AdjointBiSpinor(BiSpinor(booster[:, QEDbase._spin_index(spin) + 2])) * GAMMA[1]
+    return AdjointBiSpinor(BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin) + 2])) *
+           (@inbounds GAMMA[1])
 end
 
 function QEDbase.base_state(
@@ -32,8 +33,8 @@ function QEDbase.base_state(
 )
     booster = _booster_antifermion(mom, mass(particle))
     return SVector(
-        AdjointBiSpinor(BiSpinor(booster[:, 3])) * GAMMA[1],
-        AdjointBiSpinor(BiSpinor(booster[:, 4])) * GAMMA[1],
+        AdjointBiSpinor(@inbounds BiSpinor(booster[:, 3])) * (@inbounds GAMMA[1]),
+        AdjointBiSpinor(@inbounds BiSpinor(booster[:, 4])) * (@inbounds GAMMA[1]),
     )
 end
 
@@ -41,7 +42,8 @@ function QEDbase.base_state(
     particle::Fermion, ::Outgoing, mom::AbstractFourMomentum, spin::AbstractDefiniteSpin
 )
     booster = _booster_fermion(mom, mass(particle))
-    return AdjointBiSpinor(BiSpinor(booster[:, QEDbase._spin_index(spin)])) * GAMMA[1]
+    return AdjointBiSpinor(BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin)])) *
+           (@inbounds GAMMA[1])
 end
 
 function QEDbase.base_state(
@@ -49,8 +51,8 @@ function QEDbase.base_state(
 )
     booster = _booster_fermion(mom, mass(particle))
     return SVector(
-        AdjointBiSpinor(BiSpinor(booster[:, 1])) * GAMMA[1],
-        AdjointBiSpinor(BiSpinor(booster[:, 2])) * GAMMA[1],
+        AdjointBiSpinor(BiSpinor(@inbounds booster[:, 1])) * (@inbounds GAMMA[1]),
+        AdjointBiSpinor(BiSpinor(@inbounds booster[:, 2])) * (@inbounds GAMMA[1]),
     )
 end
 
@@ -58,14 +60,14 @@ function QEDbase.base_state(
     particle::AntiFermion, ::Outgoing, mom::AbstractFourMomentum, spin::AbstractDefiniteSpin
 )
     booster = _booster_antifermion(mom, mass(particle))
-    return BiSpinor(booster[:, QEDbase._spin_index(spin) + 2])
+    return BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin) + 2])
 end
 
 function QEDbase.base_state(
     particle::AntiFermion, ::Outgoing, mom::AbstractFourMomentum, spin::AllSpin
 )
     booster = _booster_antifermion(mom, mass(particle))
-    return SVector(BiSpinor(booster[:, 3]), BiSpinor(booster[:, 4]))
+    return SVector(BiSpinor(@inbounds booster[:, 3]), BiSpinor(@inbounds booster[:, 4]))
 end
 
 function _photon_state(pol::AllPolarization, mom::AbstractFourMomentum)

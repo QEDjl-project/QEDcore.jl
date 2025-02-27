@@ -103,10 +103,10 @@ end
 
 Returns the element type of the [`PhaseSpacePoint`](@ref) object or type, e.g. `SFourMomentum`.
 
-```jldoctest
+```julia
 julia> using QEDcore; using QEDprocesses
 
-julia> psp = PhaseSpacePoint(Compton(), PerturbativeQED(), PhasespaceDefinition(SphericalCoordinateSystem(), ElectronRestFrame()), Tuple(rand(SFourMomentum) for _ in 1:2), Tuple(rand(SFourMomentum) for _ in 1:2));
+julia> psp = PhaseSpacePoint(Compton(), PerturbativeQED(), DefaultPhaseSpaceLayout(), Tuple(rand(SFourMomentum) for _ in 1:2), Tuple(rand(SFourMomentum) for _ in 1:2));
 
 julia> QEDcore._momentum_type(psp)
 SFourMomentum
@@ -123,8 +123,21 @@ end
 
 @inline _momentum_type(::T) where {T<:PhaseSpacePoint} = _momentum_type(T)
 
+# these helpers should not be necessary, but currently are to support AMDGPU compilation
+@inline _build_ps_helper(dir::ParticleDirection, particles::Tuple{}, moms::Tuple{}) = ()
+@inline function _build_ps_helper(
+    dir::ParticleDirection,
+    particles::Tuple{P,Vararg},
+    moms::Tuple{AbstractFourMomentum,Vararg},
+) where {P}
+    return (
+        ParticleStateful(dir, particles[1], moms[1]),
+        _build_ps_helper(dir, particles[2:end], moms[2:end])...,
+    )
+end
+
 # convenience function building a type stable tuple of ParticleStatefuls from the given process, momenta, and direction
-function _build_particle_statefuls(
+@inline function _build_particle_statefuls(
     proc::AbstractProcessDefinition, moms::NTuple{N,ELEMENT}, dir::ParticleDirection
 ) where {N,ELEMENT<:AbstractFourMomentum}
     N == number_particles(proc, dir) || throw(
@@ -132,9 +145,8 @@ function _build_particle_statefuls(
             "expected $(number_particles(proc, dir)) $(dir) particles for the process but got $(N)",
         ),
     )
-    res = Tuple{_assemble_tuple_type(particles(proc, dir), dir, ELEMENT)...}(
-        ParticleStateful(dir, particle, mom) for
-        (particle, mom) in zip(particles(proc, dir), moms)
+    res::Tuple{_assemble_tuple_type(particles(proc, dir), dir, ELEMENT)...} = _build_ps_helper(
+        dir, particles(proc, dir), moms
     )
 
     return res

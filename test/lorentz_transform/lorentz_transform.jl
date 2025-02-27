@@ -14,7 +14,7 @@ const test_psf = ParticleStateful(
 const test_mass_square = test_mom * test_mom
 
 const TESTMODEL = TestImplementation.TestModel()
-const TESTPSDEF = TestImplementation.TestPhasespaceDef()
+const TESTPSL = TestImplementation.TestOutPhaseSpaceLayout()
 
 @testset "beta boost" begin
     @testset "defaults" begin
@@ -96,7 +96,7 @@ const TESTPSDEF = TestImplementation.TestPhasespaceDef()
                 )
                 IN_PS = TestImplementation._rand_momenta(RNG, N_INCOMING)
                 OUT_PS = TestImplementation._rand_momenta(RNG, N_OUTGOING)
-                PSP = PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSDEF, IN_PS, OUT_PS)
+                PSP = PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS, OUT_PS)
 
                 PSP_prime = boost(PSP)
                 @test isapprox(

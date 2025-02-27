@@ -24,6 +24,22 @@ export Electron, Positron, Photon
 # particle base states
 export base_state
 
+# coordinates
+export AbstractCoordinateSet, AbstractUnivariateCoordinates, AbstractBivariateCoordinates
+export CoordinateSet
+export coordinate_names
+export Energy, Rapidity, CosTheta, CMSEnergy, SpatialMagnitude
+export coordinate_name, particle_index
+
+# phase space layouts
+export AbstractTwoBodyInPhaseSpaceLayout
+export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
+export FlatPhaseSpaceLayout
+
+# coordinate maps
+export CoordinateMap
+export CoordinateMapCached
+
 # phase space
 export SphericalCoordinateSystem
 export CenterOfMomentumFrame, ElectronRestFrame
@@ -31,10 +47,15 @@ export PhasespaceDefinition
 export ParticleStateful, PhaseSpacePoint, InPhaseSpacePoint, OutPhaseSpacePoint
 export spin, polarization, momenta, getindex
 
+# TODO: move this to QEDbase
+export AbstractPerturbativeModel
+
 using Reexport
 using DocStringExtensions
 using StaticArrays
 using SimpleTraits
+using LinearAlgebra
+using Roots
 
 @reexport using QEDbase
 
@@ -46,6 +67,19 @@ include("phase_spaces/access.jl")
 include("phase_spaces/create.jl")
 include("phase_spaces/print.jl")
 include("phase_spaces/utility.jl")
+
+include("coordinates/coordinate_sets.jl")
+include("coordinates/univariate.jl")
+include("coordinates/multivariate.jl")
+
+include("coordinate_map/map.jl")
+include("coordinate_map/cached.jl")
+
+include("phase_space_layouts/in_channel/two_body/utils.jl")
+include("phase_space_layouts/in_channel/two_body/general.jl")
+include("phase_space_layouts/in_channel/two_body/rest_system.jl")
+
+include("phase_space_layouts/out_channel/flat_phase_space.jl")
 
 include("algebraic_objects/four_momentum.jl")
 include("algebraic_objects/lorentz_vector.jl")

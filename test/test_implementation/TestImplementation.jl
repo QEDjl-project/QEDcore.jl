@@ -1,6 +1,6 @@
 """
-This module provides a full implementation of the model and process interface. Its purpose is only for testing and it does not reflect any 
-real-world physics. 
+This module provides a full implementation of the model and process interface. Its purpose is only for testing and it does not reflect any
+real-world physics.
 
 The module exports:
 
@@ -11,8 +11,8 @@ TestParticle3
 TestParticle4
 TestModel                   # dummy compute model
 TestModel_FAIL              # failing compute model
-TestProcess                 # dummy scattering process 
-TestProcess_FAIL            # failing scattering process 
+TestProcess                 # dummy scattering process
+TestProcess_FAIL            # failing scattering process
 TestPhasespaceDef           # dummy phase space definition
 TestPhasespaceDef_FAIL      # failing phase space definition
 ```
@@ -26,12 +26,16 @@ export TestProcess, TestProcess_FAIL
 export TestPhasespaceDef, TestPhasespaceDef_FAIL
 
 using Random
+using QEDbase
 using QEDcore
 using StaticArrays
 
 include("groundtruths.jl")
+include("test_particles.jl")
 include("test_model.jl")
+include("test_phase_space_layout.jl")
 include("test_process.jl")
+include("test_momenta.jl")
 include("random_momenta.jl")
 include("utils.jl")
 

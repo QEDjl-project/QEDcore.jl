@@ -7,10 +7,10 @@ Pkg.develop(; path=project_path)
 
 using QEDbase
 using QEDcore
-using QEDprocesses
 
 using Documenter
 using DocumenterInterLinks
+using DocumenterCitations
 using Literate
 
 # setup interlinks
@@ -20,6 +20,9 @@ links = InterLinks(
     "QEDcore" => "https://qedjl-project.github.io/QEDcore.jl/dev/",
     "QEDprocesses" => "https://qedjl-project.github.io/QEDprocesses.jl/dev/",
 )
+
+# add Bibliography
+bib = CitationBibliography(joinpath(@__DIR__, "Bibliography.bib"))
 
 # some paths for links
 readme_path = joinpath(project_path, "README.md")
@@ -40,7 +43,6 @@ end
 
 # setup examples using Literate.jl
 literate_paths = [
-    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/ps_def.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/vectors.jl"),
 ]
@@ -54,7 +56,6 @@ tutorial_output_dir_name = splitpath(tutorial_output_dir)[end]
 pages = [
     "Home" => "index.md",
     "Tutorials" => [
-        "Phase Space Definitions" => joinpath(tutorial_output_dir_name, "ps_def.md"),
         "Particles and Phase Space Points" =>
             joinpath(tutorial_output_dir_name, "particles.md"),
         "Matrix and Vector Types" => joinpath(tutorial_output_dir_name, "vectors.md"),
@@ -62,12 +63,14 @@ pages = [
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
-        "Phase Space Definition" => "library/phasespacedef.md",
+        "Coordinates" => "library/coordinates.md",
+        "Phase Space Layout" => "library/phase_space_layout.md",
         "Phase Space Points" => "library/phasespacepoint.md",
         "Vector Types" => "library/vectors.md",
         "Lorentz Boosts" => "library/lorentzboosts.md",
         "Index" => "library/index.md",
     ],
+    "refs.md",
 ]
 
 try
@@ -89,7 +92,7 @@ try
             assets=String[],
         ),
         pages=pages,
-        plugins=[links],
+        plugins=[bib, links],
     )
 finally
     # doing some garbage collection

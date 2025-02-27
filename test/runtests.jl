@@ -3,8 +3,24 @@ using Test
 using SafeTestsets
 
 begin
+    @time @safetestset "two body rest system" begin
+        include("phase_space_layouts/in_channel/two_body/rest_system.jl")
+    end
+
+    @time @safetestset "flat phase space layout" begin
+        include("phase_space_layouts/out_channel/flat_phase_space.jl")
+    end
+
     @time @safetestset "Lorentz transform" begin
         include("lorentz_transform/lorentz_transform.jl")
+    end
+
+    @time @safetestset "coordinates" begin
+        include("coordinates.jl")
+    end
+
+    @time @safetestset "coordinate map" begin
+        include("coordinate_map.jl")
     end
 
     @time @safetestset "phase spaces" begin
@@ -31,10 +47,6 @@ begin
     # particles
     @time @safetestset "particle types" begin
         include("particles/types.jl")
-    end
-
-    @time @safetestset "particle states" begin
-        include("particles/states.jl")
     end
 
     @time @safetestset "particle base states" begin

@@ -1,36 +1,4 @@
 """
-    SphericalCoordinateSystem <: AbstractCoordinateSystem
-
-TBW
-"""
-struct SphericalCoordinateSystem <: AbstractCoordinateSystem end
-
-"""
-    CenterOfMomentumFrame <: AbstractFrameOfReference
-
-TBW
-"""
-struct CenterOfMomentumFrame <: AbstractFrameOfReference end
-
-"""
-    ElectronRestFrame <: AbstractFrameOfReference
-
-TBW
-"""
-struct ElectronRestFrame <: AbstractFrameOfReference end
-
-"""
-    PhasespaceDefinition(coord_sys::AbstractCoordinateSystem, frame::AbstractFrameOfReference)
-
-Convenient type to dispatch on coordiante systems and frames of reference. Combines a `AbstractCoordinateSystem` with a `AbstractFrameOfReference`.
-"""
-struct PhasespaceDefinition{CS<:AbstractCoordinateSystem,F<:AbstractFrameOfReference} <:
-       AbstractPhasespaceDefinition
-    coord_sys::CS
-    frame::F
-end
-
-"""
     ParticleStateful <: AbstractParticle
 
 Representation of a particle with a state. It has four fields:
@@ -71,17 +39,19 @@ end
 """
     PhaseSpacePoint
 
-Representation of a point in the phase space of a process. Contains the process (`AbstractProcessDefinition`), the model (`AbstractModelDefinition`), the phase space definition (`AbstractPhasespaceDefinition`), and stateful incoming and outgoing particles ([`ParticleStateful`](@ref)).
+Representation of a point in the phase space of a process. Contains the process ([`AbstractProcessDefinition`](@extref QEDbase.AbstractProcessDefinition)), the model ([`AbstractModelDefinition`](@extref QEDbase.AbstractModelDefinition)), the phase space layout ([`AbstractPhaseSpaceLayout`](@extref QEDbase.AbstractPhaseSpaceLayout)), and stateful incoming and outgoing particles ([`AbstractParticleStateful`](@extref QEDbase.AbstractParticleStateful)).
 
 The legality of the combination of the given process and the incoming and outgoing particles is checked on construction. If the numbers of particles mismatch, the types of particles mismatch (note that order is important), or incoming particles have an `Outgoing` direction, an error is thrown.
 
-```jldoctest
-julia> using QEDcore; using QEDprocesses
+```julia
+julia> using QEDcore
+
+julia> using QEDbase.Mocks
 
 julia> PhaseSpacePoint(
-            Compton(),
-            PerturbativeQED(),
-            PhasespaceDefinition(SphericalCoordinateSystem(), ElectronRestFrame()),
+            MockProcess(),
+            MockModel(),
+            MockOutPhaseSpaceLayout(),
             (
                 ParticleStateful(Incoming(), Electron(), SFourMomentum(1, 0, 0, 0)),
                 ParticleStateful(Incoming(), Photon(), SFourMomentum(1, 0, 0, 0))
@@ -94,7 +64,7 @@ julia> PhaseSpacePoint(
 PhaseSpacePoint:
     process: one-photon Compton scattering
     model: perturbative QED
-    phasespace definition: spherical coordinates in electron rest frame
+    phasespace layout: default
     incoming particles:
      -> incoming electron: [1.0, 0.0, 0.0, 0.0]
      -> incoming photon: [1.0, 0.0, 0.0, 0.0]
@@ -111,23 +81,23 @@ PhaseSpacePoint:
 struct PhaseSpacePoint{
     PROC<:AbstractProcessDefinition,
     MODEL<:AbstractModelDefinition,
-    PSDEF<:AbstractPhasespaceDefinition,
+    PSL<:AbstractPhaseSpaceLayout,
     IN_PARTICLES<:Tuple{Vararg{ParticleStateful}},
     OUT_PARTICLES<:Tuple{Vararg{ParticleStateful}},
     ELEMENT<:AbstractFourMomentum,
-} <: AbstractPhaseSpacePoint{PROC,MODEL,PSDEF,IN_PARTICLES,OUT_PARTICLES}
+} <: AbstractPhaseSpacePoint{PROC,MODEL,PSL,IN_PARTICLES,OUT_PARTICLES}
     proc::PROC
     model::MODEL
-    ps_def::PSDEF
+    psl::PSL
 
     in_particles::IN_PARTICLES
     out_particles::OUT_PARTICLES
 
     """
         PhaseSpacePoint(
-            proc::AbstractProcessDefinition, 
-            model::AbstractModelDefinition, 
-            ps_def::AbstractPhasespaceDefinition, 
+            proc::AbstractProcessDefinition,
+            model::AbstractModelDefinition,
+            psl::AbstractPhaseSpaceLayout,
             in_ps::Tuple{ParticleStateful},
             out_ps::Tuple{ParticleStateful},
         )
@@ -135,11 +105,11 @@ struct PhaseSpacePoint{
     Construct a [`PhaseSpacePoint`](@ref) from a process, model, phasespace definition and a tuple of [`ParticleStateful`](@ref)s.
     """
     function PhaseSpacePoint(
-        proc::PROC, model::MODEL, ps_def::PSDEF, in_p::IN_PARTICLES, out_p::OUT_PARTICLES
+        proc::PROC, model::MODEL, psl::PSL, in_p::IN_PARTICLES, out_p::OUT_PARTICLES
     ) where {
         PROC<:AbstractProcessDefinition,
         MODEL<:AbstractModelDefinition,
-        PSDEF<:AbstractPhasespaceDefinition,
+        PSL<:AbstractPhaseSpaceLayout,
         IN_PARTICLES<:Tuple{Vararg{ParticleStateful}},
         OUT_PARTICLES<:Tuple{Vararg{ParticleStateful}},
     }
@@ -148,8 +118,8 @@ struct PhaseSpacePoint{
             incoming_particles(proc), outgoing_particles(proc), in_p, out_p
         )
 
-        return new{PROC,MODEL,PSDEF,IN_PARTICLES,OUT_PARTICLES,ELEMENT}(
-            proc, model, ps_def, in_p, out_p
+        return new{PROC,MODEL,PSL,IN_PARTICLES,OUT_PARTICLES,ELEMENT}(
+            proc, model, psl, in_p, out_p
         )
     end
 end

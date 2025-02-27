@@ -1,3 +1,31 @@
+
+"""
+    _groundtruth_in_moms(in_coords)
+
+Test implementation for building incoming momenta. Maps all components into four momenta.
+"""
+function _groundtruth_in_moms(in_coords)
+    n = Int(length(in_coords) / 4)
+    return NTuple{n}(map(SFourMomentum, Iterators.partition(in_coords, 4)))
+end
+
+"""
+    _groundtruth_out_moms(Ptot,out_coords)
+
+Test implementation for building outgoing momenta. Maps all components into four momenta and adds
+the last momentum via energy momentum conservation.
+"""
+function _groundtruth_out_moms(in_moms, out_coords)
+    Ptot = sum(in_moms)
+    n = Int(length(out_coords) / 4)
+    if length(out_coords) == 0
+        return (Ptot,)
+    end
+    moms_except_last = NTuple{n}(map(SFourMomentum, Iterators.partition(out_coords, 4)))
+    last_mom = Ptot - sum(moms_except_last)
+    return (moms_except_last..., last_mom)
+end
+
 """
     _groundtruth_incident_flux(in_ps)
 
@@ -8,7 +36,7 @@ Test implementation of the incident flux. Return the Minkowski square of the sum
 I = \\left(\\sum p_i\\right)^2,
 \\end{align}
 ```
-where \$p_i\\in\\mathrm{ps_in}\$. 
+where \$p_i\\in\\mathrm{ps_in}\$.
 """
 function _groundtruth_incident_flux(in_ps)
     s = sum(in_ps)
@@ -18,7 +46,7 @@ end
 """
     _groundtruth_matrix_element(in_ps, out_ps)
 
-Test implementation for a matrix elements. Returns a list of three complex numbers without any physical meaning. 
+Test implementation for a matrix elements. Returns a list of three complex numbers without any physical meaning.
 """
 function _groundtruth_matrix_element(in_ps, out_ps)
     s_in = sum(in_ps)
@@ -156,7 +184,7 @@ end
 """
     _groundtruth_unsafe_diffCS(proc, in_ps, out_ps)
 
-Test implementation of the unsafe differential cross section. Uses the test implementations of `_groundtruth_incident_flux` and `_groundtruth_unsafe_probability`. 
+Test implementation of the unsafe differential cross section. Uses the test implementations of `_groundtruth_incident_flux` and `_groundtruth_unsafe_probability`.
 """
 function _groundtruth_unsafe_diffCS(proc, in_ps, out_ps)
     init_flux = _groundtruth_incident_flux(in_ps)
@@ -194,7 +222,7 @@ end
 """
     _groundtruth_safe_diffCS(proc, in_ps, out_ps)
 
-Test implementation of the safe differential cross section. Uses the test implementations of `_groundtruth_is_in_phasespace` and `_groundtruth_unsafe_diffCS`. 
+Test implementation of the safe differential cross section. Uses the test implementations of `_groundtruth_is_in_phasespace` and `_groundtruth_unsafe_diffCS`.
 """
 function _groundtruth_safe_diffCS(proc, in_ps, out_ps)
     if !_groundtruth_is_in_phasespace(in_ps, out_ps)
