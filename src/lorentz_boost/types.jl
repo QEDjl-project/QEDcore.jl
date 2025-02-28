@@ -43,14 +43,14 @@ such as four-momentum:
 
 ```jldoctest example_boost_x
 julia> p = SFourMomentum(4, 3, 2, 1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost_x(p)  # Perform the boost
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  2.886751345948129
  1.1547005383792517
  2.0
