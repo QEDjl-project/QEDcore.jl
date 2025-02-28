@@ -105,9 +105,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
         @testset "sandwich" begin
             for s1 in (1, 2)
                 for s2 in (1, 2)
-                    @test isapprox(
-                        SFourMomentum(Ubar[s1] * (GAMMA * U[s2])), 2 * P * (s1 == s2)
-                    )
+                    @test isapprox(Ubar[s1] * (GAMMA * U[s2]), 2 * P * (s1 == s2))
                 end
             end
         end #sandwich
