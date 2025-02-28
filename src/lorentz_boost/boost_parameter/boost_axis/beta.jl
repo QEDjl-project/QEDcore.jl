@@ -72,14 +72,14 @@ julia> boost = Boost(beta_x)
 Boost{BetaX{Float64}}(BetaX{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  2.886751345948129
  1.1547005383792517
  2.0
@@ -154,14 +154,14 @@ julia> boost = Boost(beta_y)
 Boost{BetaY{Float64}}(BetaY{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  3.4641016151377553
  3.0
  0.0
@@ -236,14 +236,14 @@ julia> boost = Boost(beta_z)
 Boost{BetaZ{Float64}}(BetaZ{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
   4.041451884327381
   3.0
   2.0
