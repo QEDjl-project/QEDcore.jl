@@ -16,7 +16,7 @@ Tensor product of an adjoint with a standard bi-spinor resulting in a scalar.
     This also overloads the `*` operator for this types.
 
 """
-function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)::ComplexF64
+function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
     return aBS.el1 * BS.el1 + aBS.el2 * BS.el2 + aBS.el3 * BS.el3 + aBS.el4 * BS.el4
 end
 @inline *(aBS::AdjointBiSpinor, BS::BiSpinor) = _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
@@ -45,8 +45,9 @@ Tensor product of an Dirac matrix with a standard bi-spinor resulting in another
 
 """
 function _mul(DM::DiracMatrix, BS::BiSpinor)::BiSpinor
-    return DM * BS
+    return BiSpinor(SMatrix(DM) * SVector(BS))
 end
+@inline *(DM::DiracMatrix, BS::BiSpinor) = _mul(DM, BS)
 
 """
 $(TYPEDSIGNATURES)

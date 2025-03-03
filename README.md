@@ -6,7 +6,7 @@
 
 This package is part of the `QuantumElectrodynamics.jl` library. For the description of the interoperability with other packages of `QuantumElectrodynamics.jl` see [docs](https://qedjl-project.github.io/QuantumElectrodynamics.jl/dev/).
 
-This package's main purpose is to provide implementations of the basic interfaces defined in [`QEDbase.jl`](https://github.com/QEDjl-project/QEDbase.jl), such as various particle types, `PhasespaceDefinition`, `PhaseSpacePoint`, and various vector and matrix types. These types are used across most of the QEDjl-project repositories. For detailed information on these types, please refer to the respective pages in the [docs](https://qedjl-project.github.io/QEDcore.jl/dev/).
+This package's main purpose is to provide implementations of the basic interfaces defined in [`QEDbase.jl`](https://github.com/QEDjl-project/QEDbase.jl), such as various particle types, some concrete `PhaseSpaceLayout`s, `PhaseSpacePoint`, and various vector and matrix types. These types are used across most of the QEDjl-project repositories. For detailed information on these types, please refer to the respective pages in the [docs](https://qedjl-project.github.io/QEDcore.jl/dev/).
 
 ## Contributing
 
