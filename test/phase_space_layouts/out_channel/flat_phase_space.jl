@@ -43,8 +43,9 @@ SUM_IN_MASSES = sum(IN_MASSES)
         )
 
         @test length(test_out_moms) == N_OUTGOING
-        @test isapprox(getMass.(test_out_moms), [OUT_MASSES...], atol=ATOL, rtol=RTOL)
+        @test all(isapprox.(getMass.(test_out_moms), OUT_MASSES, atol=ATOL, rtol=RTOL))
         @test isapprox(sum(test_out_moms), sum(TESTINMOMS), atol=ATOL, rtol=RTOL)
+        @test test_out_moms isa Tuple
     end
 end
 
