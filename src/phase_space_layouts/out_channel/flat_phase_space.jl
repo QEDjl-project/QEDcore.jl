@@ -239,7 +239,9 @@ function _scale_single_rambo_mom(xi, mass, massless_mom)
 end
 
 function _scale_rambo_moms(xi, masses, massless_moms)
-    return Tuple(map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms)))
+    n = size(masses, 1)
+    return ntuple(i -> _scale_single_rambo_mom(xi, masses[i], massless_moms[i]), n)
+    #return Tuple(map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms)))
 end
 
 # Kleiss 1985: 2.14
