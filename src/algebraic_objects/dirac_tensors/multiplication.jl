@@ -16,7 +16,8 @@ Tensor product of an adjoint with a standard bi-spinor resulting in a scalar.
 function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
     return aBS.el1 * BS.el1 + aBS.el2 * BS.el2 + aBS.el3 * BS.el3 + aBS.el4 * BS.el4
 end
-@inline Base.:*(aBS::AdjointBiSpinor, BS::BiSpinor) = _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
+@inline Base.:*(aBS::AdjointBiSpinor, BS::BiSpinor) =
+    _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
 
 """
 $(TYPEDSIGNATURES)
@@ -30,7 +31,8 @@ Tensor product of a standard with an adjoint bi-spinor resulting in a Dirac matr
 function _mul(BS::BiSpinor, aBS::AdjointBiSpinor)::DiracMatrix
     return DiracMatrix(BS * transpose(aBS))
 end
-@inline Base.:*(BS::BiSpinor, aBS::AdjointBiSpinor) = _mul(BS::BiSpinor, aBS::AdjointBiSpinor)
+@inline Base.:*(BS::BiSpinor, aBS::AdjointBiSpinor) =
+    _mul(BS::BiSpinor, aBS::AdjointBiSpinor)
 
 """
 $(TYPEDSIGNATURES)
