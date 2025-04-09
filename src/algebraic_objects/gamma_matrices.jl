@@ -50,10 +50,7 @@ end
 @inline gamma(::Type{<:Real}) =
     throw(ArgumentError("cannot create a non-complex-valued gamma matrix\n"))
 
-@inline _complex_from_real_t(::Type{T_ELEM}) where {T_ELEM<:Real} = ComplexF64
-@inline _complex_from_real_t(::Type{Float64}) = ComplexF64
-@inline _complex_from_real_t(::Type{Float32}) = ComplexF32
-@inline _complex_from_real_t(::Type{Float16}) = ComplexF16
+@inline _complex_from_real_t(::Type{T_ELEM}) where {T_ELEM<:Real} = Complex{T_ELEM}
 
 # feynman slash notation
 

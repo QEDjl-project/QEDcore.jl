@@ -1,14 +1,12 @@
 @inline function _booster_fermion(mom::AbstractFourMomentum{T}, mass::Real) where {T<:Real}
-    T_COMPLEX = _complex_from_real_t(T)
-    return (slashed(mom) + mass * one(DiracMatrix{T_COMPLEX})) /
+    return (slashed(mom) + mass * one(DiracMatrix{T})) /
            (sqrt(abs(getT(mom)) + mass))
 end
 
 @inline function _booster_antifermion(
     mom::AbstractFourMomentum{T}, mass::Real
 ) where {T<:Real}
-    T_COMPLEX = _complex_from_real_t(T)
-    return (mass * one(DiracMatrix{T_COMPLEX}) - slashed(mom)) /
+    return (mass * one(DiracMatrix{T}) - slashed(mom)) /
            (sqrt(abs(getT(mom)) + mass))
 end
 
@@ -23,11 +21,10 @@ end
 function QEDbase.base_state(
     particle::Fermion, ::Incoming, mom::AbstractFourMomentum{T}, spin::AllSpin
 ) where {T<:Real}
-    T_COMPLEX = _complex_from_real_t(T)
     booster = _booster_fermion(mom, mass(particle))
     return SVector(
-        BiSpinor{T_COMPLEX}(@inbounds booster[:, 1]),
-        BiSpinor{T_COMPLEX}(@inbounds booster[:, 2]),
+        BiSpinor(@inbounds booster[:, 1]),
+        BiSpinor(@inbounds booster[:, 2]),
     )
 end
 
@@ -39,8 +36,8 @@ function QEDbase.base_state(
 ) where {T<:Real}
     T_COMPLEX = _complex_from_real_t(T)
     booster = _booster_antifermion(mom, mass(particle))
-    return AdjointBiSpinor{T_COMPLEX}(
-        BiSpinor{T_COMPLEX}(@inbounds booster[:, QEDbase._spin_index(spin) + 2])
+    return AdjointBiSpinor(
+        BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin) + 2])
     ) * (@inbounds gamma(T_COMPLEX)[1])
 end
 
@@ -50,9 +47,9 @@ function QEDbase.base_state(
     T_COMPLEX = _complex_from_real_t(T)
     booster = _booster_antifermion(mom, mass(particle))
     return SVector(
-        AdjointBiSpinor{T_COMPLEX}(@inbounds BiSpinor{T_COMPLEX}(booster[:, 3])) *
+        AdjointBiSpinor(@inbounds BiSpinor(booster[:, 3])) *
         (@inbounds gamma(T_COMPLEX)[1]),
-        AdjointBiSpinor{T_COMPLEX}(@inbounds BiSpinor{T_COMPLEX}(booster[:, 4])) *
+        AdjointBiSpinor(@inbounds BiSpinor(booster[:, 4])) *
         (@inbounds gamma(T_COMPLEX)[1]),
     )
 end
@@ -62,8 +59,8 @@ function QEDbase.base_state(
 ) where {T<:Real}
     T_COMPLEX = _complex_from_real_t(T)
     booster = _booster_fermion(mom, mass(particle))
-    return AdjointBiSpinor{T_COMPLEX}(
-        BiSpinor{T_COMPLEX}(@inbounds booster[:, QEDbase._spin_index(spin)])
+    return AdjointBiSpinor(
+        BiSpinor(@inbounds booster[:, QEDbase._spin_index(spin)])
     ) * (@inbounds gamma(T_COMPLEX)[1])
 end
 
@@ -73,9 +70,9 @@ function QEDbase.base_state(
     T_COMPLEX = _complex_from_real_t(T)
     booster = _booster_fermion(mom, mass(particle))
     return SVector(
-        AdjointBiSpinor{T_COMPLEX}(BiSpinor{T_COMPLEX}(@inbounds booster[:, 1])) *
+        AdjointBiSpinor(BiSpinor(@inbounds booster[:, 1])) *
         (@inbounds gamma(T_COMPLEX)[1]),
-        AdjointBiSpinor{T_COMPLEX}(BiSpinor{T_COMPLEX}(@inbounds booster[:, 2])) *
+        AdjointBiSpinor(BiSpinor(@inbounds booster[:, 2])) *
         (@inbounds gamma(T_COMPLEX)[1]),
     )
 end

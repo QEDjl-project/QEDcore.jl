@@ -4,9 +4,6 @@
 #
 #######
 
-# Base.*(...) = ... is not possible directly so we have to import here
-import Base: *
-
 """
 $(TYPEDSIGNATURES)
 
@@ -19,7 +16,7 @@ Tensor product of an adjoint with a standard bi-spinor resulting in a scalar.
 function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
     return aBS.el1 * BS.el1 + aBS.el2 * BS.el2 + aBS.el3 * BS.el3 + aBS.el4 * BS.el4
 end
-@inline *(aBS::AdjointBiSpinor, BS::BiSpinor) = _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
+@inline Base.:*(aBS::AdjointBiSpinor, BS::BiSpinor) = _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
 
 """
 $(TYPEDSIGNATURES)
@@ -33,7 +30,7 @@ Tensor product of a standard with an adjoint bi-spinor resulting in a Dirac matr
 function _mul(BS::BiSpinor, aBS::AdjointBiSpinor)::DiracMatrix
     return DiracMatrix(BS * transpose(aBS))
 end
-@inline *(BS::BiSpinor, aBS::AdjointBiSpinor) = _mul(BS::BiSpinor, aBS::AdjointBiSpinor)
+@inline Base.:*(BS::BiSpinor, aBS::AdjointBiSpinor) = _mul(BS::BiSpinor, aBS::AdjointBiSpinor)
 
 """
 $(TYPEDSIGNATURES)
@@ -47,7 +44,7 @@ Tensor product of an Dirac matrix with a standard bi-spinor resulting in another
 function _mul(DM::DiracMatrix, BS::BiSpinor)::BiSpinor
     return BiSpinor(SMatrix(DM) * SVector(BS))
 end
-@inline *(DM::DiracMatrix, BS::BiSpinor) = _mul(DM, BS)
+@inline Base.:*(DM::DiracMatrix, BS::BiSpinor) = _mul(DM, BS)
 
 """
 $(TYPEDSIGNATURES)
@@ -61,7 +58,7 @@ Tensor product of an adjoint bi-spinor with a Dirac matrix resulting in another 
 function _mul(aBS::AdjointBiSpinor, DM::DiracMatrix)::AdjointBiSpinor
     return transpose(aBS) * DM
 end
-@inline *(aBS::AdjointBiSpinor, DM::DiracMatrix) = _mul(aBS, DM)
+@inline Base.:*(aBS::AdjointBiSpinor, DM::DiracMatrix) = _mul(aBS, DM)
 
 """
 $(TYPEDSIGNATURES)

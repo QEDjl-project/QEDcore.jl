@@ -40,8 +40,10 @@ end
 AdjointBiSpinor(sv::SVector{4,T}) where {T} = AdjointBiSpinor{T}(Tuple(sv))
 
 #interface
-AdjointBiSpinor(spn::BiSpinor{T}) where {T} = AdjointBiSpinor{T}(conj(SVector{T}(spn)))
+AdjointBiSpinor(spn::BiSpinor{T}) where {T} = AdjointBiSpinor{T}(conj(SVector(spn)))
+AdjointBiSpinor{T1}(spn::BiSpinor{T2}) where {T1, T2} = AdjointBiSpinor{promote_type(T1, T2)}(conj(SVector(spn)))
 BiSpinor(spn::AdjointBiSpinor{T}) where {T} = BiSpinor{T}(conj(SVector(spn)))
+BiSpinor{T1}(spn::AdjointBiSpinor{T2}) where {T1, T2} = BiSpinor{promote_type(T1, T2)}(conj(SVector(spn)))
 
 """
 $(TYPEDEF)
