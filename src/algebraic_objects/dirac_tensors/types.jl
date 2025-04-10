@@ -49,6 +49,17 @@ function BiSpinor{T1}(spn::AdjointBiSpinor{T2}) where {T1,T2}
     return BiSpinor{promote_type(T1, T2)}(conj(SVector(spn)))
 end
 
+function StaticArrays.similar_type(
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:BiSpinor,T<:Number}
+    return BiSpinor{T}
+end
+function StaticArrays.similar_type(
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:AdjointBiSpinor,T<:Number}
+    return AdjointBiSpinor{T}
+end
+
 """
 $(TYPEDEF)
 
@@ -75,3 +86,9 @@ end
 
 DiracMatrix(mat::AbstractMatrix{T}) where {T<:Number} = DiracMatrix{T}(mat)
 DiracMatrix(sm::SMatrix{4,4,T,16}) where {T} = DiracMatrix{T}(Tuple(sm))
+
+function StaticArrays.similar_type(
+    ::Type{A}, ::Type{T}, ::Size{(4, 4)}
+) where {A<:DiracMatrix,T<:Number}
+    return DiracMatrix{T}
+end

@@ -51,13 +51,13 @@ struct SFourMomentum{T<:Real} <: AbstractFourMomentum{T}
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:SFourMomentum,T<:Real,S}
-    return SFourMomentum
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:SFourMomentum,T<:Real}
+    return SFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:SFourMomentum,T,S}
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:SFourMomentum,T}
     return SLorentzVector{T}
 end
 
@@ -122,13 +122,13 @@ mutable struct MFourMomentum{T<:Real} <: AbstractFourMomentum{T}
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:MFourMomentum,T<:Real,S}
-    return MFourMomentum
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:MFourMomentum,T<:Real}
+    return MFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:MFourMomentum,T,S}
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:MFourMomentum,T}
     return MLorentzVector{T}
 end
 
