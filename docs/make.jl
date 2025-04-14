@@ -3,7 +3,7 @@ using Pkg
 # targeting the correct source code
 # this asumes the make.jl script is located in QEDcore.jl/docs
 project_path = Base.Filesystem.joinpath(Base.Filesystem.dirname(Base.source_path()), "..")
-Pkg.develop(; path=project_path)
+Pkg.develop(; path = project_path)
 
 using QEDbase
 using QEDcore
@@ -76,30 +76,30 @@ pages = [
 try
     # generate markdown files with Literate.jl
     for file in literate_paths
-        Literate.markdown(file, tutorial_output_dir; documenter=true)
+        Literate.markdown(file, tutorial_output_dir; documenter = true)
     end
     # geneate docs with Documenter.jl
 
     makedocs(;
-        modules=[QEDcore],
-        checkdocs=:exports,
-        authors="Uwe Hernandez Acosta",
-        repo=Documenter.Remotes.GitHub("QEDjl-project", "QEDcore.jl"),
-        sitename="QEDcore.jl",
-        format=Documenter.HTML(;
-            prettyurls=get(ENV, "CI", "false") == "true",
-            canonical="https://qedjl-project.gitlab.io/QEDcore.jl",
-            assets=String[],
+        modules = [QEDcore],
+        checkdocs = :exports,
+        authors = "Uwe Hernandez Acosta",
+        repo = Documenter.Remotes.GitHub("QEDjl-project", "QEDcore.jl"),
+        sitename = "QEDcore.jl",
+        format = Documenter.HTML(;
+            prettyurls = get(ENV, "CI", "false") == "true",
+            canonical = "https://qedjl-project.gitlab.io/QEDcore.jl",
+            assets = String[],
         ),
-        pages=pages,
-        plugins=[bib, links],
+        pages = pages,
+        plugins = [bib, links],
     )
 finally
     # doing some garbage collection
     @info "GarbageCollection: remove generated landing page"
     rm(index_path)
     @info "GarbageCollection: remove generated tutorial files"
-    rm(tutorial_output_dir; recursive=true)
+    rm(tutorial_output_dir; recursive = true)
 end
 
-deploydocs(; repo="github.com/QEDjl-project/QEDcore.jl", push_preview=false)
+deploydocs(; repo = "github.com/QEDjl-project/QEDcore.jl", push_preview = false)

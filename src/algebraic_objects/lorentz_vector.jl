@@ -33,8 +33,8 @@ end
 SLorentzVector(t, x, y, z) = SLorentzVector(promote(t, x, y, z)...)
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:SLorentzVector,T,S}
+        ::Type{A}, ::Type{T}, ::Size{S}
+    ) where {A <: SLorentzVector, T, S}
     return SLorentzVector{T}
 end
 
@@ -71,8 +71,8 @@ end
 MLorentzVector(t, x, y, z) = MLorentzVector(promote(t, x, y, z)...)
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:MLorentzVector,T,S}
+        ::Type{A}, ::Type{T}, ::Size{S}
+    ) where {A <: MLorentzVector, T, S}
     return MLorentzVector{T}
 end
 

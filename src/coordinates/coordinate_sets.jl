@@ -1,4 +1,3 @@
-
 """
     AbstractCoordinateSet{N}
 

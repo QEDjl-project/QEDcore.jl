@@ -11,7 +11,7 @@ By default, a constructed `BiSpinor` will have complex-valued components, using 
 any other `Number` type can be used by explicitly calling `BiSpinor{T}(el1, el2, el3, el4)`, which converts
 all given elements to `T`.
 """
-struct BiSpinor{T<:Number} <: AbstractDiracVector{T}
+struct BiSpinor{T <: Number} <: AbstractDiracVector{T}
     el1::T
     el2::T
     el3::T
@@ -26,37 +26,37 @@ By default, a constructed `AdjointBiSpinor` will have complex-valued components,
 any other `Number` type can be used by explicitly calling `AdjointBiSpinor{T}(el1, el2, el3, el4)`, which converts
 all given elements to `T`.
 """
-struct AdjointBiSpinor{T<:Number} <: AbstractDiracVector{T}
+struct AdjointBiSpinor{T <: Number} <: AbstractDiracVector{T}
     el1::T
     el2::T
     el3::T
     el4::T
 end
 
-AdjointBiSpinor(mat::AbstractVector{T}) where {T<:Number} = AdjointBiSpinor{T}(mat)
-function similar_type(::Type{A}, ::Type{ElType}) where {A<:AdjointBiSpinor,ElType}
+AdjointBiSpinor(mat::AbstractVector{T}) where {T <: Number} = AdjointBiSpinor{T}(mat)
+function similar_type(::Type{A}, ::Type{ElType}) where {A <: AdjointBiSpinor, ElType}
     return AdjointBiSpinor{ElType}
 end
-AdjointBiSpinor(sv::SVector{4,T}) where {T} = AdjointBiSpinor{T}(Tuple(sv))
+AdjointBiSpinor(sv::SVector{4, T}) where {T} = AdjointBiSpinor{T}(Tuple(sv))
 
 #interface
 AdjointBiSpinor(spn::BiSpinor{T}) where {T} = AdjointBiSpinor{T}(conj(SVector(spn)))
-function AdjointBiSpinor{T1}(spn::BiSpinor{T2}) where {T1,T2}
+function AdjointBiSpinor{T1}(spn::BiSpinor{T2}) where {T1, T2}
     return AdjointBiSpinor{promote_type(T1, T2)}(conj(SVector(spn)))
 end
 BiSpinor(spn::AdjointBiSpinor{T}) where {T} = BiSpinor{T}(conj(SVector(spn)))
-function BiSpinor{T1}(spn::AdjointBiSpinor{T2}) where {T1,T2}
+function BiSpinor{T1}(spn::AdjointBiSpinor{T2}) where {T1, T2}
     return BiSpinor{promote_type(T1, T2)}(conj(SVector(spn)))
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:BiSpinor,T<:Number}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: BiSpinor, T <: Number}
     return BiSpinor{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:AdjointBiSpinor,T<:Number}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: AdjointBiSpinor, T <: Number}
     return AdjointBiSpinor{T}
 end
 
@@ -65,7 +65,7 @@ $(TYPEDEF)
 
 Concrete type to model Dirac matrices, i.e. matrix representations of linear mappings between two spinor spaces.
 """
-struct DiracMatrix{T<:Number} <: AbstractDiracMatrix{T}
+struct DiracMatrix{T <: Number} <: AbstractDiracMatrix{T}
     el11::T
     el12::T
     el13::T
@@ -84,11 +84,11 @@ struct DiracMatrix{T<:Number} <: AbstractDiracMatrix{T}
     el44::T
 end
 
-DiracMatrix(mat::AbstractMatrix{T}) where {T<:Number} = DiracMatrix{T}(mat)
-DiracMatrix(sm::SMatrix{4,4,T,16}) where {T} = DiracMatrix{T}(Tuple(sm))
+DiracMatrix(mat::AbstractMatrix{T}) where {T <: Number} = DiracMatrix{T}(mat)
+DiracMatrix(sm::SMatrix{4, 4, T, 16}) where {T} = DiracMatrix{T}(Tuple(sm))
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4, 4)}
-) where {A<:DiracMatrix,T<:Number}
+        ::Type{A}, ::Type{T}, ::Size{(4, 4)}
+    ) where {A <: DiracMatrix, T <: Number}
     return DiracMatrix{T}
 end

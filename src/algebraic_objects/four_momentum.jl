@@ -12,7 +12,7 @@ Builds a static LorentzVectorLike with real components used to statically model 
 # Fields
 $(TYPEDFIELDS)
 """
-struct SFourMomentum{T<:Real} <: AbstractFourMomentum{T}
+struct SFourMomentum{T <: Real} <: AbstractFourMomentum{T}
     "energy component"
     E::T
 
@@ -33,8 +33,8 @@ struct SFourMomentum{T<:Real} <: AbstractFourMomentum{T}
     $(TYPEDSIGNATURES)
     """
     @inline function SFourMomentum{T_ELEM}(
-        t::Real, x::Real, y::Real, z::Real
-    ) where {T_ELEM<:Real}
+            t::Real, x::Real, y::Real, z::Real
+        ) where {T_ELEM <: Real}
         return new{T_ELEM}(T_ELEM(t), T_ELEM(x), T_ELEM(y), T_ELEM(z))
     end
 
@@ -51,13 +51,13 @@ struct SFourMomentum{T<:Real} <: AbstractFourMomentum{T}
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:SFourMomentum,T<:Real}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: SFourMomentum, T <: Real}
     return SFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:SFourMomentum,T}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: SFourMomentum, T}
     return SLorentzVector{T}
 end
 
@@ -83,7 +83,7 @@ Builds a mutable LorentzVector with real components used to statically model the
 # Fields
 $(TYPEDFIELDS)
 """
-mutable struct MFourMomentum{T<:Real} <: AbstractFourMomentum{T}
+mutable struct MFourMomentum{T <: Real} <: AbstractFourMomentum{T}
     "energy component"
     E::T
 
@@ -104,8 +104,8 @@ mutable struct MFourMomentum{T<:Real} <: AbstractFourMomentum{T}
     $(TYPEDSIGNATURES)
     """
     @inline function MFourMomentum{T_ELEM}(
-        t::Real, x::Real, y::Real, z::Real
-    ) where {T_ELEM<:Real}
+            t::Real, x::Real, y::Real, z::Real
+        ) where {T_ELEM <: Real}
         return new{T_ELEM}(T_ELEM(t), T_ELEM(x), T_ELEM(y), T_ELEM(z))
     end
 
@@ -122,13 +122,13 @@ mutable struct MFourMomentum{T<:Real} <: AbstractFourMomentum{T}
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:MFourMomentum,T<:Real}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: MFourMomentum, T <: Real}
     return MFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{(4,)}
-) where {A<:MFourMomentum,T}
+        ::Type{A}, ::Type{T}, ::Size{(4,)}
+    ) where {A <: MFourMomentum, T}
     return MLorentzVector{T}
 end
 

@@ -5,7 +5,7 @@ include("utils.jl")
 include("../test_implementation/TestImplementation.jl")
 
 const RNG = MersenneTwister(12345)
-const ATOL = 1e-15
+const ATOL = 1.0e-15
 
 const test_mom = rand(RNG, SFourMomentum)
 const test_psf = ParticleStateful(
@@ -81,9 +81,9 @@ const TESTPSL = TestImplementation.TestOutPhaseSpaceLayout()
             test_param = _rand(RNG, boost_param_type)
             boost = Boost(test_param)
             @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in
-                                                     Iterators.product(
-                (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
-            )
+                Iterators.product(
+                    (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
+                )
                 INCOMING_PARTICLES = Tuple(
                     rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING)
                 )

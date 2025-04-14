@@ -1,4 +1,3 @@
-
 """
 
     BetaVector(x::Real,y::Real,z::Real)
@@ -63,7 +62,7 @@ julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 * [`ROOT::Math:Boost` from ROOT](https://root.cern.ch/doc/master/classROOT_1_1Math_1_1Boost.html)
 
 """
-struct BetaVector{T<:Real} <: AbstractBoostVector
+struct BetaVector{T <: Real} <: AbstractBoostVector
     x::T
     y::T
     z::T
@@ -97,8 +96,8 @@ function _three_vector_square(beta_vec::BetaVector)
 end
 
 @inline function QEDbase._transform(
-    beta_vec::BetaVector, p::M
-) where {M<:AbstractFourMomentum}
+        beta_vec::BetaVector, p::M
+    ) where {M <: AbstractFourMomentum}
     b2 = _three_vector_square(beta_vec)
     if b2 == one(b2)
         return p

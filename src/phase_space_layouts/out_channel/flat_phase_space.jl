@@ -37,22 +37,22 @@ struct FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
 end
 
 function QEDbase.phase_space_dimension(
-    proc::AbstractProcessDefinition,
-    model::AbstractModelDefinition,
-    psl::FlatPhaseSpaceLayout,
-)
+        proc::AbstractProcessDefinition,
+        model::AbstractModelDefinition,
+        psl::FlatPhaseSpaceLayout,
+    )
     return 4 * number_outgoing_particles(proc)
 end
 
 QEDbase.in_phase_space_layout(psl::FlatPhaseSpaceLayout) = psl.in_psl
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractModelDefinition,
-    in_moms::Tuple,
-    psl::FlatPhaseSpaceLayout,
-    out_coords::Tuple,
-)
+        proc::AbstractProcessDefinition,
+        model::AbstractModelDefinition,
+        in_moms::Tuple,
+        psl::FlatPhaseSpaceLayout,
+        out_coords::Tuple,
+    )
 
     # TODO: move this to input validation
     number_outgoing_particles(proc) >= 2 || throw(
@@ -270,10 +270,10 @@ function _center_of_momentum_energy(psp)
 end
 
 function QEDbase._phase_space_factor(
-    psp::PhaseSpacePoint{PROC,MODEL,PSL}
-) where {
-    PROC<:AbstractProcessDefinition,MODEL<:AbstractModelDefinition,PSL<:FlatPhaseSpaceLayout
-}
+        psp::PhaseSpacePoint{PROC, MODEL, PSL}
+    ) where {
+        PROC <: AbstractProcessDefinition, MODEL <: AbstractModelDefinition, PSL <: FlatPhaseSpaceLayout,
+    }
     ss = _center_of_momentum_energy(psp)
     n = number_incoming_particles(psp)
     out_moms = momenta(psp, Outgoing())

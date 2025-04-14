@@ -7,11 +7,11 @@
 #       the definition below looks *transposed*.
 ####
 
-function gamma(t::Type{T_GAMMA}) where {T<:Number,T_GAMMA<:AbstractGammaRepresentation{T}}
+function gamma(t::Type{T_GAMMA}) where {T <: Number, T_GAMMA <: AbstractGammaRepresentation{T}}
     return SLorentzVector(_gamma0(t), _gamma1(t), _gamma2(t), _gamma3(t))
 end
 
-struct DiracGammaRepresentation{T_ELEM<:Number} <: AbstractGammaRepresentation{T_ELEM} end
+struct DiracGammaRepresentation{T_ELEM <: Number} <: AbstractGammaRepresentation{T_ELEM} end
 
 #! format: off
 @inline function _gamma0(::Type{DiracGammaRepresentation{T_ELEM}})::DiracMatrix{T_ELEM} where {T_ELEM <: Number}
@@ -45,25 +45,25 @@ end
 
 # default gamma matrix is in Dirac's representation
 @inline gamma() = gamma(DiracGammaRepresentation{ComplexF64})
-@inline gamma(::Type{T_ELEM}) where {T_ELEM<:Number} =
+@inline gamma(::Type{T_ELEM}) where {T_ELEM <: Number} =
     gamma(DiracGammaRepresentation{T_ELEM})
 @inline gamma(::Type{<:Real}) =
     throw(ArgumentError("cannot create a non-complex-valued gamma matrix\n"))
 
-@inline _complex_from_real_t(::Type{T_ELEM}) where {T_ELEM<:Real} = Complex{T_ELEM}
+@inline _complex_from_real_t(::Type{T_ELEM}) where {T_ELEM <: Real} = Complex{T_ELEM}
 
 # feynman slash notation
 
 function slashed(
-    ::Type{T_GAMMA}, lv::AbstractLorentzVector{T_ELEM}
-) where {T_ELEM<:Number,T_GAMMA<:AbstractGammaRepresentation{T_ELEM}}
+        ::Type{T_GAMMA}, lv::AbstractLorentzVector{T_ELEM}
+    ) where {T_ELEM <: Number, T_GAMMA <: AbstractGammaRepresentation{T_ELEM}}
     return gamma(T_GAMMA) * lv
 end
 
-function slashed(LV::T) where {T_ELEM<:Real,T<:AbstractLorentzVector{T_ELEM}}
+function slashed(LV::T) where {T_ELEM <: Real, T <: AbstractLorentzVector{T_ELEM}}
     return gamma(_complex_from_real_t(T_ELEM)) * LV
 end
 
-function slashed(LV::T) where {T_ELEM<:Number,T<:AbstractLorentzVector{T_ELEM}}
+function slashed(LV::T) where {T_ELEM <: Number, T <: AbstractLorentzVector{T_ELEM}}
     return gamma(T_ELEM) * LV
 end

@@ -94,13 +94,13 @@ In this case, the rapidity of particle 2 is given, and its energy and momentum a
 - `ArgumentError` if invalid coordinates are used (e.g., unsupported coordinate types or
     incompatible indices).
 """
-struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinate} <:
-       AbstractTwoBodyRestSystem
+struct TwoBodyRestSystem{RESTIDX, COORD <: AbstractUnivariateCoordinate} <:
+    AbstractTwoBodyRestSystem
     coord::COORD
 
     function TwoBodyRestSystem{RESTIDX}(
-        coord_name::COORD
-    ) where {RESTIDX,COORD<:AbstractSingleParticleCoordinate{RESTIDX}}
+            coord_name::COORD
+        ) where {RESTIDX, COORD <: AbstractSingleParticleCoordinate{RESTIDX}}
         throw(
             InvalidInputError(
                 "the particle at rest and the particle parameterize by the coordinate must not have the same index",
@@ -109,13 +109,13 @@ struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinate} <:
     end
 
     function TwoBodyRestSystem{RESTIDX}(
-        coord_name::COORD
-    ) where {RESTIDX,RUNIDX,COORD<:AbstractSingleParticleCoordinate{RUNIDX}}
-        return new{RESTIDX,COORD}(coord_name)
+            coord_name::COORD
+        ) where {RESTIDX, RUNIDX, COORD <: AbstractSingleParticleCoordinate{RUNIDX}}
+        return new{RESTIDX, COORD}(coord_name)
     end
 
     function TwoBodyRestSystem{RESTIDX}(coord_name::CMSEnergy) where {RESTIDX}
-        return new{RESTIDX,CMSEnergy}(coord_name)
+        return new{RESTIDX, CMSEnergy}(coord_name)
     end
 end
 
@@ -125,22 +125,22 @@ end
     TwoBodyRestSystem(Val(rest_idx), coord_name)
 @inline TwoBodyRestSystem(
     coord::COORD
-) where {RUNIDX,COORD<:AbstractSingleParticleCoordinate{RUNIDX}} =
+) where {RUNIDX, COORD <: AbstractSingleParticleCoordinate{RUNIDX}} =
     TwoBodyRestSystem{_the_other(RUNIDX)}(coord)
 TwoBodyRestSystem() = TwoBodyRestSystem(1, Energy(2))
 const TwoBodyTargetSystem{COORD} =
-    TwoBodyRestSystem{1,COORD} where {COORD<:AbstractUnivariateCoordinate}
+    TwoBodyRestSystem{1, COORD} where {COORD <: AbstractUnivariateCoordinate}
 TwoBodyTargetSystem() = TwoBodyTargetSystem(Energy(2))
 const TwoBodyBeamSystem{COORD} =
-    TwoBodyRestSystem{2,COORD} where {COORD<:AbstractUnivariateCoordinate}
+    TwoBodyRestSystem{2, COORD} where {COORD <: AbstractUnivariateCoordinate}
 TwoBodyBeamSystem() = TwoBodyBeamSystem(Energy(1))
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    ::AbstractPerturbativeModel,
-    ::TwoBodyRestSystem{RESTIDX,<:Energy{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
+        proc::AbstractProcessDefinition,
+        ::AbstractPerturbativeModel,
+        ::TwoBodyRestSystem{RESTIDX, <:Energy{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
     masses = mass.(Ref(T), incoming_particles(proc))
@@ -157,11 +157,11 @@ function QEDbase._build_momenta(
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    ::AbstractPerturbativeModel,
-    ::TwoBodyRestSystem{RESTIDX,<:SpatialMagnitude{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
+        proc::AbstractProcessDefinition,
+        ::AbstractPerturbativeModel,
+        ::TwoBodyRestSystem{RESTIDX, <:SpatialMagnitude{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
     masses = mass.(Ref(T), incoming_particles(proc))
@@ -178,11 +178,11 @@ function QEDbase._build_momenta(
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractPerturbativeModel,
-    in_psl::TwoBodyRestSystem{RESTIDX,<:CMSEnergy},
-    in_coords,
-) where {RESTIDX}
+        proc::AbstractProcessDefinition,
+        model::AbstractPerturbativeModel,
+        in_psl::TwoBodyRestSystem{RESTIDX, <:CMSEnergy},
+        in_coords,
+    ) where {RESTIDX}
     T = eltype(in_coords)
 
     RUNIDX = _the_other(RESTIDX)
@@ -203,11 +203,11 @@ function QEDbase._build_momenta(
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractPerturbativeModel,
-    in_psl::TwoBodyRestSystem{RESTIDX,<:Rapidity{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
+        proc::AbstractProcessDefinition,
+        model::AbstractPerturbativeModel,
+        in_psl::TwoBodyRestSystem{RESTIDX, <:Rapidity{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
     masses = mass.(Ref(T), incoming_particles(proc))

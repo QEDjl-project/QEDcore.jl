@@ -8,13 +8,15 @@ unary_methods = [-, +]
 binary_array_methods = [+, -]
 binary_float_methods = [*, /]
 
-allowed_muls = Dict([
-    (AdjointBiSpinor, BiSpinor) => ComplexF64,
-    (BiSpinor, AdjointBiSpinor) => DiracMatrix,
-    (AdjointBiSpinor, DiracMatrix) => AdjointBiSpinor,
-    (DiracMatrix, BiSpinor) => BiSpinor,
-    (DiracMatrix, DiracMatrix) => DiracMatrix,
-])
+allowed_muls = Dict(
+    [
+        (AdjointBiSpinor, BiSpinor) => ComplexF64,
+        (BiSpinor, AdjointBiSpinor) => DiracMatrix,
+        (AdjointBiSpinor, DiracMatrix) => AdjointBiSpinor,
+        (DiracMatrix, BiSpinor) => BiSpinor,
+        (DiracMatrix, DiracMatrix) => DiracMatrix,
+    ]
+)
 
 groundtruth_mul(a::AdjointBiSpinor, b::BiSpinor) = transpose(SArray(a)) * SArray(b)
 function groundtruth_mul(a::BiSpinor, b::AdjointBiSpinor)
@@ -27,8 +29,8 @@ groundtruth_mul(a::DiracMatrix, b::BiSpinor) = BiSpinor(SArray(a) * SArray(b))
 groundtruth_mul(a::DiracMatrix, b::DiracMatrix) = DiracMatrix(SArray(a) * SArray(b))
 
 @testset "DiracTensor{$T}" for T in [
-    Float16, Float32, Float64, ComplexF16, ComplexF32, ComplexF64
-]
+        Float16, Float32, Float64, ComplexF16, ComplexF32, ComplexF64,
+    ]
     dirac_tensors = [
         BiSpinor(rand(RNG, T, 4)),
         AdjointBiSpinor(rand(RNG, T, 4)),
