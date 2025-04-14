@@ -16,7 +16,7 @@ function _fermion_propagator(P::AbstractFourMomentum)
 end
 
 function QEDbase.propagator(particle_type::BosonLike, K::AbstractFourMomentum)
-    return _scalar_propagator(K, mass(particle_type))
+    return _scalar_propagator(K, mass(eltype(K), particle_type))
 end
 
 function QEDbase.propagator(particle_type::Photon, K::AbstractFourMomentum)
@@ -24,5 +24,5 @@ function QEDbase.propagator(particle_type::Photon, K::AbstractFourMomentum)
 end
 
 function QEDbase.propagator(particle_type::FermionLike, P::AbstractFourMomentum)
-    return _fermion_propagator(P, mass(particle_type))
+    return _fermion_propagator(P, mass(eltype(P), particle_type))
 end
