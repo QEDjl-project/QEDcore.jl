@@ -14,7 +14,7 @@ export BetaX, BetaY, BetaZ, BetaVector
 export BiSpinor, AdjointBiSpinor, DiracMatrix
 
 # gamma matrices
-export gamma, GAMMA, DiracGammaRepresentation, slashed
+export gamma, DiracGammaRepresentation, slashed
 
 # particle types
 export FermionLike, Fermion, AntiFermion, MajoranaFermion

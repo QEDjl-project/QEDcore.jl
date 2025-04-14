@@ -3,6 +3,8 @@ using LinearAlgebra
 using Random
 using SparseArrays
 
+const GAMMA = gamma()
+
 function _gamma_anticommutator(i, j)
     return GAMMA[i] * GAMMA[j] + GAMMA[j] * GAMMA[i]
 end
@@ -79,7 +81,7 @@ GROUNDTRUTH_GAMMA3_DIRAC[2, 4] = -1
         a = SLorentzVector(rand(rng, 4) + 1im * rand(rng, 4))
 
         @test isapprox(slashed(a), GAMMA * a)
-        @test isapprox(slashed(a), slashed(DiracGammaRepresentation, a))
+        @test isapprox(slashed(a), slashed(DiracGammaRepresentation{ComplexF64}, a))
     end
 
     @testset "Dirac representation" begin

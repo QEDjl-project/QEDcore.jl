@@ -6,7 +6,9 @@ Test implementation for building incoming momenta. Maps all components into four
 """
 function _groundtruth_in_moms(in_coords)
     n = Int(length(in_coords) / 4)
-    return NTuple{n}(map(SFourMomentum, Iterators.partition(in_coords, 4)))
+    return NTuple{n}(
+        map(SFourMomentum{eltype(in_coords)}, Iterators.partition(in_coords, 4))
+    )
 end
 
 """
@@ -21,7 +23,7 @@ function _groundtruth_out_moms(in_moms, out_coords)
     if length(out_coords) == 0
         return (Ptot,)
     end
-    moms_except_last = NTuple{n}(map(SFourMomentum, Iterators.partition(out_coords, 4)))
+    moms_except_last = NTuple{n}(map(eltype(in_moms), Iterators.partition(out_coords, 4)))
     last_mom = Ptot - sum(moms_except_last)
     return (moms_except_last..., last_mom)
 end
@@ -70,10 +72,10 @@ end
 Test implementation of the phase space check. Return `false` if either the momentum of the first incoming particle is exactly `zero(SFourMomentum)`, or if the momentum of the last outgoing momentum is exactly `ones(SFourMomentum)`. Otherwise, return true.
 """
 function _groundtruth_is_in_phasespace(in_ps, out_ps)
-    if in_ps[1] == SFourMomentum(zeros(4))
+    if in_ps[1] == zero(eltype(in_ps))
         return false
     end
-    if out_ps[end] == ones(SFourMomentum)
+    if out_ps[end] == ones(eltype(in_ps))
         return false
     end
     return true

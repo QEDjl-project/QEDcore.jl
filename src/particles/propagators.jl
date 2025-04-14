@@ -6,8 +6,9 @@ function _scalar_propagator(K::AbstractFourMomentum)
     return one(getT(K)) / (K * K)
 end
 
-function _fermion_propagator(P::AbstractFourMomentum, mass::Real)
-    return (slashed(P) + mass * one(DiracMatrix)) * _scalar_propagator(P, mass)
+function _fermion_propagator(P::AbstractFourMomentum{T}, mass::Real) where {T<:Real}
+    return (slashed(P) + mass * one(DiracMatrix{_complex_from_real_t(T)})) *
+           _scalar_propagator(P, mass)
 end
 
 function _fermion_propagator(P::AbstractFourMomentum)

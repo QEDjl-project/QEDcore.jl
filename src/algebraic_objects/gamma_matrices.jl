@@ -1,5 +1,5 @@
 ####
-# concrete implementatio of gamma matrices in Diracs representation
+# concrete implementation of gamma matrices in Diracs representation
 #
 # Note: lower-index version of the gamma matrices are used
 #       e.g. see https://en.wikipedia.org/wiki/Gamma_matrices
@@ -7,55 +7,63 @@
 #       the definition below looks *transposed*.
 ####
 
-function gamma(::Type{T})::SLorentzVector where {T<:AbstractGammaRepresentation}
-    return SLorentzVector(_gamma0(T), _gamma1(T), _gamma2(T), _gamma3(T))
+function gamma(t::Type{T_GAMMA}) where {T<:Number,T_GAMMA<:AbstractGammaRepresentation{T}}
+    return SLorentzVector(_gamma0(t), _gamma1(t), _gamma2(t), _gamma3(t))
 end
 
-struct DiracGammaRepresentation <: AbstractGammaRepresentation end
+struct DiracGammaRepresentation{T_ELEM<:Number} <: AbstractGammaRepresentation{T_ELEM} end
 
 #! format: off
-function _gamma0(::Type{DiracGammaRepresentation})::DiracMatrix
-    return DiracMatrix(1,   0,   0,   0,
-                       0,   1,   0,   0,
-                       0,   0,  -1,   0,
-                       0,   0,   0,  -1)
+@inline function _gamma0(::Type{DiracGammaRepresentation{T_ELEM}})::DiracMatrix{T_ELEM} where {T_ELEM <: Number}
+    return DiracMatrix{T_ELEM}(1,   0,   0,   0,
+                               0,   1,   0,   0,
+                               0,   0,  -1,   0,
+                               0,   0,   0,  -1)
 end
 
-function _gamma1(::Type{DiracGammaRepresentation})::DiracMatrix
-    return DiracMatrix( 0,   0,   0,   1,
-                        0,   0,   1,   0,
-                        0,  -1,   0,   0,
-                       -1,   0,   0,   0)
+@inline function _gamma1(::Type{DiracGammaRepresentation{T_ELEM}})::DiracMatrix{T_ELEM} where {T_ELEM <: Number}
+    return DiracMatrix{T_ELEM}(0,   0,   0,   1,
+                               0,   0,   1,   0,
+                               0,  -1,   0,   0,
+                              -1,   0,   0,   0)
 end
 
-function _gamma2(::Type{DiracGammaRepresentation})::DiracMatrix
-    return DiracMatrix(  0,    0,    0, 1im,
-                         0,    0, -1im,   0,
-                         0, -1im,    0,   0,
-                       1im,    0,    0,   0)
+@inline function _gamma2(::Type{DiracGammaRepresentation{T_ELEM}})::DiracMatrix{T_ELEM} where {T_ELEM <: Number}
+    return DiracMatrix{T_ELEM}(0,    0,    0, 1im,
+                               0,    0, -1im,   0,
+                               0, -1im,    0,   0,
+                               1im,  0,    0,   0)
 end
 
-function _gamma3(::Type{DiracGammaRepresentation})::DiracMatrix
-    return DiracMatrix( 0,  0,  1,  0,
-                        0,  0,  0, -1,
-                       -1,  0,  0,  0,
-                        0,  1,  0,  0)
+@inline function _gamma3(::Type{DiracGammaRepresentation{T_ELEM}})::DiracMatrix{T_ELEM} where {T_ELEM <: Number}
+    return DiracMatrix{T_ELEM}(0,  0,  1,  0,
+                               0,  0,  0, -1,
+                              -1,  0,  0,  0,
+                               0,  1,  0,  0)
 end
 #! format: on
 
 # default gamma matrix is in Dirac's representation
-gamma() = gamma(DiracGammaRepresentation)
+@inline gamma() = gamma(DiracGammaRepresentation{ComplexF64})
+@inline gamma(::Type{T_ELEM}) where {T_ELEM<:Number} =
+    gamma(DiracGammaRepresentation{T_ELEM})
+@inline gamma(::Type{<:Real}) =
+    throw(ArgumentError("cannot create a non-complex-valued gamma matrix\n"))
 
-const GAMMA = gamma()
+@inline _complex_from_real_t(::Type{T_ELEM}) where {T_ELEM<:Real} = Complex{T_ELEM}
 
 # feynman slash notation
 
 function slashed(
-    ::Type{TG}, LV::TV
-) where {TG<:AbstractGammaRepresentation,TV<:AbstractLorentzVector}
-    return gamma(TG) * LV
+    ::Type{T_GAMMA}, lv::AbstractLorentzVector{T_ELEM}
+) where {T_ELEM<:Number,T_GAMMA<:AbstractGammaRepresentation{T_ELEM}}
+    return gamma(T_GAMMA) * lv
 end
 
-function slashed(LV::T) where {T<:AbstractLorentzVector}
-    return GAMMA * LV
+function slashed(LV::T) where {T_ELEM<:Real,T<:AbstractLorentzVector{T_ELEM}}
+    return gamma(_complex_from_real_t(T_ELEM)) * LV
+end
+
+function slashed(LV::T) where {T_ELEM<:Number,T<:AbstractLorentzVector{T_ELEM}}
+    return gamma(T_ELEM) * LV
 end

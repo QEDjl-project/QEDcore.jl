@@ -44,6 +44,10 @@ begin
         include("algebraic_objects/dirac_tensor.jl")
     end
 
+    @time @safetestset "generic eltype tests" begin
+        include("algebraic_objects/generic_eltypes.jl")
+    end
+
     # particles
     @time @safetestset "particle types" begin
         include("particles/types.jl")

@@ -12,39 +12,52 @@ Builds a static LorentzVectorLike with real components used to statically model 
 # Fields
 $(TYPEDFIELDS)
 """
-struct SFourMomentum <: AbstractFourMomentum
+struct SFourMomentum{T<:Real} <: AbstractFourMomentum{T}
     "energy component"
-    E::Float64
+    E::T
 
     "`x` component"
-    px::Float64
+    px::T
 
     "`y` component"
-    py::Float64
+    py::T
 
     "`z` component"
-    pz::Float64
-end
+    pz::T
 
-"""
-$(SIGNATURES)
+    """
+    $(SIGNATURES)
 
-The interface transforms each number-like input to float64:
+    The generic constructor transforms each real-number input to the given `T_ELEM`:
 
-$(TYPEDSIGNATURES)
-"""
-function SFourMomentum(t::T, x::T, y::T, z::T) where {T<:Union{Integer,Rational,Irrational}}
-    return SFourMomentum(float(t), x, y, z)
+    $(TYPEDSIGNATURES)
+    """
+    @inline function SFourMomentum{T_ELEM}(
+        t::Real, x::Real, y::Real, z::Real
+    ) where {T_ELEM<:Real}
+        return new{T_ELEM}(T_ELEM(t), T_ELEM(x), T_ELEM(y), T_ELEM(z))
+    end
+
+    """
+    $(SIGNATURES)
+
+    The default constructor transforms each real-number input to `Float64`:
+
+    $(TYPEDSIGNATURES)
+    """
+    @inline function SFourMomentum(t::Real, x::Real, y::Real, z::Real)
+        return SFourMomentum{Float64}(t, x, y, z)
+    end
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:SFourMomentum,T<:Real,S}
-    return SFourMomentum
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:SFourMomentum,T<:Real}
+    return SFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:SFourMomentum,T,S}
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:SFourMomentum,T}
     return SLorentzVector{T}
 end
 
@@ -70,39 +83,52 @@ Builds a mutable LorentzVector with real components used to statically model the
 # Fields
 $(TYPEDFIELDS)
 """
-mutable struct MFourMomentum <: AbstractFourMomentum
+mutable struct MFourMomentum{T<:Real} <: AbstractFourMomentum{T}
     "energy component"
-    E::Float64
+    E::T
 
     "`x` component"
-    px::Float64
+    px::T
 
     "`y` component"
-    py::Float64
+    py::T
 
     "`z` component"
-    pz::Float64
-end
+    pz::T
 
-"""
-$(SIGNATURES)
+    """
+    $(SIGNATURES)
 
-The interface transforms each number-like input to float64:
+    The generic constructor transforms each real-number input to the given `T_ELEM`:
 
-$(TYPEDSIGNATURES)
-"""
-function MFourMomentum(t::T, x::T, y::T, z::T) where {T<:Union{Integer,Rational,Irrational}}
-    return MFourMomentum(float(t), x, y, z)
+    $(TYPEDSIGNATURES)
+    """
+    @inline function MFourMomentum{T_ELEM}(
+        t::Real, x::Real, y::Real, z::Real
+    ) where {T_ELEM<:Real}
+        return new{T_ELEM}(T_ELEM(t), T_ELEM(x), T_ELEM(y), T_ELEM(z))
+    end
+
+    """
+    $(SIGNATURES)
+
+    The default constructor transforms each real-number input to `Float64`:
+
+    $(TYPEDSIGNATURES)
+    """
+    @inline function MFourMomentum(t::Real, x::Real, y::Real, z::Real)
+        return MFourMomentum{Float64}(t, x, y, z)
+    end
 end
 
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:MFourMomentum,T<:Real,S}
-    return MFourMomentum
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:MFourMomentum,T<:Real}
+    return MFourMomentum{T}
 end
 function StaticArrays.similar_type(
-    ::Type{A}, ::Type{T}, ::Size{S}
-) where {A<:MFourMomentum,T,S}
+    ::Type{A}, ::Type{T}, ::Size{(4,)}
+) where {A<:MFourMomentum,T}
     return MLorentzVector{T}
 end
 
