@@ -26,7 +26,7 @@ struct TestInPhaseSpaceLayout_FAIL <: QEDbase.AbstractInPhaseSpaceLayout end
 Base.broadcastable(psl::TestInPhaseSpaceLayout_FAIL) = Ref(psl)
 
 struct TestOutPhaseSpaceLayout_FAIL <:
-       QEDbase.AbstractOutPhaseSpaceLayout{TestInPhaseSpaceLayout}
+    QEDbase.AbstractOutPhaseSpaceLayout{TestInPhaseSpaceLayout}
     in_psl::TestInPhaseSpaceLayout
 end
 TestOutPhaseSpaceLayout_FAIL() = TestOutPhaseSpaceLayout_FAIL(TestInPhaseSpaceLayout())

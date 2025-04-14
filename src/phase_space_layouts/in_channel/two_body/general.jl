@@ -1,4 +1,3 @@
-
 abstract type AbstractPerturbativeModel <: AbstractModelDefinition end
 
 """

@@ -85,7 +85,7 @@ GROUNDTRUTH_GAMMA3_DIRAC[2, 4] = -1
     end
 
     @testset "Dirac representation" begin
-        # check the components of the gamma matrices against the 
+        # check the components of the gamma matrices against the
         # Dirac representations, e.g. from https://en.wikipedia.org/wiki/Gamma_matrices
         # note: we use the convention of lower indices for the gamma matrix definition.
         #       This motivates the minus sign in front of the spatial components

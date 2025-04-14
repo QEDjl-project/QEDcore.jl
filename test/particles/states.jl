@@ -8,9 +8,9 @@ RNG = MersenneTwister(708583836976)
 PHOTON_ENERGIES = (0.0, rand(RNG), rand(RNG) * 10)
 COS_THETAS = (-1.0, -rand(RNG), 0.0, rand(RNG), 1.0)
 
-rtol_atol(::Type{Float64}) = (zero(Float64), Float64(1e-14))
-rtol_atol(::Type{Float32}) = (zero(Float32), Float32(1e-6))
-rtol_atol(::Type{Float16}) = (zero(Float16), Float16(1e-2))
+rtol_atol(::Type{Float64}) = (zero(Float64), Float64(1.0e-14))
+rtol_atol(::Type{Float32}) = (zero(Float32), Float32(1.0e-6))
+rtol_atol(::Type{Float16}) = (zero(Float16), Float16(1.0e-2))
 
 # check every quadrant
 PHIS = (
@@ -40,7 +40,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
     @test test_broadcast.(TestFermion()) == TestFermion()
 
     @testset "$p $d" for (p, d) in
-                         Iterators.product((Electron, Positron), (Incoming, Outgoing))
+        Iterators.product((Electron, Positron), (Incoming, Outgoing))
         mom = SFourMomentum(sqrt(mass(p()) + X^2 + Y^2 + Z^2), X, Y, Z)
         particle_mass = mass(p())
 
@@ -95,22 +95,22 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
                 @test isapprox(
                     (slashed(P) - m * one(DiracMatrix{FLOAT_T})) * U[spin],
                     zero(BiSpinor{FLOAT_T}),
-                    atol=ATOL,
+                    atol = ATOL,
                 )
                 @test isapprox(
                     (slashed(P) + m * one(DiracMatrix{FLOAT_T})) * V[spin],
                     zero(BiSpinor{FLOAT_T}),
-                    atol=ATOL,
+                    atol = ATOL,
                 )
                 @test isapprox(
                     Ubar[spin] * (slashed(P) - m * one(DiracMatrix{FLOAT_T})),
                     zero(AdjointBiSpinor{FLOAT_T}),
-                    atol=ATOL,
+                    atol = ATOL,
                 )
                 @test isapprox(
                     Vbar[spin] * (slashed(P) + m * one(DiracMatrix{FLOAT_T})),
                     zero(AdjointBiSpinor{FLOAT_T}),
-                    atol=ATOL,
+                    atol = ATOL,
                 )
             end
         end #diracs equation
@@ -136,7 +136,7 @@ end
 
     @testset "$D" for D in [Incoming, Outgoing]
         @testset "$om $cth $phi" for (om, cth, phi) in
-                                     Iterators.product(PHOTON_ENERGIES, COS_THETAS, PHIS)
+            Iterators.product(PHOTON_ENERGIES, COS_THETAS, PHIS)
             @testset "$FLOAT_T" for FLOAT_T in (Float16, Float32, Float64)
                 (RTOL, ATOL) = rtol_atol(FLOAT_T)
 
@@ -146,25 +146,25 @@ end
                 @test eltype(both_photon_states) == SLorentzVector{FLOAT_T}
 
                 # property test the photon states
-                @test isapprox((both_photon_states[1] * mom), 0.0, atol=ATOL, rtol=RTOL)
-                @test isapprox((both_photon_states[2] * mom), 0.0, atol=ATOL, rtol=RTOL)
+                @test isapprox((both_photon_states[1] * mom), 0.0, atol = ATOL, rtol = RTOL)
+                @test isapprox((both_photon_states[2] * mom), 0.0, atol = ATOL, rtol = RTOL)
                 @test isapprox(
                     (both_photon_states[1] * both_photon_states[1]),
                     -one(FLOAT_T),
-                    atol=ATOL,
-                    rtol=RTOL,
+                    atol = ATOL,
+                    rtol = RTOL,
                 )
                 @test isapprox(
                     (both_photon_states[2] * both_photon_states[2]),
                     -one(FLOAT_T),
-                    atol=ATOL,
-                    rtol=RTOL,
+                    atol = ATOL,
+                    rtol = RTOL,
                 )
                 @test isapprox(
                     (both_photon_states[1] * both_photon_states[2]),
                     zero(FLOAT_T),
-                    atol=ATOL,
-                    rtol=RTOL,
+                    atol = ATOL,
+                    rtol = RTOL,
                 )
 
                 # test the single polarization states

@@ -8,8 +8,8 @@ RTOL = sqrt(eps())
 include("../test_implementation/TestImplementation.jl")
 
 @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in Iterators.product(
-    (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
-)
+        (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
+    )
     INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
     OUTGOING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_OUTGOING))
 
@@ -36,8 +36,8 @@ include("../test_implementation/TestImplementation.jl")
         end
 
         @testset "$PROC $MODEL" for (PROC, MODEL) in Iterators.product(
-            (TESTPROC, TESTPROC_FAIL_DIFFCS), (TESTMODEL, TESTMODEL_FAIL)
-        )
+                (TESTPROC, TESTPROC_FAIL_DIFFCS), (TESTMODEL, TESTMODEL_FAIL)
+            )
             if TestImplementation._any_fail(PROC, MODEL)
                 psp = PhaseSpacePoint(PROC, MODEL, TESTPSL, IN_PS, OUT_PS)
                 @test_throws MethodError QEDbase._incident_flux(psp)
@@ -74,12 +74,12 @@ include("../test_implementation/TestImplementation.jl")
             InPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS)
         )
         groundtruth = TestImplementation._groundtruth_incident_flux(IN_PS)
-        @test isapprox(test_incident_flux, groundtruth, atol=ATOL, rtol=RTOL)
+        @test isapprox(test_incident_flux, groundtruth, atol = ATOL, rtol = RTOL)
 
         test_incident_flux = QEDbase._incident_flux(
             PhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, IN_PS, OUT_PS)
         )
-        @test isapprox(test_incident_flux, groundtruth, atol=ATOL, rtol=RTOL)
+        @test isapprox(test_incident_flux, groundtruth, atol = ATOL, rtol = RTOL)
 
         @test_throws MethodError QEDbase._incident_flux(
             OutPhaseSpacePoint(TESTPROC, TESTMODEL, TESTPSL, OUT_PS)
@@ -89,7 +89,7 @@ include("../test_implementation/TestImplementation.jl")
     @testset "averaging norm" begin
         test_avg_norm = QEDbase._averaging_norm(TESTPROC)
         groundtruth = TestImplementation._groundtruth_averaging_norm(TESTPROC)
-        @test isapprox(test_avg_norm, groundtruth, atol=ATOL, rtol=RTOL)
+        @test isapprox(test_avg_norm, groundtruth, atol = ATOL, rtol = RTOL)
     end
 
     @testset "matrix element" begin
@@ -97,7 +97,7 @@ include("../test_implementation/TestImplementation.jl")
         groundtruth = TestImplementation._groundtruth_matrix_element(IN_PS, OUT_PS)
         @test length(test_matrix_element) == length(groundtruth)
         for i in eachindex(test_matrix_element)
-            @test isapprox(test_matrix_element[i], groundtruth[i], atol=ATOL, rtol=RTOL)
+            @test isapprox(test_matrix_element[i], groundtruth[i], atol = ATOL, rtol = RTOL)
         end
     end
 
@@ -124,6 +124,6 @@ include("../test_implementation/TestImplementation.jl")
     @testset "phase space factor" begin
         test_phase_space_factor = QEDbase._phase_space_factor(PSP)
         groundtruth = TestImplementation._groundtruth_phase_space_factor(IN_PS, OUT_PS)
-        @test isapprox(test_phase_space_factor, groundtruth, atol=ATOL, rtol=RTOL)
+        @test isapprox(test_phase_space_factor, groundtruth, atol = ATOL, rtol = RTOL)
     end
 end

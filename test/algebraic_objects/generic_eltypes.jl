@@ -4,14 +4,14 @@ using Random
 RNG = MersenneTwister(0)
 
 @testset "generic eltypes for $CONTAINER_T" for CONTAINER_T in [
-    DiracMatrix,
-    BiSpinor,
-    AdjointBiSpinor,
-    SFourMomentum,
-    MFourMomentum,
-    SLorentzVector,
-    MLorentzVector,
-]
+        DiracMatrix,
+        BiSpinor,
+        AdjointBiSpinor,
+        SFourMomentum,
+        MFourMomentum,
+        SLorentzVector,
+        MLorentzVector,
+    ]
     @testset "eltype $EL_T" for EL_T in [Float16, Float32, Float64, Int16, Int32, Int64]
         a1 = zero(CONTAINER_T{EL_T})
         a2 = rand(RNG, CONTAINER_T{EL_T})

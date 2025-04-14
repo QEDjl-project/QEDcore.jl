@@ -1,4 +1,3 @@
-
 """
     Boost{V<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
 
@@ -74,7 +73,7 @@ four-vector will not change the invariant quantity.
 * [`BetaZ`](@ref): Boost parameter for the z-axis.
 * [`BetaVector`](@ref): Vector of boost parameters for boosts in multiple spatial directions.
 """
-struct Boost{T<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
+struct Boost{T <: QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
     param::T
 end
 boost_type(::Boost{T}) where {T} = T

@@ -20,21 +20,21 @@ coordinates for use in various calculations, such as in phase space layouts.
 - `ArgumentError` if the length of the provided tuple does not match the specified
     number `N`.
 """
-struct CoordinateSet{N,D<:Tuple} <: AbstractCoordinateSet{N}
+struct CoordinateSet{N, D <: Tuple} <: AbstractCoordinateSet{N}
     coords::D
 
-    function CoordinateSet{N}(coords::D) where {N,D<:Tuple}
+    function CoordinateSet{N}(coords::D) where {N, D <: Tuple}
         Nc = length(coords)
         N == Nc || throw(
             ArgumentError(
                 "number of coordinates <$Nc> needs to be equal to the specified number <$N>",
             ),
         )
-        return new{N,D}(coords)
+        return new{N, D}(coords)
     end
 
     # skip check if length is not given
-    CoordinateSet(coords::D) where {D<:Tuple} = new{length(coords),D}(coords)
+    CoordinateSet(coords::D) where {D <: Tuple} = new{length(coords), D}(coords)
 end
 function CoordinateSet{N}(coords::AbstractUnivariateCoordinate...) where {N}
     return CoordinateSet{N}(coords)

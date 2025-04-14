@@ -8,4 +8,4 @@ struct TestPerturbativeModel <: QEDcore.AbstractPerturbativeModel end
 struct TestModel_FAIL <: AbstractModelDefinition end
 
 # for dispatch
-const TestModels = Union{TestModel,TestPerturbativeModel}
+const TestModels = Union{TestModel, TestPerturbativeModel}
