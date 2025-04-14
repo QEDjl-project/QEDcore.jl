@@ -8,6 +8,10 @@ RNG = MersenneTwister(708583836976)
 PHOTON_ENERGIES = (0.0, rand(RNG), rand(RNG) * 10)
 COS_THETAS = (-1.0, -rand(RNG), 0.0, rand(RNG), 1.0)
 
+rtol_atol(::Type{Float64}) = (zero(Float64), Float64(1e-14))
+rtol_atol(::Type{Float32}) = (zero(Float32), Float32(1e-6))
+rtol_atol(::Type{Float16}) = (zero(Float16), Float16(1e-2))
+
 # check every quadrant
 PHIS = (
     0.0,
@@ -47,14 +51,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
         end
     end
     @testset "spinor properties in $FLOAT_T" for FLOAT_T in (Float16, Float32, Float64)
-        RTOL = zero(FLOAT_T)
-        ATOL = if FLOAT_T == Float64
-            1e-14
-        elseif FLOAT_T == Float32
-            1e-6
-        elseif FLOAT_T == Float16
-            1e-2
-        end
+        (RTOL, ATOL) = rtol_atol(FLOAT_T)
 
         x, y, z = rand(RNG, FLOAT_T, 3)
         m = mass(FLOAT_T, Electron())
@@ -141,14 +138,7 @@ end
         @testset "$om $cth $phi" for (om, cth, phi) in
                                      Iterators.product(PHOTON_ENERGIES, COS_THETAS, PHIS)
             @testset "$FLOAT_T" for FLOAT_T in (Float16, Float32, Float64)
-                RTOL = zero(FLOAT_T)
-                ATOL = if FLOAT_T == Float64
-                    1e-14
-                elseif FLOAT_T == Float32
-                    1e-6
-                elseif FLOAT_T == Float16
-                    1e-2
-                end
+                (RTOL, ATOL) = rtol_atol(FLOAT_T)
 
                 mom = SFourMomentum{FLOAT_T}(_cartesian_coordinates(om, om, cth, phi))
                 both_photon_states = base_state(Photon(), D(), mom, AllPolarization())
