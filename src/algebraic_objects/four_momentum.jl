@@ -137,19 +137,19 @@ end
 @inline QEDbase.getY(p::MFourMomentum) = p.py
 @inline QEDbase.getZ(p::MFourMomentum) = p.pz
 
-function QEDbase.setT!(lv::MFourMomentum, value::Float64)
+function QEDbase.setT!(lv::MFourMomentum, value::Real)
     return lv.E = value
 end
 
-function QEDbase.setX!(lv::MFourMomentum, value::Float64)
+function QEDbase.setX!(lv::MFourMomentum, value::Real)
     return lv.px = value
 end
 
-function QEDbase.setY!(lv::MFourMomentum, value::Float64)
+function QEDbase.setY!(lv::MFourMomentum, value::Real)
     return lv.py = value
 end
 
-function QEDbase.setZ!(lv::MFourMomentum, value::Float64)
+function QEDbase.setZ!(lv::MFourMomentum, value::Real)
     return lv.pz = value
 end
 

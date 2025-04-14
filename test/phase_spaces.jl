@@ -33,8 +33,8 @@ end
         @test is_anti_particle(particle_stateful) == is_anti_particle(species)
         @test is_incoming(particle_stateful) == is_incoming(dir)
         @test is_outgoing(particle_stateful) == is_outgoing(dir)
-        @test mass(particle_stateful) == mass(species)
-        @test charge(particle_stateful) == charge(species)
+        @test mass(Float64, particle_stateful) == mass(Float64, species)
+        @test charge(Float64, particle_stateful) == charge(Float64, species)
 
         # accessors
         @test particle_stateful.dir == dir

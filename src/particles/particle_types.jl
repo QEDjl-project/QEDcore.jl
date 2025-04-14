@@ -82,13 +82,13 @@ electron
     Besides being a subtype of [`Fermion`](@ref), objects of type `Electron` have
 
     ```julia
-    mass(::Electron) = 1.0
-    charge(::Electron) = -1.0
+    mass(::Type{T}, ::Electron) = one(T)
+    charge(::Type{T}, ::Electron) = -one(T)
     ```
 """
 struct Electron <: Fermion end
-QEDbase.mass(::Electron) = 1.0
-QEDbase.charge(::Electron) = -1.0
+QEDbase.mass(::Type{T}, ::Electron) where {T} = one(T)
+QEDbase.charge(::Type{T}, ::Electron) where {T} = -one(T)
 Base.show(io::IO, ::Electron) = print(io, "electron")
 
 """
@@ -105,13 +105,13 @@ positron
     Besides being a subtype of [`AntiFermion`](@ref), objects of type `Positron` have
 
     ```julia
-    mass(::Positron) = 1.0
-    charge(::Positron) = 1.0
+    mass(::Type{T}, ::Positron) = one(T)
+    charge(::Type{T}, ::Positron) = one(T)
     ```
 """
 struct Positron <: AntiFermion end
-QEDbase.mass(::Positron) = 1.0
-QEDbase.charge(::Positron) = 1.0
+QEDbase.mass(::Type{T}, ::Positron) where {T} = one(T)
+QEDbase.charge(::Type{T}, ::Positron) where {T} = one(T)
 Base.show(io::IO, ::Positron) = print(io, "positron")
 
 """
@@ -183,11 +183,11 @@ photon
     Besides being a subtype of `MajoranaBoson`, `Photon` has
 
     ```julia
-    mass(::Photon) = 0.0
-    charge(::Photon) = 0.0
+    mass(::Type{T}, ::Photon) = zero(T)
+    charge(::Type{T}, ::Photon) = zero(T)
     ```
 """
 struct Photon <: MajoranaBoson end
-QEDbase.mass(::Photon) = 0.0
-QEDbase.charge(::Photon) = 0.0
+QEDbase.mass(::Type{T}, ::Photon) where {T} = zero(T)
+QEDbase.charge(::Type{T}, ::Photon) where {T} = zero(T)
 Base.show(io::IO, ::Photon) = print(io, "photon")
