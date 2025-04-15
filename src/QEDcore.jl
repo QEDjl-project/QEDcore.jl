@@ -1,10 +1,10 @@
 module QEDcore
 
 # lorentz vectors
-export SLorentzVector, MLorentzVector
+export SLorentzVector
 
 # four momenta
-export SFourMomentum, MFourMomentum
+export SFourMomentum
 
 # four momenta
 export Boost

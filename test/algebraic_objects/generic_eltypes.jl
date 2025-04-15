@@ -8,9 +8,7 @@ RNG = MersenneTwister(0)
         BiSpinor,
         AdjointBiSpinor,
         SFourMomentum,
-        MFourMomentum,
         SLorentzVector,
-        MLorentzVector,
     ]
     @testset "eltype $EL_T" for EL_T in [Float16, Float32, Float64, Int16, Int32, Int64]
         a1 = zero(CONTAINER_T{EL_T})
@@ -24,7 +22,7 @@ RNG = MersenneTwister(0)
 
     @testset "type promotions (addition)" begin
         T1 = Float32
-        T2 = if CONTAINER_T == SFourMomentum || CONTAINER_T == MFourMomentum
+        T2 = if CONTAINER_T == SFourMomentum
             Float64
         else
             ComplexF64
