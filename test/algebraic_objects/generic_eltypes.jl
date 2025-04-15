@@ -8,7 +8,6 @@ RNG = MersenneTwister(0)
         BiSpinor,
         AdjointBiSpinor,
         SFourMomentum,
-        MFourMomentum,
         SLorentzVector,
         MLorentzVector,
     ]
@@ -24,7 +23,7 @@ RNG = MersenneTwister(0)
 
     @testset "type promotions (addition)" begin
         T1 = Float32
-        T2 = if CONTAINER_T == SFourMomentum || CONTAINER_T == MFourMomentum
+        T2 = if CONTAINER_T == SFourMomentum
             Float64
         else
             ComplexF64

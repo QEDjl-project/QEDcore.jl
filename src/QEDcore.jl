@@ -4,7 +4,7 @@ module QEDcore
 export SLorentzVector, MLorentzVector
 
 # four momenta
-export SFourMomentum, MFourMomentum
+export SFourMomentum
 
 # four momenta
 export Boost

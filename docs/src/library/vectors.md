@@ -7,7 +7,6 @@ CurrentModule = QEDcore
 ## 4-Momenta
 ```@docs
 SFourMomentum
-MFourMomentum
 ```
 
 ## Spinors

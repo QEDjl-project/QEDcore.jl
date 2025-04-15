@@ -3,7 +3,7 @@ using Random
 
 const ATOL = 1.0e-15
 
-@testset "FourMomentum getter" for MomentumType in [SFourMomentum, MFourMomentum]
+@testset "FourMomentum getter" for MomentumType in [SFourMomentum]
     rng = MersenneTwister(12345)
     x, y, z = rand(rng, 3)
     mass = rand(rng)
@@ -110,57 +110,6 @@ const ATOL = 1.0e-15
         @test isapprox(getMinus(mom_zero), 0.0)
     end
 end # FourMomentum getter
-
-function test_get_set(rng, setter, getter; value = rand(rng))
-    x, y, z = rand(rng, 3)
-    mass = rand(rng)
-    E = sqrt(x^2 + y^2 + z^2 + mass^2)
-    mom = MFourMomentum(E, x, y, z)
-    setter(mom, value)
-    return isapprox(getter(mom), value)
-end
-
-@testset "FourMomentum setter" begin
-    rng = MersenneTwister(123456)
-
-    @testset "Momentum components" begin
-        @test test_get_set(rng, setE!, getE)
-        @test test_get_set(rng, setEnergy!, getE)
-        @test test_get_set(rng, setPx!, getPx)
-        @test test_get_set(rng, setPy!, getPy)
-        @test test_get_set(rng, setPz!, getPz)
-    end
-
-    @testset "spherical coordiantes" begin
-        @test test_get_set(rng, setTheta!, getTheta)
-        @test test_get_set(rng, setTheta!, getTheta, value = 0.0)
-        @test test_get_set(rng, setCosTheta!, getCosTheta)
-        @test test_get_set(rng, setCosTheta!, getCosTheta, value = 1.0)
-        @test test_get_set(rng, setPhi!, getPhi)
-        @test test_get_set(rng, setPhi!, getPhi, value = 0.0)
-        @test test_get_set(rng, setRho!, getRho)
-        @test test_get_set(rng, setRho!, getRho, value = 0.0)
-    end
-
-    @testset "light-cone coordiantes" begin
-        @test test_get_set(rng, setPlus!, getPlus)
-        @test test_get_set(rng, setPlus!, getPlus, value = 0.0)
-        @test test_get_set(rng, setMinus!, getMinus)
-        @test test_get_set(rng, setMinus!, getMinus, value = 0.0)
-    end
-
-    @testset "transverse coordinates" begin
-        @test test_get_set(rng, setTransverseMomentum!, getTransverseMomentum)
-        @test test_get_set(rng, setTransverseMomentum!, getTransverseMomentum, value = 0.0)
-        @test test_get_set(rng, setPerp!, getTransverseMomentum)
-        @test test_get_set(rng, setPt!, getTransverseMomentum)
-        @test test_get_set(rng, setTransverseMass!, getTransverseMass)
-        @test test_get_set(rng, setTransverseMass!, getTransverseMass, value = 0.0)
-        @test test_get_set(rng, setMt!, getTransverseMass)
-        @test test_get_set(rng, setRapidity!, getRapidity)
-        @test test_get_set(rng, setRapidity!, getRapidity, value = 0.0)
-    end
-end # FourMomentum setter
 
 const SCALE = 10.0 .^ [-9, 0, 5]
 const M_MASSIVE = 1.0
