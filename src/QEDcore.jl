@@ -1,7 +1,7 @@
 module QEDcore
 
 # lorentz vectors
-export SLorentzVector, MLorentzVector
+export SLorentzVector
 
 # four momenta
 export SFourMomentum

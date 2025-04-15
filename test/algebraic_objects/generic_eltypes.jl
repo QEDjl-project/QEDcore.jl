@@ -9,7 +9,6 @@ RNG = MersenneTwister(0)
         AdjointBiSpinor,
         SFourMomentum,
         SLorentzVector,
-        MLorentzVector,
     ]
     @testset "eltype $EL_T" for EL_T in [Float16, Float32, Float64, Int16, Int32, Int64]
         a1 = zero(CONTAINER_T{EL_T})

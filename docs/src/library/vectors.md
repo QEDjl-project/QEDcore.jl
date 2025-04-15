@@ -18,7 +18,6 @@ AdjointBiSpinor
 ## Lorentz Vectors
 ```@docs
 SLorentzVector
-MLorentzVector
 ```
 
 ## Dirac Matrix
