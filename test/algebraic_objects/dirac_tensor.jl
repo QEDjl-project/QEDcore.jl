@@ -8,16 +8,6 @@ unary_methods = [-, +]
 binary_array_methods = [+, -]
 binary_float_methods = [*, /]
 
-allowed_muls = Dict(
-    [
-        (AdjointBiSpinor, BiSpinor) => ComplexF64,
-        (BiSpinor, AdjointBiSpinor) => DiracMatrix,
-        (AdjointBiSpinor, DiracMatrix) => AdjointBiSpinor,
-        (DiracMatrix, BiSpinor) => BiSpinor,
-        (DiracMatrix, DiracMatrix) => DiracMatrix,
-    ]
-)
-
 groundtruth_mul(a::AdjointBiSpinor, b::BiSpinor) = transpose(SArray(a)) * SArray(b)
 function groundtruth_mul(a::BiSpinor, b::AdjointBiSpinor)
     return DiracMatrix(SArray(a) * transpose(SArray(b)))
@@ -31,6 +21,17 @@ groundtruth_mul(a::DiracMatrix, b::DiracMatrix) = DiracMatrix(SArray(a) * SArray
 @testset "DiracTensor{$T}" for T in [
         Float16, Float32, Float64, ComplexF16, ComplexF32, ComplexF64,
     ]
+
+    allowed_muls = Dict(
+        [
+            (AdjointBiSpinor{T}, BiSpinor{T}) => T,
+            (BiSpinor{T}, AdjointBiSpinor{T}) => DiracMatrix{T},
+            (AdjointBiSpinor{T}, DiracMatrix{T}) => AdjointBiSpinor{T},
+            (DiracMatrix{T}, BiSpinor{T}) => BiSpinor{T},
+            (DiracMatrix{T}, DiracMatrix{T}) => DiracMatrix{T},
+        ]
+    )
+
     dirac_tensors = [
         BiSpinor(rand(RNG, T, 4)),
         AdjointBiSpinor(rand(RNG, T, 4)),
@@ -107,15 +108,15 @@ groundtruth_mul(a::DiracMatrix, b::DiracMatrix) = DiracMatrix(SArray(a) * SArray
             end
 
             @testset "num*$(typeof(ten))" begin
-                #@test typeof(res_float_mul) == typeof(ten)
                 @test @inferred(ten * num) == @inferred(num * ten)
                 @test SArray(num * ten) == num * SArray(ten)
+                @test typeof(num * ten) == typeof(ten)
             end
 
             @testset "$(typeof(ten))/num" begin
                 res_float_div = ten / num
-                #@test typeof(res_float_div) == typeof(ten)
                 @test SArray(@inferred(ten / num)) == SArray(ten) / num
+                @test typeof(ten / num) == typeof(ten)
             end
 
             @testset "$(typeof(ten))*$(typeof(ten2))" for ten2 in dirac_tensors
@@ -124,12 +125,24 @@ groundtruth_mul(a::DiracMatrix, b::DiracMatrix) = DiracMatrix(SArray(a) * SArray
                     res = ten * ten2
                     @test typeof(res) == allowed_muls[mul_comb]
                     @test isapprox(res, groundtruth_mul(ten, ten2))
-                    #issue: test raise of method error
+                else
+                    @test_throws MethodError ten * ten2
                 end
             end
         end
     end #Arithmetics
 end #"DiracTensor"
+
+
+allowed_muls = Dict(
+    [
+        (AdjointBiSpinor, BiSpinor) => ComplexF64,
+        (BiSpinor, AdjointBiSpinor) => DiracMatrix,
+        (AdjointBiSpinor, DiracMatrix) => AdjointBiSpinor,
+        (DiracMatrix, BiSpinor) => BiSpinor,
+        (DiracMatrix, DiracMatrix) => DiracMatrix,
+    ]
+)
 
 @testset "promotion (multiplication $T1 * $T2)" for (T1, T2) in keys(allowed_muls)
     a1 = rand(RNG, T1{Float32})
