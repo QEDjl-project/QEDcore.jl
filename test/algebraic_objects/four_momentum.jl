@@ -70,7 +70,7 @@ const ATOL = 1.0e-15
         @test getTransverseMass(mom_on) == getMt(mom_on)
     end
 
-    @testset "transverse coordiantes value" begin
+    @testset "transverse coordinates value" begin
         @test isapprox(getTransverseMomentum2(mom_onshell), x^2 + y^2)
         @test isapprox(getTransverseMomentum(mom_onshell), sqrt(x^2 + y^2))
         @test isapprox(getTransverseMass2(mom_onshell), E^2 - z^2)
@@ -85,7 +85,7 @@ const ATOL = 1.0e-15
         @test isapprox(getMt(mom_zero), 0.0)
     end
 
-    @testset "spherical coordiantes consistence" for mom_on in [mom_onshell, mom_zero]
+    @testset "spherical coordinates consistence" for mom_on in [mom_onshell, mom_zero]
         @test getRho2(mom_on) == getMagnitude2(mom_on)
         @test getRho(mom_on) == getMagnitude(mom_on)
 
@@ -94,7 +94,7 @@ const ATOL = 1.0e-15
         @test isapprox(getSinPhi(mom_on), sin(getPhi(mom_on)))
     end
 
-    @testset "spherical coordiantes values" begin
+    @testset "spherical coordinates values" begin
         @test isapprox(getTheta(mom_onshell), atan(getPt(mom_onshell), z))
         @test isapprox(getTheta(mom_zero), 0.0)
 
@@ -102,7 +102,7 @@ const ATOL = 1.0e-15
         @test isapprox(getPhi(mom_zero), 0.0)
     end
 
-    @testset "light-cone coordiantes" begin
+    @testset "light-cone coordinates" begin
         @test isapprox(getPlus(mom_onshell), 0.5 * (E + z))
         @test isapprox(getMinus(mom_onshell), 0.5 * (E - z))
 

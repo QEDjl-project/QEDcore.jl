@@ -86,5 +86,14 @@ if metal_tests
     end
 end
 
+if isempty(GPUS)
+    @info """No GPU tests are enabled, skipping tests...
+    To test GPU functionality, please use 'TEST_<GPU> = 1 julia ...' for one of GPU=[CUDA, AMDGPU, METAL, ONEAPI]"""
+    return nothing
+end
+
+include("../test_implementation/TestImplementation.jl")
+
 # from here on, we cannot use safe test sets or we would unload the GPU libraries again
 include("tensor_multiplication.jl")
+include("four_momenta.jl")

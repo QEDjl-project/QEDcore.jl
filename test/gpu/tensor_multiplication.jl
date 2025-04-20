@@ -1,9 +1,3 @@
-if isempty(GPUS)
-    @info """No GPU tests are enabled, skipping tests...
-    To test GPU functionality, please use 'TEST_<GPU> = 1 julia ...' for one of GPU=[CUDA, AMDGPU, METAL, ONEAPI]"""
-    return nothing
-end
-
 using QEDcore
 using Random
 
@@ -20,9 +14,9 @@ ALLOWED_MULS = [
     (DiracMatrix, DiracMatrix, DiracMatrix),
 ]
 
-const N = 256
+N = 256
 
-@testset "gpu tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
+@testset "tensor tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         COMPLEX_T = Complex{FLOAT_T}
 
@@ -41,7 +35,7 @@ const N = 256
             @test all(isapprox.(Vector(gpu_results), gt_results))
         end
 
-        @testset "multiplication AdjointBiSpinor * DiracMatrix * BiSpinor" begin
+        @testset "multiplication AdjointBiSpinor * DiracMatrix * BiSpinor = $COMPLEX_T" begin
             par1 = rand(RNG, AdjointBiSpinor{COMPLEX_T}, N)
             par2 = rand(RNG, DiracMatrix{COMPLEX_T}, N)
             par3 = rand(RNG, BiSpinor{COMPLEX_T}, N)
