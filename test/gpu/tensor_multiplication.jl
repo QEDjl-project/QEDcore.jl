@@ -10,13 +10,15 @@ using Random
 RNG = Random.MersenneTwister(573)
 
 ALLOWED_MULS = [
+    (BiSpinor, Union, BiSpinor),
+    (AdjointBiSpinor, Union, AdjointBiSpinor),
+    (DiracMatrix, Union, DiracMatrix),
     (AdjointBiSpinor, BiSpinor, Union),
     (BiSpinor, AdjointBiSpinor, DiracMatrix),
     (AdjointBiSpinor, DiracMatrix, AdjointBiSpinor),
     (DiracMatrix, BiSpinor, BiSpinor),
     (DiracMatrix, DiracMatrix, DiracMatrix),
 ]
-
 
 const N = 256
 
@@ -25,7 +27,6 @@ const N = 256
         COMPLEX_T = Complex{FLOAT_T}
 
         @testset "multiplication $T1 * $T2 = $T3" for (T1, T2, T3) in ALLOWED_MULS
-
             par1 = rand(RNG, T1{COMPLEX_T}, N)
             par2 = rand(RNG, T2{COMPLEX_T}, N)
 
