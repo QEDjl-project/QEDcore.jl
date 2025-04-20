@@ -1,8 +1,10 @@
-using QEDcore
 using Test
 using SafeTestsets
 
-begin
+# check if we run CPU tests (yes by default)
+cpu_tests = tryparse(Bool, get(ENV, "TEST_CPU", "1"))
+
+if cpu_tests
     @time @safetestset "two body rest system" begin
         include("phase_space_layouts/in_channel/two_body/rest_system.jl")
     end
@@ -64,5 +66,13 @@ begin
     # interfaces
     @time @safetestset "process interface" begin
         include("interfaces/process.jl")
+    end
+else
+    @info "Skipping CPU tests"
+end
+
+begin
+    @time @safetestset "GPU testing" begin
+        include("gpu/runtests.jl")
     end
 end
