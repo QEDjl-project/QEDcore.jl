@@ -1,3 +1,4 @@
+using QEDcore
 using Test
 using SafeTestsets
 
