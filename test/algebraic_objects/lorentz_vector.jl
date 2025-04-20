@@ -76,6 +76,9 @@ unary_methods = [-, +]
         @test @inferred(LV_mat * BS) == LV_BS
         @test @inferred(aBS * LV_mat) == LV_aBS
         @test @inferred(LV_aBS * LV_BS) == -60.0 + 0.0im
+
+        @test_throws MethodError LV_mat * aBS
+        @test_throws MethodError BS * LV_mat
     end #interface dirac tensor
 
     @testset "utility functions" begin
