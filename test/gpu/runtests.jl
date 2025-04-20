@@ -97,3 +97,4 @@ include("../test_implementation/TestImplementation.jl")
 # from here on, we cannot use safe test sets or we would unload the GPU libraries again
 include("tensor_multiplication.jl")
 include("four_momenta.jl")
+include("phase_spaces.jl")

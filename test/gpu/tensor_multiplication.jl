@@ -32,7 +32,7 @@ N = 256
             gpu_results = par1_gpu .* par2_gpu
 
             @test eltype(gpu_results) == T3{COMPLEX_T}
-            @test all(isapprox.(Vector(gpu_results), gt_results))
+            @test sum(isapprox.(Vector(gpu_results), gt_results)) == N
         end
 
         @testset "multiplication AdjointBiSpinor * DiracMatrix * BiSpinor = $COMPLEX_T" begin
@@ -49,7 +49,7 @@ N = 256
             gpu_results = par1_gpu .* par2_gpu .* par3_gpu
 
             @test eltype(gpu_results) == COMPLEX_T
-            @test all(isapprox.(Vector(gpu_results), gt_results))
+            @test sum(isapprox.(Vector(gpu_results), gt_results)) == N
         end
     end
 end
