@@ -15,7 +15,7 @@ N = 256
         xs = rand(RNG, FLOAT_T, N)
         ys = rand(RNG, FLOAT_T, N)
         zs = rand(RNG, FLOAT_T, N)
-        masses = rand(RNG, FLOAT_T, N)
+        masses = rand(RNG, FLOAT_T, N) .+ 0.5
         Es = hypot.(xs, ys, zs, masses)
 
         moms = MOMENTUM_TYPE.(Es, xs, ys, zs)

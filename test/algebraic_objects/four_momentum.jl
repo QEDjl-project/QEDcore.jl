@@ -6,7 +6,7 @@ const ATOL = 1.0e-15
 @testset "FourMomentum getter" for MomentumType in [SFourMomentum]
     rng = MersenneTwister(12345)
     x, y, z = rand(rng, 3)
-    mass = rand(rng)
+    mass = rand(rng) + 0.5  # currently, very small masses break precisions
     E = hypot(x, y, z, mass)
     mom_onshell = MomentumType(E, x, y, z)
     mom_zero = MomentumType(0.0, 0.0, 0.0, 0.0)
