@@ -171,7 +171,7 @@ function QEDbase._build_momenta(
     mass_run = masses[RUNIDX]
     rho_run = @inbounds in_coords[1]
 
-    energy_run = sqrt(rho_run^2 + mass_run^2)
+    energy_run = hypot(rho_run, mass_run)
     P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)

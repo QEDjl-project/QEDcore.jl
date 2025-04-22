@@ -16,7 +16,7 @@ N = 256
         ys = rand(RNG, FLOAT_T, N)
         zs = rand(RNG, FLOAT_T, N)
         masses = rand(RNG, FLOAT_T, N)
-        Es = @. sqrt(xs^2 + ys^2 + zs^2 + masses^2)
+        Es = hypot.(xs, ys, zs, masses)
 
         moms = MOMENTUM_TYPE.(Es, xs, ys, zs)
 
@@ -36,7 +36,9 @@ N = 256
             @test sum(isapprox.(Vector(getPy.(gpu_moms)), getPy.(moms); atol = ATOL, rtol = RTOL)) == N
             @test sum(isapprox.(Vector(getPz.(gpu_moms)), getPz.(moms); atol = ATOL, rtol = RTOL)) == N
             @test sum(isapprox.(Vector(getBeta.(gpu_moms)), getBeta.(moms); atol = ATOL, rtol = RTOL)) == N
-            @test sum(isapprox.(Vector(getGamma.(gpu_moms)), getGamma.(moms); atol = ATOL, rtol = RTOL)) == N
+
+            # see https://github.com/QEDjl-project/QEDcore.jl/issues/22
+            @test sum(isapprox.(Vector(getGamma.(gpu_moms)), getGamma.(moms); atol = ATOL, rtol = sqrt(RTOL))) == N
         end
 
         @testset "transverse coordinates" begin

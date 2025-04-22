@@ -7,7 +7,7 @@ const ATOL = 1.0e-15
     rng = MersenneTwister(12345)
     x, y, z = rand(rng, 3)
     mass = rand(rng)
-    E = sqrt(x^2 + y^2 + z^2 + mass^2)
+    E = hypot(x, y, z, mass)
     mom_onshell = MomentumType(E, x, y, z)
     mom_zero = MomentumType(0.0, 0.0, 0.0, 0.0)
     mom_offshell = MomentumType(0.0, 0.0, 0.0, mass)
@@ -20,7 +20,7 @@ const ATOL = 1.0e-15
 
     @testset "magnitude values" begin
         @test isapprox(getMagnitude2(mom_onshell), x^2 + y^2 + z^2)
-        @test isapprox(getMagnitude(mom_onshell), sqrt(x^2 + y^2 + z^2))
+        @test isapprox(getMagnitude(mom_onshell), hypot(x, y, z))
     end
 
     @testset "mass consistence" for mom_on in [mom_onshell, mom_zero]
@@ -45,7 +45,7 @@ const ATOL = 1.0e-15
         @test getPy(mom_onshell) == y
         @test getPz(mom_onshell) == z
 
-        @test isapprox(getBeta(mom_onshell), sqrt(x^2 + y^2 + z^2) / E)
+        @test isapprox(getBeta(mom_onshell), hypot(x, y, z) / E)
         @test isapprox(getGamma(mom_onshell), 1 / sqrt(1.0 - getBeta(mom_onshell)^2))
 
         @test getE(mom_zero) == 0.0
@@ -72,7 +72,7 @@ const ATOL = 1.0e-15
 
     @testset "transverse coordinates value" begin
         @test isapprox(getTransverseMomentum2(mom_onshell), x^2 + y^2)
-        @test isapprox(getTransverseMomentum(mom_onshell), sqrt(x^2 + y^2))
+        @test isapprox(getTransverseMomentum(mom_onshell), hypot(x, y))
         @test isapprox(getTransverseMass2(mom_onshell), E^2 - z^2)
         @test isapprox(getTransverseMass(mom_onshell), sqrt(E^2 - z^2))
         @test isapprox(getMt(mom_offshell), -mass)
@@ -126,8 +126,8 @@ const M_RELERR = 0.0001
         @testset "($x_scale, $y_scale, $z_scale)" for (x_scale, y_scale, z_scale) in
             Iterators.product(SCALE, SCALE, SCALE)
             x, y, z = x_base * x_scale, y_base * y_scale, z_base * z_scale
-            E_massless = sqrt(x^2 + y^2 + z^2 + M_MASSLESS^2)
-            E_massive = sqrt(x^2 + y^2 + z^2 + M_MASSIVE^2)
+            E_massless = hypot(x, y, z, M_MASSLESS)
+            E_massive = hypot(x, y, z, M_MASSIVE)
             mom_massless = SFourMomentum(E_massless, x, y, z)
             mom_massive = SFourMomentum(E_massive, x, y, z)
             @test isonshell(mom_massless, M_MASSLESS)
@@ -145,8 +145,8 @@ const M_RELERR = 0.0001
             m_err = min(M_ABSERR, M_RELERR * sum([x, y, z]) / 3.0) # mass error is M_RELERR of the mean of the components
             # but has at most the value M_ABSERR
 
-            E_massless = sqrt(x^2 + y^2 + z^2 + (M_MASSLESS + m_err)^2)
-            E_massive = sqrt(x^2 + y^2 + z^2 + (M_MASSIVE + m_err)^2)
+            E_massless = hypot(x, y, z, (M_MASSLESS + m_err))
+            E_massive = hypot(x, y, z, (M_MASSIVE + m_err))
             mom_massless = SFourMomentum(E_massless, x, y, z)
             mom_massive = SFourMomentum(E_massive, x, y, z)
 
