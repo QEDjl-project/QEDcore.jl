@@ -12,7 +12,7 @@ Tensor product of an adjoint with a standard bi-spinor resulting in a scalar.
 !!! note "Multiplication operator"
     This also overloads the `*` operator for this types.
 """
-function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
+@inline function _mul(aBS::AdjointBiSpinor, BS::BiSpinor)
     return aBS.el1 * BS.el1 + aBS.el2 * BS.el2 + aBS.el3 * BS.el3 + aBS.el4 * BS.el4
 end
 @inline Base.:*(aBS::AdjointBiSpinor, BS::BiSpinor) =
@@ -26,8 +26,8 @@ Tensor product of a standard with an adjoint bi-spinor resulting in a Dirac matr
 !!! note "Multiplication operator"
     This also overloads the `*` operator for this types.
 """
-function _mul(BS::BiSpinor, aBS::AdjointBiSpinor)::DiracMatrix
-    return DiracMatrix(SVector(BS) * transpose(SVector(aBS)))
+@inline function _mul(BS::BiSpinor, aBS::AdjointBiSpinor)::DiracMatrix
+    return @inline DiracMatrix(SVector(BS) * transpose(SVector(aBS)))
 end
 @inline Base.:*(BS::BiSpinor, aBS::AdjointBiSpinor) =
     _mul(BS::BiSpinor, aBS::AdjointBiSpinor)
@@ -40,8 +40,8 @@ Tensor product of an Dirac matrix with a standard bi-spinor resulting in another
 !!! note "Multiplication operator"
     This also overloads the `*` operator for this types.
 """
-function _mul(DM::DiracMatrix, BS::BiSpinor)::BiSpinor
-    return BiSpinor(SMatrix(DM) * SVector(BS))
+@inline function _mul(DM::DiracMatrix, BS::BiSpinor)::BiSpinor
+    return @inline BiSpinor(SMatrix(DM) * SVector(BS))
 end
 @inline Base.:*(DM::DiracMatrix, BS::BiSpinor) = _mul(DM, BS)
 
@@ -53,8 +53,8 @@ Tensor product of an adjoint bi-spinor with a Dirac matrix resulting in another 
 !!! note "Multiplication operator"
     This also overloads the `*` operator for this types.
 """
-function _mul(aBS::AdjointBiSpinor, DM::DiracMatrix)::AdjointBiSpinor
-    return AdjointBiSpinor(transpose(SVector(aBS)) * SMatrix(DM))
+@inline function _mul(aBS::AdjointBiSpinor, DM::DiracMatrix)::AdjointBiSpinor
+    return @inline AdjointBiSpinor(transpose(SVector(aBS)) * SMatrix(DM))
 end
 @inline Base.:*(aBS::AdjointBiSpinor, DM::DiracMatrix) = _mul(aBS, DM)
 
@@ -66,8 +66,8 @@ Tensor product two Dirac matrices resulting in another Dirac matrix.
 !!! note "Multiplication operator"
     This also overloads the `*` operator for this types.
 """
-function _mul(dm1::DiracMatrix, dm2::DiracMatrix)::DiracMatrix
-    return DiracMatrix(SMatrix(dm1) * SMatrix(dm2))
+@inline function _mul(dm1::DiracMatrix, dm2::DiracMatrix)::DiracMatrix
+    return @inline DiracMatrix(SMatrix(dm1) * SMatrix(dm2))
 end
 @inline Base.:*(dm1::DiracMatrix, dm2::DiracMatrix)::DiracMatrix = _mul(dm1, dm2)
 
@@ -76,8 +76,8 @@ $(TYPEDSIGNATURES)
 
 Tensor product of Dirac matrix sandwiched between an adjoint and a standard bi-spinor resulting in a scalar.
 """
-function _mul(abs::AdjointBiSpinor, dm::DiracMatrix, bs::BiSpinor)
-    return transpose(SVector(abs)) * SMatrix(dm) * SVector(bs)
+@inline function _mul(abs::AdjointBiSpinor, dm::DiracMatrix, bs::BiSpinor)
+    return @inline transpose(SVector(abs)) * (SMatrix(dm) * SVector(bs))
 end
 @inline Base.:*(abs::AdjointBiSpinor, dm::DiracMatrix, bs::BiSpinor) = _mul(abs, dm, bs)
 
