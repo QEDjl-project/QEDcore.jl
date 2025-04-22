@@ -8,7 +8,7 @@ N = 256
 TESTMODEL = TestImplementation.TestModel()
 TESTPSL = TestImplementation.TestOutPhaseSpaceLayout()
 
-@testset "four momentum tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
+@testset "phase space tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         MOMENTUM_TYPE = SFourMomentum{FLOAT_T}
         COMPLEX_T = Complex{FLOAT_T}
