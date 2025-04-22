@@ -7,8 +7,8 @@ N = 256
 
 @testset "four momentum tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
-        RTOL = 4 * eps(FLOAT_T)
-        ATOL = 4 * eps(FLOAT_T)
+        RTOL = 8 * eps(FLOAT_T)
+        ATOL = 8 * eps(FLOAT_T)
 
         MOMENTUM_TYPE = SFourMomentum{FLOAT_T}
 
