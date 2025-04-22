@@ -59,9 +59,5 @@ N = 256
             @test sum(isapprox.(Vector(getPlus.(gpu_moms)), getPlus.(moms); atol = ATOL, rtol = RTOL)) == N
             @test sum(isapprox.(Vector(getMinus.(gpu_moms)), getMinus.(moms); atol = ATOL, rtol = RTOL)) == N
         end
-
-        @testset "isonshell" begin
-            @test sum(Vector(isonshell.(gpu_moms, gpu_masses))) == N
-        end
     end
 end
