@@ -16,7 +16,7 @@ ALLOWED_MULS = [
 
 N = 256
 
-@testset "tensor tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
+@testset "tensor tests for $GPU_MODULE" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         COMPLEX_T = Complex{FLOAT_T}
 

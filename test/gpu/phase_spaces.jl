@@ -7,7 +7,7 @@ N = 256
 
 TESTMODEL = TestImplementation.TestPerturbativeModel()
 
-@testset "phase space tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
+@testset "phase space tests for $GPU_MODULE" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         MOMENTUM_TYPE = SFourMomentum{FLOAT_T}
 

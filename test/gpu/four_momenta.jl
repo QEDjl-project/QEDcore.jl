@@ -5,7 +5,7 @@ RNG = Random.MersenneTwister(573)
 
 N = 256
 
-@testset "four momentum tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
+@testset "four momentum tests for $GPU_MODULE" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         RTOL = 8 * eps(FLOAT_T)
         ATOL = 8 * eps(FLOAT_T)
