@@ -55,7 +55,6 @@ using DocStringExtensions
 using StaticArrays
 using SimpleTraits
 using LinearAlgebra
-using Roots
 
 @reexport using QEDbase
 
