@@ -24,10 +24,11 @@ N = 256
                 continue
             end
 
+            EXPECTED_T = is_boson(particle) ? FLOAT_T : COMPLEX_T
+
             base_states = base_state.(particle, dir, moms, sp)
             gpu_base_states = base_state.(particle, dir, gpu_moms, sp)
 
-            EXPECTED_T = is_boson(particle) ? FLOAT_T : COMPLEX_T
             if sp isa Union{AbstractDefiniteSpin, AbstractDefinitePolarization}
                 @test eltype(eltype(gpu_base_states)) == EXPECTED_T
             else
@@ -35,6 +36,16 @@ N = 256
             end
 
             @test sum(isapprox.(base_states, Vector(gpu_base_states))) == N
+        end
+
+        @testset "propagator for $particle" for particle in (Electron(), Positron(), Photon())
+            EXPECTED_T = is_boson(particle) ? FLOAT_T : COMPLEX_T
+
+            props = propagator.(particle, moms)
+            gpu_props = propagator.(particle, gpu_moms)
+
+            @test eltype(eltype(gpu_props)) == EXPECTED_T
+            @test sum(isapprox.(props, Vector(gpu_props))) == N
         end
     end
 end
