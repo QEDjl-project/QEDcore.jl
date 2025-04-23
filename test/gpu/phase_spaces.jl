@@ -68,6 +68,8 @@ TESTMODEL = TestImplementation.TestPerturbativeModel()
 
             RTOL = sqrt(eps(FLOAT_T))
 
+            @test eltype(eltype(gpu_out_moms)) == MOMENTUM_TYPE
+
             @test sum(isapprox.(Vector(getindex.(gpu_out_moms, 1)), getindex.(out_moms, 1); rtol = RTOL)) == N
             @test sum(isapprox.(Vector(getindex.(gpu_out_moms, 2)), getindex.(out_moms, 2); rtol = RTOL)) == N
 
@@ -76,6 +78,8 @@ TESTMODEL = TestImplementation.TestPerturbativeModel()
             psps = PhaseSpacePoint.(proc, model, out_psl, IN_COORDS, OUT_COORDS)
 
             gpu_psps = PhaseSpacePoint.(proc, model, out_psl, VECTOR_T(IN_COORDS), VECTOR_T(OUT_COORDS))
+
+            @test momentum_eltype(eltype(gpu_psps)) == FLOAT_T
 
             @test sum(isapprox.(Vector(momentum.(gpu_psps, Incoming(), Val(1))), momentum.(psps, Incoming(), Val(1)); rtol = RTOL)) == N
             @test sum(isapprox.(Vector(momentum.(gpu_psps, Incoming(), Val(2))), momentum.(psps, Incoming(), Val(2)); rtol = RTOL)) == N
