@@ -5,12 +5,11 @@ RNG = Random.MersenneTwister(573)
 
 N = 256
 
-TESTMODEL = TestImplementation.TestModel()
+TESTMODEL = TestImplementation.TestPerturbativeModel()
 
 @testset "phase space tests for $VECTOR_T" for (GPU_MODULE, VECTOR_T) in GPUS
     @testset "float type $FLOAT_T" for FLOAT_T in GPU_FLOAT_TYPES[GPU_MODULE]
         MOMENTUM_TYPE = SFourMomentum{FLOAT_T}
-        COMPLEX_T = Complex{FLOAT_T}
 
         in_el_moms = rand(RNG, MOMENTUM_TYPE, N)
         in_ph_moms = rand(RNG, MOMENTUM_TYPE, N)
@@ -48,27 +47,40 @@ TESTMODEL = TestImplementation.TestModel()
         end
 
         @testset "generation from coordinates" begin
-            IN_MASSES = mass.(incoming_particles(proc))
+            IN_MASSES = mass.(FLOAT_T, incoming_particles(proc))
             SUM_IN_MASSES = sum(IN_MASSES)
-            OUT_MASSES = mass.(outgoing_particles(proc))
+            OUT_MASSES = mass.(FLOAT_T, outgoing_particles(proc))
             SUM_OUT_MASSES = sum(OUT_MASSES)
-            TESTSQRTS = [(one(FLOAT_T) + rand(RNG, FLOAT_T)) * (SUM_OUT_MASSES + SUM_IN_MASSES) for _ in 1:N]
-            TESTINMOMS = TestImplementation._generate_onshell_two_body_moms.(
-                Ref(RNG), Ref(IN_MASSES), TESTSQRTS
+            SQRTS = [(one(FLOAT_T) + rand(RNG, FLOAT_T)) * (SUM_OUT_MASSES + SUM_IN_MASSES) for _ in 1:N]
+            IN_MOMS = TestImplementation._generate_onshell_two_body_moms.(
+                Ref(RNG), Ref(IN_MASSES), SQRTS
             )
-            test_out_psl = FlatPhaseSpaceLayout(in_psl)
-            TESTOUTCOORDS = [Tuple(rand(RNG, 4 * number_outgoing_particles(proc))) for _ in 1:N]
+            out_psl = FlatPhaseSpaceLayout(in_psl)
+            OUT_COORDS = [Tuple(rand(RNG, FLOAT_T, 4 * number_outgoing_particles(proc))) for _ in 1:N]
 
-            test_out_moms = QEDbase.build_momenta.(
-                proc, model, TESTINMOMS, Ref(test_out_psl), TESTOUTCOORDS
-            )
-
-            gpu_test_out_moms = QEDbase.build_momenta.(
-                proc, model, VECTOR_T(TESTINMOMS), Ref(test_out_psl), VECTOR_T(TESTOUTCOORDS)
+            out_moms = QEDbase.build_momenta.(
+                proc, model, IN_MOMS, out_psl, OUT_COORDS
             )
 
-            @test sum(isapprox.(Vector(getindex.(gpu_test_out_moms, 1)), getindex.(test_out_moms, 1))) == N
-            @test sum(isapprox.(Vector(getindex.(gpu_test_out_moms, 2)), getindex.(test_out_moms, 2))) == N
+            gpu_out_moms = QEDbase.build_momenta.(
+                proc, model, VECTOR_T(IN_MOMS), out_psl, VECTOR_T(OUT_COORDS)
+            )
+
+            RTOL = sqrt(eps(FLOAT_T))
+
+            @test sum(isapprox.(Vector(getindex.(gpu_out_moms, 1)), getindex.(out_moms, 1); rtol = RTOL)) == N
+            @test sum(isapprox.(Vector(getindex.(gpu_out_moms, 2)), getindex.(out_moms, 2); rtol = RTOL)) == N
+
+            IN_COORDS = tuple.(rand(RNG, FLOAT_T, N))
+
+            psps = PhaseSpacePoint.(proc, model, out_psl, IN_COORDS, OUT_COORDS)
+
+            gpu_psps = PhaseSpacePoint.(proc, model, out_psl, VECTOR_T(IN_COORDS), VECTOR_T(OUT_COORDS))
+
+            @test sum(isapprox.(Vector(momentum.(gpu_psps, Incoming(), Val(1))), momentum.(psps, Incoming(), Val(1)); rtol = RTOL)) == N
+            @test sum(isapprox.(Vector(momentum.(gpu_psps, Incoming(), Val(2))), momentum.(psps, Incoming(), Val(2)); rtol = RTOL)) == N
+            @test sum(isapprox.(Vector(momentum.(gpu_psps, Outgoing(), Val(1))), momentum.(psps, Outgoing(), Val(1)); rtol = RTOL)) == N
+            @test sum(isapprox.(Vector(momentum.(gpu_psps, Outgoing(), Val(2))), momentum.(psps, Outgoing(), Val(2)); rtol = RTOL)) == N
         end
     end
 end

@@ -55,6 +55,7 @@ function QEDbase._build_momenta(
         psl::FlatPhaseSpaceLayout,
         out_coords::Tuple,
     )
+    T = eltype(eltype(in_moms))
 
     # TODO: move this to input validation
     number_outgoing_particles(proc) >= 2 || throw(
@@ -67,7 +68,7 @@ function QEDbase._build_momenta(
     boost_from_rest = inv(_unsafe_rest_boost(Ptot))
 
     sqrt_s = sqrt(Ptot * Ptot)
-    out_mass_sum = sum(mass.(outgoing_particles(proc)))
+    out_mass_sum = sum(mass.(T, outgoing_particles(proc)))
 
     # TODO: move this to input validation
     sqrt_s >= out_mass_sum || throw(
@@ -79,7 +80,7 @@ function QEDbase._build_momenta(
         ),
     )
 
-    out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(outgoing_particles(proc)))
+    out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(T, outgoing_particles(proc)))
 
     return boost_from_rest.(out_moms)
 end
@@ -180,16 +181,31 @@ Assumes massless particle as an intermediate step in RAMBO.
 - A four-momentum (`SFourMomentum`) for a single particle.
 """
 function _single_rambo_mom(single_coords)
+    T = eltype(single_coords)
     a, b, c, d = single_coords
     cth = 2 * c - 1
     sth = sqrt(1 - cth^2)
-    phi = 2 * pi * d
+    phi = 2 * T(pi) * d
     p0 = -log(a) - log(b)
     p1 = p0 * sth * cos(phi)
     p2 = p0 * sth * sin(phi)
     p3 = p0 * cth
-    return SFourMomentum(p0, p1, p2, p3)
+    return SFourMomentum{T}(p0, p1, p2, p3)
 end
+
+"""
+    _tuple_partition_by_four(c::Tuple)
+
+Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory and in a type stable way.
+Currently overloaded for tuples of lengths 4..40.
+
+# Arguments
+- `c::Tuple`: Tuple of coordinates.
+
+# Returns
+- NTuple containing four-element tuples.
+"""
+function _tuple_partition_by_four end
 
 # block to generate a tuple partitioning function for reasonably sized tuples
 # this is necessary for type stability on GPU
@@ -203,17 +219,6 @@ for O in 1:10
     constructor_string *= ")"
     constructor = Meta.parse(constructor_string)
 
-    """
-        _tuple_partition_by_four(c::Tuple)
-
-    Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory and in a type stable way.
-
-    # Arguments
-    - `c::Tuple`: Tuple of coordinates.
-
-    # Returns
-    - NTuple containing four-element tuples.
-    """
     @eval function _tuple_partition_by_four(c::NTuple{$I, T})::NTuple{$O, NTuple{4, T}} where {T}
         return $constructor
     end
@@ -239,10 +244,13 @@ function _unconserved_momenta(c)
 end
 
 function _rambo_bvec(Q, M)
-    return SFourMomentum(getT(Q) / M, scale_spatial(Q, -inv(M))...)
+    T = promote_type(eltype(Q), eltype(M))
+    return SFourMomentum{T}(getT(Q) / M, scale_spatial(Q, -inv(M))...)
 end
 
 function _transform2conserved(bvec, scale, mom)
+    T = promote_type(eltype(bvec), typeof(scale), eltype(mom))
+
     a = 1 / (1 + getT(bvec))
 
     spatial_mom = SVector{3}(view(mom, 2:4))
@@ -251,7 +259,7 @@ function _transform2conserved(bvec, scale, mom)
     #bq = bx * mom1 + by * mom2 + bz * mom3
     bq = LinearAlgebra.dot(spatial_bvec, spatial_mom)
 
-    return SFourMomentum(
+    return SFourMomentum{T}(
         scale * (getT(bvec) * getT(mom) + bq),
         (scale * (spatial_mom + (getT(mom) + a * bq) * spatial_bvec))...,
     )
@@ -281,8 +289,9 @@ function _massless_rambo_moms(c, ss)
 end
 
 function _scale_single_rambo_mom(xi, mass, massless_mom)
-    return SFourMomentum(
-        sqrt(getT(massless_mom)^2 * xi^2 + mass^2),
+    T = typeof(xi)
+    return SFourMomentum{T}(
+        hypot(getT(massless_mom) * xi, mass),
         xi * getX(massless_mom),
         xi * getY(massless_mom),
         xi * getZ(massless_mom),

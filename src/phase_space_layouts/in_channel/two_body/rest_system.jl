@@ -145,7 +145,7 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
@@ -166,7 +166,7 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
@@ -189,7 +189,7 @@ function QEDbase._build_momenta(
 
     RUNIDX = _the_other(RESTIDX)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
@@ -212,7 +212,7 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
