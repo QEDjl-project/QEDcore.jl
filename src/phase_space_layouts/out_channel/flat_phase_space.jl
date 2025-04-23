@@ -55,7 +55,7 @@ function QEDbase._build_momenta(
         psl::FlatPhaseSpaceLayout,
         out_coords::Tuple,
     )
-    T = eltype(eltype(in_moms))
+    T = promote_type(eltype(eltype(in_moms)), eltype(out_coords))
 
     # TODO: move this to input validation
     number_outgoing_particles(proc) >= 2 || throw(
@@ -106,7 +106,7 @@ function _massive_rambo_moms(c, ss, masses)
     return _scale_rambo_moms(xi, masses, massless_moms)
 end
 
-@inline function _to_be_solved(xi::T1, masses::NTuple{N, T2}, p0s::NTuple{N, T3}, ss::T4)::T1 where {N, T1, T2, T3, T4}
+@inline function _to_be_solved(xi::T1, masses::NTuple{N, T2}, p0s::NTuple{N, T3}, ss::T4) where {N, T1, T2, T3, T4}
     T = promote_type(T1, T2, T3, T4)
     s = sum(hypot.(masses, xi .* p0s))
     return T(s - ss)
@@ -289,7 +289,7 @@ function _massless_rambo_moms(c, ss)
 end
 
 function _scale_single_rambo_mom(xi, mass, massless_mom)
-    T = typeof(xi)
+    T = promote_type(typeof(xi), typeof(mass), eltype(massless_mom))
     return SFourMomentum{T}(
         hypot(getT(massless_mom) * xi, mass),
         xi * getX(massless_mom),
