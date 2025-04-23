@@ -29,7 +29,7 @@ TESTMODEL = TestImplementation.TestModel()
 
         model = TESTMODEL
         proc = TestImplementation.TestProcess((Electron(), Photon()), (Electron(), Photon()))
-        in_psl = TestImplementation.TestInPhaseSpaceLayout()
+        in_psl = TwoBodyTargetSystem()
         psl = FlatPhaseSpaceLayout(in_psl)
 
         psps = PhaseSpacePoint.(proc, model, Ref(psl), tuple.(in_els, in_phs), tuple.(out_els, out_phs))
@@ -63,11 +63,12 @@ TESTMODEL = TestImplementation.TestModel()
                 proc, model, TESTINMOMS, Ref(test_out_psl), TESTOUTCOORDS
             )
 
-            test_out_moms_gpu = QEDbase.build_momenta.(
+            gpu_test_out_moms = QEDbase.build_momenta.(
                 proc, model, VECTOR_T(TESTINMOMS), Ref(test_out_psl), VECTOR_T(TESTOUTCOORDS)
             )
 
-            @test sum(isapprox.(Vector(gpu_test_out_moms), test_out_moms)) == N
+            @test sum(isapprox.(Vector(getindex.(gpu_test_out_moms, 1)), getindex.(test_out_moms, 1))) == N
+            @test sum(isapprox.(Vector(getindex.(gpu_test_out_moms, 2)), getindex.(test_out_moms, 2))) == N
         end
     end
 end

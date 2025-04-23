@@ -119,6 +119,8 @@ struct TwoBodyRestSystem{RESTIDX, COORD <: AbstractUnivariateCoordinate} <:
     end
 end
 
+Base.broadcastable(psl::TwoBodyRestSystem) = Ref(psl)
+
 @inline TwoBodyRestSystem(::Val{RESTIDX}, coord_name) where {RESTIDX} =
     TwoBodyRestSystem{RESTIDX}(coord_name)
 @inline TwoBodyRestSystem(rest_idx::Int, coord_name) =

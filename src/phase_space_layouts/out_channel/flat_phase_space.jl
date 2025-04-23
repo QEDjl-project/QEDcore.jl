@@ -36,6 +36,8 @@ struct FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
 end
 
+Base.broadcastable(psl::FlatPhaseSpaceLayout) = Ref(psl)
+
 function QEDbase.phase_space_dimension(
         proc::AbstractProcessDefinition,
         model::AbstractModelDefinition,
@@ -57,7 +59,7 @@ function QEDbase._build_momenta(
     # TODO: move this to input validation
     number_outgoing_particles(proc) >= 2 || throw(
         InvalidInputError(
-            "the number of particles <$(number_outgoing_particles(proc)) must be at least two",
+            "the number of particles must be at least two",
         ),
     )
     # preparing inchannel
@@ -71,8 +73,8 @@ function QEDbase._build_momenta(
     sqrt_s >= out_mass_sum || throw(
         InvalidInputError(
             """
-            sum of the masses of the outgoing particles <$out_mass_sum> must not exceed the
-            center-of-momentum energy <$sqrt_s>
+            sum of the masses of the outgoing particles must not exceed the
+            center-of-momentum energy
             """,
         ),
     )
@@ -103,10 +105,47 @@ function _massive_rambo_moms(c, ss, masses)
     return _scale_rambo_moms(xi, masses, massless_moms)
 end
 
-function _to_be_solved(xi, masses, p0s, ss)
-    s = mapreduce(x -> sqrt(@inbounds x[1]^2 + xi^2 * x[2]^2), +, zip(masses, p0s))
-    return s - ss
+@inline function _to_be_solved(xi::T1, masses::NTuple{N, T2}, p0s::NTuple{N, T3}, ss::T4)::T1 where {N, T1, T2, T3, T4}
+    T = promote_type(T1, T2, T3, T4)
+    s = sum(hypot.(masses, xi .* p0s))
+    return T(s - ss)
 end
+
+"""
+    _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 100) where {T}
+
+Compute the root of a function `f: T -> T` between the bounds `a` and `b` with tolerance `tol` (i.e., `abs(f(root)) <= tol`).
+This assumes that there is exactly one root and aborts if this root has not been found after `max_iter` iterations, which is
+100 by default.
+"""
+function _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 100) where {T}
+    fa = f(a)
+    fb = f(b)
+
+    if fa * fb > 0
+        error("function must have opposite signs at the interval endpoints")
+    end
+
+    for _ in 1:max_iter
+        center = (a + b) / 2
+        fc = f(center)
+
+        if abs(fc) < tol || (b - a) / 2 < tol
+            return center
+        end
+
+        if fa * fc < 0
+            b = center
+            fb = fc
+        else
+            a = center
+            fa = fc
+        end
+    end
+
+    error("bisection method did not converge")
+end
+
 
 """
     _find_scaling_factor(masses::Tuple, energies::Tuple, ss::Float64)
@@ -121,9 +160,10 @@ Finds a scaling factor for particle momenta to enforce conservation of energy-mo
 # Returns
 - The computed scaling factor as a float.
 """
-function _find_scaling_factor(masses, energies, ss)
+function _find_scaling_factor(masses::NTuple{N, T1}, energies::NTuple{N, T2}, ss::T3) where {N, T1, T2, T3}
+    T = promote_type(T1, T2, T3)
     f = x -> _to_be_solved(x, masses, energies, ss)
-    xi = find_zero(f, 2, Order1())
+    xi = _bisection(f, T(0), T(5))
     return xi
 end
 
@@ -151,21 +191,32 @@ function _single_rambo_mom(single_coords)
     return SFourMomentum(p0, p1, p2, p3)
 end
 
-"""
-    _tuple_partition_by_four(c::Tuple)
+# block to generate a tuple partitioning function for reasonably sized tuples
+# this is necessary for type stability on GPU
+for O in 1:10
+    I = 4 * O
 
-Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory.
+    constructor_string = "tuple("
+    for i in 1:4:I
+        constructor_string *= "(c[$i], c[$(i + 1)], c[$(i + 2)], c[$(i + 3)]),"
+    end
+    constructor_string *= ")"
+    constructor = Meta.parse(constructor_string)
 
-# Arguments
-- `c::Tuple`: Tuple of coordinates.
+    """
+        _tuple_partition_by_four(c::Tuple)
 
-# Returns
-- NTuple containing four-element tuples.
-"""
-function _tuple_partition_by_four(c)
-    N = length(c)
-    m = div(N, 4)
-    return NTuple{m}(c[i:(i + 3)] for i in 1:4:N)
+    Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory and in a type stable way.
+
+    # Arguments
+    - `c::Tuple`: Tuple of coordinates.
+
+    # Returns
+    - NTuple containing four-element tuples.
+    """
+    @eval function _tuple_partition_by_four(c::NTuple{$I, T})::NTuple{$O, NTuple{4, T}} where {T}
+        return $constructor
+    end
 end
 
 @inline function scale_spatial(lv, fac)
