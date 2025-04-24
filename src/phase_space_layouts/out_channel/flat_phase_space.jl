@@ -115,7 +115,7 @@ end
 """
     _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 100) where {T}
 
-Compute the root of a function `f: T -> T` between the bounds `a` and `b` with tolerance `tol` (i.e., `abs(f(root)) <= tol`).
+Compute the root of a function `f: T -> T` between the bounds `a` and `b` with tolerance `tol` (i.e., `abs(f(root)) <= tol || (b-a)/2==0`).
 This assumes that there is exactly one root and aborts if this root has not been found after `max_iter` iterations, which is
 100 by default.
 """
@@ -124,14 +124,14 @@ function _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 10
     fb = f(b)
 
     if fa * fb > 0
-        error("function must have opposite signs at the interval endpoints")
+        throw(InvalidInputError("function must have opposite signs at the interval endpoints"))
     end
 
     for _ in 1:max_iter
         center = (a + b) / 2
         fc = f(center)
 
-        if abs(fc) < tol || (b - a) / 2 < tol
+        if abs(fc) <= tol || center == a || center == b
             return center
         end
 
@@ -144,7 +144,7 @@ function _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 10
         end
     end
 
-    error("bisection method did not converge")
+    error("bisection did not converge")
 end
 
 

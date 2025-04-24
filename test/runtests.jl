@@ -6,6 +6,12 @@ using SafeTestsets
 cpu_tests = tryparse(Bool, get(ENV, "TEST_CPU", "1"))
 
 if cpu_tests
+    # miscellaneous utilities
+    @time @safetestset "bisection" begin
+        include("bisection.jl")
+    end
+
+    # main tests
     @time @safetestset "two body rest system" begin
         include("phase_space_layouts/in_channel/two_body/rest_system.jl")
     end
