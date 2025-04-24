@@ -107,44 +107,8 @@ function _massive_rambo_moms(c, ss, masses)
 end
 
 @inline function _to_be_solved(xi::T1, masses::NTuple{N, T2}, p0s::NTuple{N, T3}, ss::T4) where {N, T1, T2, T3, T4}
-    T = promote_type(T1, T2, T3, T4)
     s = sum(hypot.(masses, xi .* p0s))
-    return T(s - ss)
-end
-
-"""
-    _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 100) where {T}
-
-Compute the root of a function `f: T -> T` between the bounds `a` and `b` with tolerance `tol` (i.e., `abs(f(root)) <= tol || (b-a)/2==0`).
-This assumes that there is exactly one root and aborts if this root has not been found after `max_iter` iterations, which is
-100 by default.
-"""
-function _bisection(f::Function, a::T, b::T; tol::T = eps(T), max_iter::Int = 100) where {T}
-    fa = f(a)
-    fb = f(b)
-
-    if fa * fb > 0
-        throw(InvalidInputError("function must have opposite signs at the interval endpoints"))
-    end
-
-    for _ in 1:max_iter
-        center = (a + b) / 2
-        fc = f(center)
-
-        if abs(fc) <= tol || center == a || center == b
-            return center
-        end
-
-        if fa * fc < 0
-            b = center
-            fb = fc
-        else
-            a = center
-            fa = fc
-        end
-    end
-
-    error("bisection did not converge")
+    return s - ss
 end
 
 
@@ -164,7 +128,7 @@ Finds a scaling factor for particle momenta to enforce conservation of energy-mo
 function _find_scaling_factor(masses::NTuple{N, T1}, energies::NTuple{N, T2}, ss::T3) where {N, T1, T2, T3}
     T = promote_type(T1, T2, T3)
     f = x -> _to_be_solved(x, masses, energies, ss)
-    xi = _bisection(f, T(0), T(5))
+    xi = _bisection(f, T(0), T(1))
     return xi
 end
 
@@ -184,7 +148,7 @@ function _single_rambo_mom(single_coords)
     T = eltype(single_coords)
     a, b, c, d = single_coords
     cth = 2 * c - 1
-    sth = sqrt(1 - cth^2)
+    sth = sq_diff_sqrt(1, cth)
     phi = 2 * T(pi) * d
     p0 = -log(a) - log(b)
     p1 = p0 * sth * cos(phi)

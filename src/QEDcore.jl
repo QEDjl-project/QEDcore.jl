@@ -58,6 +58,8 @@ using LinearAlgebra
 
 @reexport using QEDbase
 
+include("math_helpers.jl")
+
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 

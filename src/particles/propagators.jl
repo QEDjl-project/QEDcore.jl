@@ -1,9 +1,9 @@
 function _scalar_propagator(K::AbstractFourMomentum, mass::Real)
-    return one(mass) / (K * K - mass^2)
+    return inv(getMass2(K) - mass^2)
 end
 
 function _scalar_propagator(K::AbstractFourMomentum)
-    return one(getT(K)) / (K * K)
+    return inv(K * K)
 end
 
 function _fermion_propagator(P::AbstractFourMomentum{T}, mass::Real) where {T <: Real}
