@@ -128,7 +128,7 @@ Finds a scaling factor for particle momenta to enforce conservation of energy-mo
 function _find_scaling_factor(masses::NTuple{N, T1}, energies::NTuple{N, T2}, ss::T3) where {N, T1, T2, T3}
     T = promote_type(T1, T2, T3)
     f = x -> _to_be_solved(x, masses, energies, ss)
-    xi = _bisection(f, T(0), T(1))
+    xi = _bisection(f, T(0), T(2))
     return xi
 end
 
