@@ -94,7 +94,7 @@ end
 
 function _photon_state(pol::AllPolarization, mom::AbstractFourMomentum{T}) where {T <: Real}
     cth = getCosTheta(mom)
-    sth = sqrt(1 - cth^2)
+    sth = sq_diff_sqrt(1, cth)
     cos_phi = getCosPhi(mom)
     sin_phi = getSinPhi(mom)
     return SVector(
@@ -105,7 +105,7 @@ end
 
 function _photon_state(pol::PolarizationX, mom::AbstractFourMomentum{T}) where {T <: Real}
     cth = getCosTheta(mom)
-    sth = sqrt(1 - cth^2)
+    sth = sq_diff_sqrt(1, cth)
     cos_phi = getCosPhi(mom)
     sin_phi = getSinPhi(mom)
     return SLorentzVector{T}(0.0, cth * cos_phi, cth * sin_phi, -sth)

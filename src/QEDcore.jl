@@ -55,9 +55,10 @@ using DocStringExtensions
 using StaticArrays
 using SimpleTraits
 using LinearAlgebra
-using Roots
 
 @reexport using QEDbase
+
+include("math_helpers.jl")
 
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")

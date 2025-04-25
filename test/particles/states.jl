@@ -41,7 +41,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
 
     @testset "$p $d" for (p, d) in
         Iterators.product((Electron, Positron), (Incoming, Outgoing))
-        mom = SFourMomentum(sqrt(mass(p()) + X^2 + Y^2 + Z^2), X, Y, Z)
+        mom = SFourMomentum(hypot(mass(p()), X, Y, Z), X, Y, Z)
         particle_mass = mass(p())
 
         @testset "tooling" begin
@@ -55,7 +55,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
 
         x, y, z = rand(RNG, FLOAT_T, 3)
         m = mass(FLOAT_T, Electron())
-        P = SFourMomentum{FLOAT_T}(sqrt(x^2 + y^2 + z^2 + m^2), x, y, z)
+        P = SFourMomentum{FLOAT_T}(hypot(x, y, z, m), x, y, z)
 
         U = base_state(Electron(), Incoming(), P, AllSpin())
         Ubar = base_state(Electron(), Outgoing(), P, AllSpin())

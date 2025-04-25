@@ -119,6 +119,8 @@ struct TwoBodyRestSystem{RESTIDX, COORD <: AbstractUnivariateCoordinate} <:
     end
 end
 
+Base.broadcastable(psl::TwoBodyRestSystem) = Ref(psl)
+
 @inline TwoBodyRestSystem(::Val{RESTIDX}, coord_name) where {RESTIDX} =
     TwoBodyRestSystem{RESTIDX}(coord_name)
 @inline TwoBodyRestSystem(rest_idx::Int, coord_name) =
@@ -143,14 +145,14 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = masses[RUNIDX]
     energy_run = @inbounds in_coords[1]
 
-    rho_run = sqrt(energy_run^2 - mass_run^2)
+    rho_run = sq_diff_sqrt(energy_run, - mass_run)
     P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
@@ -164,14 +166,14 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = masses[RUNIDX]
     rho_run = @inbounds in_coords[1]
 
-    energy_run = sqrt(rho_run^2 + mass_run^2)
+    energy_run = hypot(rho_run, mass_run)
     P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
@@ -187,7 +189,7 @@ function QEDbase._build_momenta(
 
     RUNIDX = _the_other(RESTIDX)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
@@ -195,7 +197,7 @@ function QEDbase._build_momenta(
     sqrt_s_run = @inbounds in_coords[1]
 
     energy_run = (sqrt_s_run^2 - mass_run^2 - mass_rest^2) / (2 * mass_rest)
-    rho_run = sqrt(energy_run^2 - mass_run^2)
+    rho_run = sq_diff_sqrt(energy_run, - mass_run)
 
     P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
@@ -210,7 +212,7 @@ function QEDbase._build_momenta(
     ) where {RESTIDX, RUNIDX}
     T = eltype(in_coords)
 
-    masses = mass.(Ref(T), incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
     P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 

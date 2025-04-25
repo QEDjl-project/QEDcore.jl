@@ -7,7 +7,7 @@ function _rand_momentum(rng::AbstractRNG, ::Type{T}) where {T <: Number}
     return SFourMomentum(rand(rng, T, 4))
 end
 
-groundtruth_propagator(::Photon, mom) = one(eltype(mom)) / (mom * mom)
+groundtruth_propagator(::Photon, mom) = inv(mom * mom)
 function groundtruth_propagator(particle::FermionLike, mom)
     return (slashed(mom) + mass(eltype(mom), particle) * one(DiracMatrix)) /
         (mom * mom - mass(eltype(mom), particle)^2)

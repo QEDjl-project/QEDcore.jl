@@ -71,7 +71,7 @@ struct BetaVector{T <: Real} <: AbstractBoostVector
         b2 = x^2 + y^2 + z^2
         b2 <= 1 || throw(
             InvalidInputError(
-                "wrong length of the beta vector ($x, $y, $z). Its length needs to be less or equal to one, but x^2 + y^2 + z^2 = $b2 is given.",
+                "wrong length of the beta vector, its length needs to be less or equal to one",
             ),
         )
         return new{T}(x, y, z)
