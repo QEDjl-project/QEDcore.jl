@@ -7,7 +7,7 @@ generate_pipeline:
   stage: generate
   variables:
     CI_GIT_CI_TOOLS_URL: https://github.com/SimeonEhrig/QED.jl.git
-    CI_GIT_CI_TOOLS_BRANCH: integrationTestGPUSupport
+    CI_GIT_CI_TOOLS_BRANCH: ciPRargument
     CI_ENABLE_CUDA_TESTS: "ON"
     CI_ENABLE_AMDGPU_TESTS: "ON"
   script:
