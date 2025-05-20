@@ -299,7 +299,7 @@ function QEDbase._phase_space_factor(
         PROC <: AbstractProcessDefinition, MODEL <: AbstractModelDefinition, PSL <: FlatPhaseSpaceLayout,
     }
     ss = _center_of_momentum_energy(psp)
-    n = number_incoming_particles(psp)
+    n = number_incoming_particles(process(psp))
     out_moms = momenta(psp, Outgoing())
 
     massless_weight = _massless_rambo_weight(ss, n)
