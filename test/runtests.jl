@@ -2,8 +2,10 @@ using QEDcore
 using Test
 using SafeTestsets
 
+include("utils.jl")
+
 # check if we run CPU tests (yes by default)
-cpu_tests = tryparse(Bool, get(ENV, "TEST_CPU", "1"))
+cpu_tests = _is_test_platform_active(["CI_QED_TEST_CPU", "TEST_CPU"], true)
 
 if cpu_tests
     # miscellaneous utilities
