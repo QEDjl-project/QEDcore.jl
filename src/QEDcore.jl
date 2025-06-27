@@ -1,5 +1,13 @@
 module QEDcore
 
+# constants
+export ALPHA,
+    ALPHA_SQUARE,
+    ELEMENTARY_CHARGE,
+    ELEMENTARY_CHARGE_SQUARE,
+    ELECTRONMASS,
+    ONE_OVER_FOURPI
+
 # lorentz vectors
 export SLorentzVector
 
@@ -50,6 +58,7 @@ export spin, polarization, momenta, getindex
 # TODO: move this to QEDbase
 export AbstractPerturbativeModel
 
+
 using Reexport
 using DocStringExtensions
 using StaticArrays
@@ -59,6 +68,7 @@ using LinearAlgebra
 @reexport using QEDbase
 
 include("math_helpers.jl")
+include("constants.jl")
 
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")

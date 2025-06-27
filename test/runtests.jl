@@ -37,7 +37,9 @@ if cpu_tests
     @time @safetestset "phase spaces" begin
         include("phase_spaces.jl")
     end
-
+    @time @safetestset "constants" begin
+        include("constants.jl")
+    end
     # algebraic objects
     @time @safetestset "four momentum" begin
         include("algebraic_objects/four_momentum.jl")
