@@ -19,6 +19,7 @@ TYPES = (Float16, Float32, Float64)
             typed_val = T(def_val)
             @test T(C) == typed_val
             @test one(T) * C == typed_val
+            @test T(T(C)) = T(C)
         end
     end
 end
