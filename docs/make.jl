@@ -45,6 +45,7 @@ end
 literate_paths = [
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/vectors.jl"),
+    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/constants.jl"),
 ]
 
 tutorial_output_dir = joinpath(project_path, "docs/src/generated/")
@@ -59,10 +60,12 @@ pages = [
         "Particles and Phase Space Points" =>
             joinpath(tutorial_output_dir_name, "particles.md"),
         "Matrix and Vector Types" => joinpath(tutorial_output_dir_name, "vectors.md"),
+        "Physical Constants" => joinpath(tutorial_output_dir_name, "constants.md"),
     ],
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
+        "Constants" => "library/constants.md",
         "Coordinates" => "library/coordinates.md",
         "Phase Space Layout" => "library/phase_space_layout.md",
         "Phase Space Points" => "library/phasespacepoint.md",

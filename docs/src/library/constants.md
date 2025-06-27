@@ -1,0 +1,14 @@
+# Physical Constants
+
+```@meta
+CurrentModule = QEDcore
+```
+
+```@docs
+ALPHA
+ALPHA_SQUARE
+ELEMENTARY_CHARGE
+ELEMENTARY_CHARGE_SQUARE
+ELECTRONMASS
+ONE_OVER_FOURPI
+```
