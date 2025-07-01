@@ -1,11 +1,10 @@
-using InteractiveUtils #hide
-using QEDcore # hide
 # # Using Physical Constants in a Type-Stable Way
 
-# This tutorial shows how to work with physical constants defined using `Base.@irrational`
-# in a way that is **type-stable**, **efficient**, and **compile-time safe**.
+# This tutorial demonstrates how to work with physical constants defined using `Base.@irrational`
+# in a **type-preserving** way, i.e., ensuring that calculations don't accidentally upcast to a
+# different floating-point type due to the constant's default type.
 
-# In `QEDcore.jl` the following constants are defined:
+# In `QEDcore.jl`, the following constants are defined:
 
 # ```julia
 # ALPHA
@@ -16,45 +15,36 @@ using QEDcore # hide
 # ONE_OVER_FOURPI
 # ```
 
-# These constants are defined with the exact value given by [CODATA2022](@cite), but can be used in
-# any floating-point type (`Float64`, `Float32`, `Float16`) **without losing type stability**.
+# These constants are defined with the exact values given by [CODATA2022](@cite), and they can be
+# used with any floating-point type (`Float64`, `Float32`, `Float16`) **without requiring runtime conversion**.
 
-# ## Convert to a Different Floating-Point Type
+using InteractiveUtils #hide
+using QEDcore #hide
 
-# Use the target type constructor, like `Float32(ALPHA)`:
+# ## Converting to a Different Floating-Point Type
+
+# You can explicitly convert a constant to a target type using a constructor, like:
 
 Float32(ALPHA)
 
-#
+# or:
 
 Float16(ELEMENTARY_CHARGE)
 
-# You can do this with any constant. The result is a value of the requested type, and the
-# conversion happens **statically at compile time**.
-
-# ## Automatic Conversion Using `one(T)` Pattern
-
-# This trick is useful for writing generic functions:
-
-T = Float32
-one(T) * ALPHA
-
-# ## Why This is Great: Compile-Time Efficiency
-
-# These conversions are evaluated at **compile time**. That means:
-
-# - The compiler inserts the constant value directly in machine code.
-# - There’s no runtime overhead.
-# - Your numerical code remains **type-stable** and **fast**.
-
-# You can verify this using:
+# This works with any of the constants. The result is a value of the requested type,
+# and the conversion occurs **at compile time**:
 
 @code_typed Float32(ALPHA)
 
-# You'll see the compiler inserts a literal `Float32` like `0.007297353f0`.
+# This adds no runtime overhead.
 
-# ## Summary
+# ## Automatic Conversion during Arithmetic Operations
 
-# - Use `Float32(ALPHA)` or `one(Float32)*ALPHA` to get type-stable values.
-# - All conversions happen at **compile time** — no performance hit.
-# - Great for writing generic numerical code with physical constants.
+# For `Base.AbstractIrrational` types, arithmetic operations are defined such that
+# the result adopts the type of the other operand. For example:
+
+typeof(1.0 * ALPHA)
+
+#
+
+typeof(1.0f0 * ALPHA)
