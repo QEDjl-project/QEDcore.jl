@@ -195,7 +195,7 @@ judge(
 # Some more overloads for the momentum function exist, for a complete list please refer to
 # its documentation: [`QEDbase.momentum`](@extref), [`QEDbase.momenta`](@extref).
 
-# Finally, [`process`](@ref), [`model`](@ref), and [`phase_space_layout`](@ref) can be used
+# Finally, [`process`](@extref QEDbase.process), [`model`](@extref QEDbase.model), and [`phase_space_layout`](@extref QEDbase.phase_space_layout) can be used
 # to request the object in question:
 
 process(psp)
