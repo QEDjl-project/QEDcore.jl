@@ -269,8 +269,8 @@ function _scale_rambo_moms(xi, masses, massless_moms)
 end
 
 # Kleiss 1985: 2.14
-function _massless_rambo_weight(ss, n)
-    return (pi / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
+function _massless_rambo_weight(ss::T, n) where {T <: Real}
+    return (T(pi) / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
 end
 
 # Kleiss 1985: 4.11
