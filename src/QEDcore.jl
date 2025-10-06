@@ -43,6 +43,7 @@ export coordinate_name, particle_index
 export AbstractTwoBodyInPhaseSpaceLayout
 export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
 export FlatPhaseSpaceLayout
+export PhotonElectronHeadsOnSystem, XAxis, YAxis, ZAxis
 
 # coordinate maps
 export CoordinateMap
@@ -89,6 +90,7 @@ include("coordinate_map/cached.jl")
 include("phase_space_layouts/in_channel/two_body/utils.jl")
 include("phase_space_layouts/in_channel/two_body/general.jl")
 include("phase_space_layouts/in_channel/two_body/rest_system.jl")
+include("phase_space_layouts/in_channel/two_body/heads_on.jl")
 
 include("phase_space_layouts/out_channel/flat_phase_space.jl")
 
