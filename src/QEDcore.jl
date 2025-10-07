@@ -74,6 +74,10 @@ include("constants.jl")
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 
+include("particles/particle_types.jl")
+include("particles/propagators.jl")
+include("particles/states.jl")
+
 include("phase_spaces/types.jl")
 include("phase_spaces/access.jl")
 include("phase_spaces/create.jl")
@@ -106,8 +110,5 @@ include("lorentz_boost/boost_parameter/boost_vector/types.jl")
 include("lorentz_boost/boost_parameter/boost_vector/beta.jl")
 include("lorentz_boost/boost_parameter/boost_vector/utils.jl")
 
-include("particles/particle_types.jl")
-include("particles/propagators.jl")
-include("particles/states.jl")
 
 end
