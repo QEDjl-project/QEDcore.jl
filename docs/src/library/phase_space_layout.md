@@ -19,6 +19,8 @@ CoordinateMapCached
 AbstractTwoBodyInPhaseSpaceLayout
 AbstractTwoBodyRestSystem
 TwoBodyRestSystem
+HeadsOnSystem
+CenterOfMomentumSystem
 ```
 
 ### Flat Phase Space Layout
