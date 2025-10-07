@@ -7,3 +7,5 @@ end
 _the_other(::Val{1}) = 2
 _the_other(::Val{2}) = 1
 _the_other(i::Int) = _the_other(Val(i))
+
+_mag_from_E(E, m) = sqrt((E - m) * (E + m))

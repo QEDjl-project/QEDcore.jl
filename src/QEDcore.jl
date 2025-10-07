@@ -43,16 +43,13 @@ export coordinate_name, particle_index
 export AbstractTwoBodyInPhaseSpaceLayout
 export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
 export FlatPhaseSpaceLayout
-export HeadsOnSystem, PhotonElectronHeadsOnSystem, XAxis, YAxis, ZAxis
+export HeadsOnSystem, PhotonElectronHeadsOnSystem, CenterOfMomentumSystem, XAxis, YAxis, ZAxis
 
 # coordinate maps
 export CoordinateMap
 export CoordinateMapCached
 
 # phase space
-export SphericalCoordinateSystem
-export CenterOfMomentumFrame, ElectronRestFrame
-export PhasespaceDefinition
 export ParticleStateful, PhaseSpacePoint, InPhaseSpacePoint, OutPhaseSpacePoint
 export spin, polarization, momenta, getindex
 
