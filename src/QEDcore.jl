@@ -43,7 +43,7 @@ export coordinate_name, particle_index
 export AbstractTwoBodyInPhaseSpaceLayout
 export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
 export FlatPhaseSpaceLayout
-export PhotonElectronHeadsOnSystem, XAxis, YAxis, ZAxis
+export HeadsOnSystem, PhotonElectronHeadsOnSystem, XAxis, YAxis, ZAxis
 
 # coordinate maps
 export CoordinateMap

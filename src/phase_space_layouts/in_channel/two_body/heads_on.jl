@@ -45,7 +45,7 @@ function QEDbase._build_momenta(
     rho1 = sqrt((E1 - mass(psl.particle1)) * (E1 + mass(psl.particle1)))
     rho2 = sqrt((E2 - mass(psl.particle2)) * (E2 + mass(psl.particle2)))
 
-    return _build_directed_moms(particle_direction(psl), E1, rho1, E1, rho2)
+    return _build_directed_moms(particle_direction(psl), E1, rho1, E2, rho2)
 end
 
 ### photon-electron system
@@ -75,3 +75,5 @@ function QEDbase._build_momenta(
 
     return _build_directed_moms(particle_direction(psl), E, rho, om)
 end
+
+### Center-of-momentum system
