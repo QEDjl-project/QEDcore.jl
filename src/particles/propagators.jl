@@ -1,13 +1,14 @@
 function _scalar_propagator(K::AbstractFourMomentum, mass::Real)
-    return one(mass) / (K * K - mass^2)
+    return inv(getMass2(K) - mass^2)
 end
 
 function _scalar_propagator(K::AbstractFourMomentum)
-    return one(getT(K)) / (K * K)
+    return inv(K * K)
 end
 
-function _fermion_propagator(P::AbstractFourMomentum, mass::Real)
-    return (slashed(P) + mass * one(DiracMatrix)) * _scalar_propagator(P, mass)
+function _fermion_propagator(P::AbstractFourMomentum{T}, mass::Real) where {T <: Real}
+    return (slashed(P) + mass * one(DiracMatrix{_complex_from_real_t(T)})) *
+        _scalar_propagator(P, mass)
 end
 
 function _fermion_propagator(P::AbstractFourMomentum)
@@ -15,7 +16,7 @@ function _fermion_propagator(P::AbstractFourMomentum)
 end
 
 function QEDbase.propagator(particle_type::BosonLike, K::AbstractFourMomentum)
-    return _scalar_propagator(K, mass(particle_type))
+    return _scalar_propagator(K, mass(eltype(K), particle_type))
 end
 
 function QEDbase.propagator(particle_type::Photon, K::AbstractFourMomentum)
@@ -23,5 +24,5 @@ function QEDbase.propagator(particle_type::Photon, K::AbstractFourMomentum)
 end
 
 function QEDbase.propagator(particle_type::FermionLike, P::AbstractFourMomentum)
-    return _fermion_propagator(P, mass(particle_type))
+    return _fermion_propagator(P, mass(eltype(P), particle_type))
 end

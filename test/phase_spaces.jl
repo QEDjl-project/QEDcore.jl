@@ -22,9 +22,9 @@ end
         mom = rand(RNG, SFourMomentum)
 
         particle_stateful = ParticleStateful(dir, species, mom)
-        @test particle_stateful == ParticleStateful{typeof(dir),typeof(species)}(mom)
+        @test particle_stateful == ParticleStateful{typeof(dir), typeof(species)}(mom)
         @test particle_stateful ==
-            ParticleStateful{typeof(dir),typeof(species),typeof(mom)}(mom)
+            ParticleStateful{typeof(dir), typeof(species), typeof(mom)}(mom)
 
         # particle interface
         @test is_fermion(particle_stateful) == is_fermion(species)
@@ -33,8 +33,8 @@ end
         @test is_anti_particle(particle_stateful) == is_anti_particle(species)
         @test is_incoming(particle_stateful) == is_incoming(dir)
         @test is_outgoing(particle_stateful) == is_outgoing(dir)
-        @test mass(particle_stateful) == mass(species)
-        @test charge(particle_stateful) == charge(species)
+        @test mass(Float64, particle_stateful) == mass(Float64, species)
+        @test charge(Float64, particle_stateful) == charge(Float64, species)
 
         # accessors
         @test particle_stateful.dir == dir
@@ -143,7 +143,7 @@ end
     end
 
     @testset "Error handling from momenta" for (i, o) in
-                                               Iterators.product([1, 3, 4, 5], [1, 3, 4, 5])
+        Iterators.product([1, 3, 4, 5], [1, 3, 4, 5])
         @test_throws InvalidInputError PhaseSpacePoint(
             process,
             model,

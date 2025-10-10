@@ -2,7 +2,18 @@ using QEDcore
 using Test
 using SafeTestsets
 
-begin
+include("utils.jl")
+
+# check if we run CPU tests (yes by default)
+cpu_tests = _is_test_platform_active(["CI_QED_TEST_CPU", "TEST_CPU"], true)
+
+if cpu_tests
+    # miscellaneous utilities
+    @time @safetestset "bisection" begin
+        include("bisection.jl")
+    end
+
+    # main tests
     @time @safetestset "two body rest system" begin
         include("phase_space_layouts/in_channel/two_body/rest_system.jl")
     end
@@ -26,7 +37,9 @@ begin
     @time @safetestset "phase spaces" begin
         include("phase_spaces.jl")
     end
-
+    @time @safetestset "constants" begin
+        include("constants.jl")
+    end
     # algebraic objects
     @time @safetestset "four momentum" begin
         include("algebraic_objects/four_momentum.jl")
@@ -42,6 +55,10 @@ begin
 
     @time @safetestset "Dirac tensors" begin
         include("algebraic_objects/dirac_tensor.jl")
+    end
+
+    @time @safetestset "generic eltype tests" begin
+        include("algebraic_objects/generic_eltypes.jl")
     end
 
     # particles
@@ -60,5 +77,13 @@ begin
     # interfaces
     @time @safetestset "process interface" begin
         include("interfaces/process.jl")
+    end
+else
+    @info "Skipping CPU tests"
+end
+
+begin
+    @time @safetestset "GPU testing" begin
+        include("gpu/runtests.jl")
     end
 end

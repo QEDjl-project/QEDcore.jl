@@ -170,7 +170,7 @@ particles(psp, Incoming()) # all incoming particles as a tuple
 # Momentum accessors:
 momentum(psp, Incoming(), MockFermion(), 1) # the momentum of the first incoming electron
 
-# When only one particle of the species exists in the particle set, the 1 can be ommitted for convenience.
+# When only one particle of the species exists in the particle set, the 1 can be omitted for convenience.
 
 @assert ans == momentum(psp, Incoming(), MockFermion())
 
@@ -190,12 +190,12 @@ judge(
 # !!! note
 #     This is only faster when `N` is actually known at compile time, for example when it
 #     is a literal integer or a function's type parameter. For dynamic values of `N`, prefer
-#     the `Int` variant or in case of loops, directly loop over the tuple of [`momenta`](@extref QEDbase.momenta).
+#     the `Int` variant or in case of loops, directly loop over the tuple of [`momenta`](@extref `QEDbase.momenta-Tuple{AbstractPhaseSpacePoint}`).
 
 # Some more overloads for the momentum function exist, for a complete list please refer to
-# its documentation: [`QEDbase.momentum`](@extref), [`QEDbase.momenta`](@extref).
+# its documentation: [`QEDbase.momentum`](@extref), [`QEDbase.momenta`](@extref `QEDbase.momenta-Tuple{AbstractPhaseSpacePoint}`).
 
-# Finally, [`process`](@ref), [`model`](@ref), and [`phase_space_layout`](@ref) can be used
+# Finally, [`process`](@extref QEDbase.process), [`model`](@extref QEDbase.model), and [`phase_space_layout`](@extref QEDbase.phase_space_layout) can be used
 # to request the object in question:
 
 process(psp)

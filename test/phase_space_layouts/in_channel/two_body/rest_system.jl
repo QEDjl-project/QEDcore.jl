@@ -15,8 +15,8 @@ OUTPARTICLE = Tuple(rand(TestImplementation.PARTICLE_SET, N_OUTGOING))
 UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
 
 @testset "$PART1 $PART2" for (PART1, PART2) in Iterators.product(
-    TestImplementation.PARTICLE_SET, TestImplementation.PARTICLE_SET
-)
+        TestImplementation.PARTICLE_SET, TestImplementation.PARTICLE_SET
+    )
     MASSES = mass.((PART1, PART2))
 
     TESTPROC = TestImplementation.TestProcess((PART1, PART2), OUTPARTICLE)
@@ -52,10 +52,10 @@ UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
                 in_mom_run = in_moms[RUNIDX]
                 in_mom_rest = in_moms[RESTIDX]
 
-                @test isapprox(getMass(in_mom_run), mass_run, atol=ATOL, rtol=RTOL)
-                @test isapprox(getMass(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
-                @test isapprox(getE(in_mom_run), en, atol=ATOL, rtol=RTOL)
-                @test isapprox(getE(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
+                @test isapprox(getMass(in_mom_run), mass_run, atol = ATOL, rtol = RTOL)
+                @test isapprox(getMass(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
+                @test isapprox(getE(in_mom_run), en, atol = ATOL, rtol = RTOL)
+                @test isapprox(getE(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
             end
         end
 
@@ -68,10 +68,10 @@ UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
                 in_mom_run = in_moms[RUNIDX]
                 in_mom_rest = in_moms[RESTIDX]
 
-                @test isapprox(getMass(in_mom_run), mass_run, atol=ATOL, rtol=RTOL)
-                @test isapprox(getMass(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
-                @test isapprox(getMag(in_mom_run), rho, atol=ATOL, rtol=RTOL)
-                @test isapprox(getE(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
+                @test isapprox(getMass(in_mom_run), mass_run, atol = ATOL, rtol = RTOL)
+                @test isapprox(getMass(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
+                @test isapprox(getMag(in_mom_run), rho, atol = ATOL, rtol = RTOL)
+                @test isapprox(getE(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
             end
         end
 
@@ -84,10 +84,10 @@ UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
                 in_mom_run = in_moms[RUNIDX]
                 in_mom_rest = in_moms[RESTIDX]
 
-                @test isapprox(getMass(in_mom_run), mass_run, atol=ATOL, rtol=RTOL)
-                @test isapprox(getMass(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
-                @test isapprox(getRapidity(in_mom_run), y, atol=ATOL, rtol=RTOL)
-                @test isapprox(getE(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
+                @test isapprox(getMass(in_mom_run), mass_run, atol = ATOL, rtol = RTOL)
+                @test isapprox(getMass(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
+                @test isapprox(getRapidity(in_mom_run), y, atol = ATOL, rtol = RTOL)
+                @test isapprox(getE(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
             end
         end
 
@@ -113,10 +113,10 @@ UNI_RUN_COORDS = (Energy, SpatialMagnitude, Rapidity)
                     in_mom_rest = in_moms[RESTIDX]
                     in_mom_sum = sum(in_moms)
 
-                    @test isapprox(getMass(in_mom_run), mass_run, atol=ATOL, rtol=RTOL)
-                    @test isapprox(getMass(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
-                    @test isapprox(sqrt(in_mom_sum * in_mom_sum), ss, atol=ATOL, rtol=RTOL)
-                    @test isapprox(getE(in_mom_rest), mass_rest, atol=ATOL, rtol=RTOL)
+                    @test isapprox(getMass(in_mom_run), mass_run, atol = ATOL, rtol = RTOL)
+                    @test isapprox(getMass(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
+                    @test isapprox(sqrt(in_mom_sum * in_mom_sum), ss, atol = ATOL, rtol = RTOL)
+                    @test isapprox(getE(in_mom_rest), mass_rest, atol = ATOL, rtol = RTOL)
                 end
             end
         end

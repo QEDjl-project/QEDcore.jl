@@ -1,4 +1,3 @@
-
 using Random
 using QEDbase
 using QEDcore
@@ -10,8 +9,8 @@ RTOL = sqrt(eps())
 include("test_implementation/TestImplementation.jl")
 
 @testset "($N_INCOMING,$N_OUTGOING)" for (N_INCOMING, N_OUTGOING) in Iterators.product(
-    (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
-)
+        (1, rand(RNG, 2:8)), (1, rand(RNG, 2:8))
+    )
     INCOMING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_INCOMING))
     OUTGOING_PARTICLES = Tuple(rand(RNG, TestImplementation.PARTICLE_SET, N_OUTGOING))
 
@@ -33,13 +32,13 @@ include("test_implementation/TestImplementation.jl")
         out_cmap = @inferred CoordinateMap(TESTPROC, TESTMODEL, TESTOUTPSL)
         @testset "in channel" begin
             test_in_moms = @inferred in_cmap(TESTINCOORDS)
-            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol=ATOL, rtol=RTOL))
+            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol = ATOL, rtol = RTOL))
         end
 
         @testset "out channel" begin
             test_in_moms, test_out_moms = @inferred out_cmap(TESTINCOORDS, TESTOUTCOORDS)
-            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol=ATOL, rtol=RTOL))
-            @test all(isapprox.(test_out_moms, groundtruth_out_moms, atol=ATOL, rtol=RTOL))
+            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol = ATOL, rtol = RTOL))
+            @test all(isapprox.(test_out_moms, groundtruth_out_moms, atol = ATOL, rtol = RTOL))
         end
 
         @testset "Error handling" begin
@@ -77,12 +76,12 @@ include("test_implementation/TestImplementation.jl")
 
         @testset "in channel" begin
             test_in_moms = @inferred in_ccmap()
-            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol=ATOL, rtol=RTOL))
+            @test all(isapprox.(test_in_moms, groundtruth_in_moms, atol = ATOL, rtol = RTOL))
         end
 
         @testset "out channel" begin
             test_out_moms = @inferred out_ccmap(TESTOUTCOORDS)
-            @test all(isapprox.(test_out_moms, groundtruth_out_moms, atol=ATOL, rtol=RTOL))
+            @test all(isapprox.(test_out_moms, groundtruth_out_moms, atol = ATOL, rtol = RTOL))
         end
 
         @testset "Error handling" begin

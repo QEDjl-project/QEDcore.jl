@@ -1,4 +1,3 @@
-
 """
     Boost{V<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
 
@@ -43,14 +42,14 @@ such as four-momentum:
 
 ```jldoctest example_boost_x
 julia> p = SFourMomentum(4, 3, 2, 1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost_x(p)  # Perform the boost
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  2.886751345948129
  1.1547005383792517
  2.0
@@ -74,7 +73,7 @@ four-vector will not change the invariant quantity.
 * [`BetaZ`](@ref): Boost parameter for the z-axis.
 * [`BetaVector`](@ref): Vector of boost parameters for boosts in multiple spatial directions.
 """
-struct Boost{T<:QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
+struct Boost{T <: QEDbase.AbstractBoostParameter} <: QEDbase.AbstractLorentzBoost
     param::T
 end
 boost_type(::Boost{T}) where {T} = T

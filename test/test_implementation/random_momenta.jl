@@ -1,9 +1,8 @@
-
 """
 Return a tuple of random four momenta, i.e. a random phase space point.
 """
 function _rand_momenta(rng::AbstractRNG, n)
-    return NTuple{n,SFourMomentum}(SFourMomentum(rand(rng, 4)) for _ in 1:n)
+    return NTuple{n, SFourMomentum}(SFourMomentum(rand(rng, 4)) for _ in 1:n)
 end
 
 """
@@ -11,7 +10,7 @@ Return a vector of tuples of random four momenta, i.e. a collection of phase spa
 n1 is the size of the phase space point, n2 is the number of points.
 """
 function _rand_momenta(rng::AbstractRNG, n1, n2)
-    moms = Vector{NTuple{n1,SFourMomentum}}(undef, n2)
+    moms = Vector{NTuple{n1, SFourMomentum}}(undef, n2)
     for i in 1:n2
         moms[i] = _rand_momenta(rng, n1)
     end
@@ -51,7 +50,7 @@ i.e. their first entries are null momenta.
 n1 is the size of the phase space point, n2 is the number of points.
 """
 function _rand_in_momenta_failing_all(rng::AbstractRNG, n1, n2)
-    moms = Vector{NTuple{n1,SFourMomentum}}(undef, n2)
+    moms = Vector{NTuple{n1, SFourMomentum}}(undef, n2)
     for i in 1:n2
         moms[i] = _rand_in_momenta_failing(rng, n1)
     end
@@ -75,7 +74,7 @@ i.e. their last entries are unit momenta.
 n1 is the size of the phase space point, n2 is the number of points.
 """
 function _rand_out_momenta_failing_all(rng::AbstractRNG, n1, n2)
-    moms = Vector{NTuple{n1,SFourMomentum}}(undef, n2)
+    moms = Vector{NTuple{n1, SFourMomentum}}(undef, n2)
     for i in 1:n2
         moms[i] = _rand_out_momenta_failing(rng, n1)
     end

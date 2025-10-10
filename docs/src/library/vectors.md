@@ -7,7 +7,6 @@ CurrentModule = QEDcore
 ## 4-Momenta
 ```@docs
 SFourMomentum
-MFourMomentum
 ```
 
 ## Spinors
@@ -19,7 +18,6 @@ AdjointBiSpinor
 ## Lorentz Vectors
 ```@docs
 SLorentzVector
-MLorentzVector
 ```
 
 ## Dirac Matrix

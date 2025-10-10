@@ -1,10 +1,18 @@
 module QEDcore
 
+# constants
+export ALPHA,
+    ALPHA_SQUARE,
+    ELEMENTARY_CHARGE,
+    ELEMENTARY_CHARGE_SQUARE,
+    ELECTRONMASS,
+    ONE_OVER_FOURPI
+
 # lorentz vectors
-export SLorentzVector, MLorentzVector
+export SLorentzVector
 
 # four momenta
-export SFourMomentum, MFourMomentum
+export SFourMomentum
 
 # four momenta
 export Boost
@@ -14,7 +22,7 @@ export BetaX, BetaY, BetaZ, BetaVector
 export BiSpinor, AdjointBiSpinor, DiracMatrix
 
 # gamma matrices
-export gamma, GAMMA, DiracGammaRepresentation, slashed
+export gamma, DiracGammaRepresentation, slashed
 
 # particle types
 export FermionLike, Fermion, AntiFermion, MajoranaFermion
@@ -50,14 +58,17 @@ export spin, polarization, momenta, getindex
 # TODO: move this to QEDbase
 export AbstractPerturbativeModel
 
+
 using Reexport
 using DocStringExtensions
 using StaticArrays
 using SimpleTraits
 using LinearAlgebra
-using Roots
 
 @reexport using QEDbase
+
+include("math_helpers.jl")
+include("constants.jl")
 
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")

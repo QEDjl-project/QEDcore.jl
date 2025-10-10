@@ -35,7 +35,7 @@ end
 
 @testset "multivariate" begin
     @testset "$DIM" for DIM in (1, 2, rand(RNG, 3:8))
-        rnd_indices = sample(RNG, 1:20, DIM; replace=false)
+        rnd_indices = sample(RNG, 1:20, DIM; replace = false)
         MULTI_COORDS = Tuple(rand(RNG, UNI_COORDS, DIM))
 
         COORDS = Tuple(
@@ -44,7 +44,7 @@ end
         COORD_NAMES = Tuple(
             collect(
                 "$(COORD_BASE_NAMES[coord])" * "_$idx" for
-                (coord, idx) in zip(MULTI_COORDS, rnd_indices)
+                    (coord, idx) in zip(MULTI_COORDS, rnd_indices)
             ),
         )
 
@@ -68,18 +68,18 @@ end
         @testset "error handling" begin
             MULTI_COORDS_TOO_MANY = Tuple(rand(RNG, UNI_COORDS, DIM + 1))
             MULTI_COORDS_FEWER = Tuple(rand(RNG, UNI_COORDS, DIM - 1))
-            rnd_indices_too_many = sample(RNG, 1:20, DIM + 1; replace=false)
-            rnd_indices_fewer = sample(RNG, 1:20, DIM - 1; replace=false)
+            rnd_indices_too_many = sample(RNG, 1:20, DIM + 1; replace = false)
+            rnd_indices_fewer = sample(RNG, 1:20, DIM - 1; replace = false)
             COORDS_TO_MANY = Tuple(
                 collect(
                     coord(idx) for
-                    (coord, idx) in zip(MULTI_COORDS_TOO_MANY, rnd_indices_too_many)
+                        (coord, idx) in zip(MULTI_COORDS_TOO_MANY, rnd_indices_too_many)
                 ),
             )
             COORDS_FEWER = Tuple(
                 collect(
                     coord(idx) for
-                    (coord, idx) in zip(MULTI_COORDS_FEWER, rnd_indices_fewer)
+                        (coord, idx) in zip(MULTI_COORDS_FEWER, rnd_indices_fewer)
                 ),
             )
 

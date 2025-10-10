@@ -1,4 +1,3 @@
-
 """
 
     BetaVector(x::Real,y::Real,z::Real)
@@ -40,14 +39,14 @@ julia> boost = Boost(beta_vec)
 Boost{BetaVector{Float64}}(BetaVector{Float64}(0.2, 0.3, 0.1))
 
 julia> p = SFourMomentum(4.0,3.0,2.0,1.0)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  2.911484876492837
  2.282803602436349
  0.9242054036545237
@@ -63,7 +62,7 @@ julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 * [`ROOT::Math:Boost` from ROOT](https://root.cern.ch/doc/master/classROOT_1_1Math_1_1Boost.html)
 
 """
-struct BetaVector{T<:Real} <: AbstractBoostVector
+struct BetaVector{T <: Real} <: AbstractBoostVector
     x::T
     y::T
     z::T
@@ -72,7 +71,7 @@ struct BetaVector{T<:Real} <: AbstractBoostVector
         b2 = x^2 + y^2 + z^2
         b2 <= 1 || throw(
             InvalidInputError(
-                "wrong length of the beta vector ($x, $y, $z). Its length needs to be less or equal to one, but x^2 + y^2 + z^2 = $b2 is given.",
+                "wrong length of the beta vector, its length needs to be less or equal to one",
             ),
         )
         return new{T}(x, y, z)
@@ -97,8 +96,8 @@ function _three_vector_square(beta_vec::BetaVector)
 end
 
 @inline function QEDbase._transform(
-    beta_vec::BetaVector, p::M
-) where {M<:AbstractFourMomentum}
+        beta_vec::BetaVector, p::M
+    ) where {M <: AbstractFourMomentum}
     b2 = _three_vector_square(beta_vec)
     if b2 == one(b2)
         return p

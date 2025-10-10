@@ -43,18 +43,19 @@ SUM_IN_MASSES = sum(IN_MASSES)
         )
 
         @test length(test_out_moms) == N_OUTGOING
-        @test isapprox(getMass.(test_out_moms), [OUT_MASSES...], atol=ATOL, rtol=RTOL)
-        @test isapprox(sum(test_out_moms), sum(TESTINMOMS), atol=ATOL, rtol=RTOL)
+        @test all(isapprox.(getMass.(test_out_moms), OUT_MASSES, atol = ATOL, rtol = RTOL))
+        @test isapprox(sum(test_out_moms), sum(TESTINMOMS), atol = ATOL, rtol = RTOL)
+        @test test_out_moms isa Tuple
     end
 end
 
 @testset "error handling" begin
     valid_in_particles = (
-        TestImplementation.TestParticleFermion(), TestImplementation.TestParticleFermion()
+        TestImplementation.TestParticleFermion(), TestImplementation.TestParticleFermion(),
     )
     sum_in_masses = sum(mass.(valid_in_particles))
     valid_out_particles = (
-        TestImplementation.TestParticleBoson(), TestImplementation.TestParticleBoson()
+        TestImplementation.TestParticleBoson(), TestImplementation.TestParticleBoson(),
     )
     sum_out_masses = sum(mass.(valid_out_particles))
 

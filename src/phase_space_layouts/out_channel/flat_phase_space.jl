@@ -36,28 +36,31 @@ struct FlatPhaseSpaceLayout{INPSL} <: QEDbase.AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
 end
 
+Base.broadcastable(psl::FlatPhaseSpaceLayout) = Ref(psl)
+
 function QEDbase.phase_space_dimension(
-    proc::AbstractProcessDefinition,
-    model::AbstractModelDefinition,
-    psl::FlatPhaseSpaceLayout,
-)
+        proc::AbstractProcessDefinition,
+        model::AbstractModelDefinition,
+        psl::FlatPhaseSpaceLayout,
+    )
     return 4 * number_outgoing_particles(proc)
 end
 
 QEDbase.in_phase_space_layout(psl::FlatPhaseSpaceLayout) = psl.in_psl
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractModelDefinition,
-    in_moms::Tuple,
-    psl::FlatPhaseSpaceLayout,
-    out_coords::Tuple,
-)
+        proc::AbstractProcessDefinition,
+        model::AbstractModelDefinition,
+        in_moms::Tuple,
+        psl::FlatPhaseSpaceLayout,
+        out_coords::Tuple,
+    )
+    T = promote_type(eltype(eltype(in_moms)), eltype(out_coords))
 
     # TODO: move this to input validation
     number_outgoing_particles(proc) >= 2 || throw(
         InvalidInputError(
-            "the number of particles <$(number_outgoing_particles(proc)) must be at least two",
+            "the number of particles must be at least two",
         ),
     )
     # preparing inchannel
@@ -65,19 +68,19 @@ function QEDbase._build_momenta(
     boost_from_rest = inv(_unsafe_rest_boost(Ptot))
 
     sqrt_s = sqrt(Ptot * Ptot)
-    out_mass_sum = sum(mass.(outgoing_particles(proc)))
+    out_mass_sum = sum(mass.(T, outgoing_particles(proc)))
 
     # TODO: move this to input validation
     sqrt_s >= out_mass_sum || throw(
         InvalidInputError(
             """
-            sum of the masses of the outgoing particles <$out_mass_sum> must not exceed the
-            center-of-momentum energy <$sqrt_s>
+            sum of the masses of the outgoing particles must not exceed the
+            center-of-momentum energy
             """,
         ),
     )
 
-    out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(outgoing_particles(proc)))
+    out_moms = _massive_rambo_moms(out_coords, sqrt_s, mass.(T, outgoing_particles(proc)))
 
     return boost_from_rest.(out_moms)
 end
@@ -103,10 +106,11 @@ function _massive_rambo_moms(c, ss, masses)
     return _scale_rambo_moms(xi, masses, massless_moms)
 end
 
-function _to_be_solved(xi, masses, p0s, ss)
-    s = mapreduce(x -> sqrt(@inbounds x[1]^2 + xi^2 * x[2]^2), +, zip(masses, p0s))
+@inline function _to_be_solved(xi::T1, masses::NTuple{N, T2}, p0s::NTuple{N, T3}, ss::T4) where {N, T1, T2, T3, T4}
+    s = sum(hypot.(masses, xi .* p0s))
     return s - ss
 end
+
 
 """
     _find_scaling_factor(masses::Tuple, energies::Tuple, ss::Float64)
@@ -121,9 +125,10 @@ Finds a scaling factor for particle momenta to enforce conservation of energy-mo
 # Returns
 - The computed scaling factor as a float.
 """
-function _find_scaling_factor(masses, energies, ss)
+function _find_scaling_factor(masses::NTuple{N, T1}, energies::NTuple{N, T2}, ss::T3) where {N, T1, T2, T3}
+    T = promote_type(T1, T2, T3)
     f = x -> _to_be_solved(x, masses, energies, ss)
-    xi = find_zero(f, 2, Order1())
+    xi = _bisection(f, T(0), T(2))
     return xi
 end
 
@@ -140,21 +145,23 @@ Assumes massless particle as an intermediate step in RAMBO.
 - A four-momentum (`SFourMomentum`) for a single particle.
 """
 function _single_rambo_mom(single_coords)
+    T = eltype(single_coords)
     a, b, c, d = single_coords
     cth = 2 * c - 1
-    sth = sqrt(1 - cth^2)
-    phi = 2 * pi * d
+    sth = sq_diff_sqrt(1, cth)
+    phi = 2 * T(pi) * d
     p0 = -log(a) - log(b)
     p1 = p0 * sth * cos(phi)
     p2 = p0 * sth * sin(phi)
     p3 = p0 * cth
-    return SFourMomentum(p0, p1, p2, p3)
+    return SFourMomentum{T}(p0, p1, p2, p3)
 end
 
 """
     _tuple_partition_by_four(c::Tuple)
 
-Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory.
+Partitions a tuple of coordinates by four, generating sub-tuples of four values each without allocating memory and in a type stable way.
+Currently overloaded for tuples of lengths 4..40.
 
 # Arguments
 - `c::Tuple`: Tuple of coordinates.
@@ -162,10 +169,23 @@ Partitions a tuple of coordinates by four, generating sub-tuples of four values 
 # Returns
 - NTuple containing four-element tuples.
 """
-function _tuple_partition_by_four(c)
-    N = length(c)
-    m = div(N, 4)
-    return NTuple{m}(c[i:(i + 3)] for i in 1:4:N)
+function _tuple_partition_by_four end
+
+# block to generate a tuple partitioning function for reasonably sized tuples
+# this is necessary for type stability on GPU
+for O in 1:10
+    I = 4 * O
+
+    constructor_string = "tuple("
+    for i in 1:4:I
+        constructor_string *= "(c[$i], c[$(i + 1)], c[$(i + 2)], c[$(i + 3)]),"
+    end
+    constructor_string *= ")"
+    constructor = Meta.parse(constructor_string)
+
+    @eval function _tuple_partition_by_four(c::NTuple{$I, T})::NTuple{$O, NTuple{4, T}} where {T}
+        return $constructor
+    end
 end
 
 @inline function scale_spatial(lv, fac)
@@ -188,10 +208,13 @@ function _unconserved_momenta(c)
 end
 
 function _rambo_bvec(Q, M)
-    return SFourMomentum(getT(Q) / M, scale_spatial(Q, -inv(M))...)
+    T = promote_type(eltype(Q), eltype(M))
+    return SFourMomentum{T}(getT(Q) / M, scale_spatial(Q, -inv(M))...)
 end
 
 function _transform2conserved(bvec, scale, mom)
+    T = promote_type(eltype(bvec), typeof(scale), eltype(mom))
+
     a = 1 / (1 + getT(bvec))
 
     spatial_mom = SVector{3}(view(mom, 2:4))
@@ -200,7 +223,7 @@ function _transform2conserved(bvec, scale, mom)
     #bq = bx * mom1 + by * mom2 + bz * mom3
     bq = LinearAlgebra.dot(spatial_bvec, spatial_mom)
 
-    return SFourMomentum(
+    return SFourMomentum{T}(
         scale * (getT(bvec) * getT(mom) + bq),
         (scale * (spatial_mom + (getT(mom) + a * bq) * spatial_bvec))...,
     )
@@ -230,8 +253,9 @@ function _massless_rambo_moms(c, ss)
 end
 
 function _scale_single_rambo_mom(xi, mass, massless_mom)
-    return SFourMomentum(
-        sqrt(getT(massless_mom)^2 * xi^2 + mass^2),
+    T = promote_type(typeof(xi), typeof(mass), eltype(massless_mom))
+    return SFourMomentum{T}(
+        hypot(getT(massless_mom) * xi, mass),
         xi * getX(massless_mom),
         xi * getY(massless_mom),
         xi * getZ(massless_mom),
@@ -239,12 +263,14 @@ function _scale_single_rambo_mom(xi, mass, massless_mom)
 end
 
 function _scale_rambo_moms(xi, masses, massless_moms)
-    return map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms))
+    n = size(masses, 1)
+    return ntuple(i -> _scale_single_rambo_mom(xi, masses[i], massless_moms[i]), n)
+    #return Tuple(map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms)))
 end
 
 # Kleiss 1985: 2.14
-function _massless_rambo_weight(ss, n)
-    return (pi / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
+function _massless_rambo_weight(ss::T, n) where {T <: Real}
+    return (T(pi) / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
 end
 
 # Kleiss 1985: 4.11
@@ -268,12 +294,12 @@ function _center_of_momentum_energy(psp)
 end
 
 function QEDbase._phase_space_factor(
-    psp::PhaseSpacePoint{PROC,MODEL,PSL}
-) where {
-    PROC<:AbstractProcessDefinition,MODEL<:AbstractModelDefinition,PSL<:FlatPhaseSpaceLayout
-}
+        psp::PhaseSpacePoint{PROC, MODEL, PSL}
+    ) where {
+        PROC <: AbstractProcessDefinition, MODEL <: AbstractModelDefinition, PSL <: FlatPhaseSpaceLayout,
+    }
     ss = _center_of_momentum_energy(psp)
-    n = number_incoming_particles(psp)
+    n = number_incoming_particles(process(psp))
     out_moms = momenta(psp, Outgoing())
 
     massless_weight = _massless_rambo_weight(ss, n)

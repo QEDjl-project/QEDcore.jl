@@ -2,11 +2,11 @@
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://QEDjl-project.github.io/QEDcore.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://QEDjl-project.github.io/QEDcore.jl/dev/)
-[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
+[![code style: runic](https://img.shields.io/badge/code_style-%E1%9A%B1%E1%9A%A2%E1%9A%BE%E1%9B%81%E1%9A%B2-black)](https://github.com/fredrikekre/Runic.jl)
 
 This package is part of the `QuantumElectrodynamics.jl` library. For the description of the interoperability with other packages of `QuantumElectrodynamics.jl` see [docs](https://qedjl-project.github.io/QuantumElectrodynamics.jl/dev/).
 
-This package's main purpose is to provide implementations of the basic interfaces defined in [`QEDbase.jl`](https://github.com/QEDjl-project/QEDbase.jl), such as various particle types, `PhasespaceDefinition`, `PhaseSpacePoint`, and various vector and matrix types. These types are used across most of the QEDjl-project repositories. For detailed information on these types, please refer to the respective pages in the [docs](https://qedjl-project.github.io/QEDcore.jl/dev/).
+This package's main purpose is to provide implementations of the basic interfaces defined in [`QEDbase.jl`](https://github.com/QEDjl-project/QEDbase.jl), such as various particle types, some concrete `PhaseSpaceLayout`s, `PhaseSpacePoint`, and various vector and matrix types. These types are used across most of the QEDjl-project repositories. For detailed information on these types, please refer to the respective pages in the [docs](https://qedjl-project.github.io/QEDcore.jl/dev/).
 
 ## Contributing
 

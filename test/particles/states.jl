@@ -5,10 +5,12 @@ using Random
 include("../utils.jl")
 
 RNG = MersenneTwister(708583836976)
-ATOL = 1e-14
-RTOL = 0.0
 PHOTON_ENERGIES = (0.0, rand(RNG), rand(RNG) * 10)
 COS_THETAS = (-1.0, -rand(RNG), 0.0, rand(RNG), 1.0)
+
+rtol_atol(::Type{Float64}) = (zero(Float64), Float64(1.0e-14))
+rtol_atol(::Type{Float32}) = (zero(Float32), Float32(1.0e-6))
+rtol_atol(::Type{Float16}) = (zero(Float16), Float16(1.0e-2))
 
 # check every quadrant
 PHIS = (
@@ -38,8 +40,8 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
     @test test_broadcast.(TestFermion()) == TestFermion()
 
     @testset "$p $d" for (p, d) in
-                         Iterators.product((Electron, Positron), (Incoming, Outgoing))
-        mom = SFourMomentum(sqrt(mass(p()) + X^2 + Y^2 + Z^2), X, Y, Z)
+        Iterators.product((Electron, Positron), (Incoming, Outgoing))
+        mom = SFourMomentum(hypot(mass(p()), X, Y, Z), X, Y, Z)
         particle_mass = mass(p())
 
         @testset "tooling" begin
@@ -48,15 +50,22 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
             @test QEDbase._as_svec(base_state(p(), d(), mom, SpinDown())) isa SVector
         end
     end
-    @testset "spinor properties" begin
-        x, y, z = rand(RNG, 3)
-        m = mass(Electron())
-        P = SFourMomentum(sqrt(x^2 + y^2 + z^2 + m^2), x, y, z)
+    @testset "spinor properties in $FLOAT_T" for FLOAT_T in (Float16, Float32, Float64)
+        (RTOL, ATOL) = rtol_atol(FLOAT_T)
+
+        x, y, z = rand(RNG, FLOAT_T, 3)
+        m = mass(FLOAT_T, Electron())
+        P = SFourMomentum{FLOAT_T}(hypot(x, y, z, m), x, y, z)
 
         U = base_state(Electron(), Incoming(), P, AllSpin())
         Ubar = base_state(Electron(), Outgoing(), P, AllSpin())
         V = base_state(Positron(), Outgoing(), P, AllSpin())
         Vbar = base_state(Positron(), Incoming(), P, AllSpin())
+
+        @test eltype(U) == BiSpinor{Complex{FLOAT_T}}
+        @test eltype(Ubar) == AdjointBiSpinor{Complex{FLOAT_T}}
+        @test eltype(V) == BiSpinor{Complex{FLOAT_T}}
+        @test eltype(Vbar) == AdjointBiSpinor{Complex{FLOAT_T}}
 
         @testset "normalization" begin
             for s1 in (1, 2)
@@ -67,37 +76,41 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
                     @test isapprox(Vbar[s1] * U[s2], 0.0)
                 end
             end
-        end # normatlisation
+        end # normalization
 
         @testset "completeness" begin
-            sumU = zero(DiracMatrix)
-            sumV = zero(DiracMatrix)
+            sumU = zero(DiracMatrix{FLOAT_T})
+            sumV = zero(DiracMatrix{FLOAT_T})
             for spin in (1, 2)
                 sumU += U[spin] * Ubar[spin]
                 sumV += V[spin] * Vbar[spin]
             end
 
-            @test isapprox(sumU, (slashed(P) + m * one(DiracMatrix)))
-            @test isapprox(sumV, (slashed(P) - m * one(DiracMatrix)))
+            @test isapprox(sumU, (slashed(P) + m * one(DiracMatrix{FLOAT_T})))
+            @test isapprox(sumV, (slashed(P) - m * one(DiracMatrix{FLOAT_T})))
         end # completeness
 
         @testset "diracs equation" begin
             for spin in (1, 2)
                 @test isapprox(
-                    (slashed(P) - m * one(DiracMatrix)) * U[spin], zero(BiSpinor), atol=ATOL
+                    (slashed(P) - m * one(DiracMatrix{FLOAT_T})) * U[spin],
+                    zero(BiSpinor{FLOAT_T}),
+                    atol = ATOL,
                 )
                 @test isapprox(
-                    (slashed(P) + m * one(DiracMatrix)) * V[spin], zero(BiSpinor), atol=ATOL
+                    (slashed(P) + m * one(DiracMatrix{FLOAT_T})) * V[spin],
+                    zero(BiSpinor{FLOAT_T}),
+                    atol = ATOL,
                 )
                 @test isapprox(
-                    Ubar[spin] * (slashed(P) - m * one(DiracMatrix)),
-                    zero(AdjointBiSpinor),
-                    atol=ATOL,
+                    Ubar[spin] * (slashed(P) - m * one(DiracMatrix{FLOAT_T})),
+                    zero(AdjointBiSpinor{FLOAT_T}),
+                    atol = ATOL,
                 )
                 @test isapprox(
-                    Vbar[spin] * (slashed(P) + m * one(DiracMatrix)),
-                    zero(AdjointBiSpinor),
-                    atol=ATOL,
+                    Vbar[spin] * (slashed(P) + m * one(DiracMatrix{FLOAT_T})),
+                    zero(AdjointBiSpinor{FLOAT_T}),
+                    atol = ATOL,
                 )
             end
         end #diracs equation
@@ -105,9 +118,7 @@ test_broadcast(x::AbstractSpinOrPolarization) = x
         @testset "sandwich" begin
             for s1 in (1, 2)
                 for s2 in (1, 2)
-                    @test isapprox(
-                        SFourMomentum(Ubar[s1] * (GAMMA * U[s2])), 2 * P * (s1 == s2)
-                    )
+                    @test isapprox(Ubar[s1] * (gamma() * U[s2]), 2 * P * (s1 == s2))
                 end
             end
         end #sandwich
@@ -125,43 +136,58 @@ end
 
     @testset "$D" for D in [Incoming, Outgoing]
         @testset "$om $cth $phi" for (om, cth, phi) in
-                                     Iterators.product(PHOTON_ENERGIES, COS_THETAS, PHIS)
-            #@testset "$x $y $z" for (x,y,z) in Iterators.product(X_arr,Y_arr,Z_arr)
+            Iterators.product(PHOTON_ENERGIES, COS_THETAS, PHIS)
+            @testset "$FLOAT_T" for FLOAT_T in (Float16, Float32, Float64)
+                (RTOL, ATOL) = rtol_atol(FLOAT_T)
 
-            mom = SFourMomentum(_cartesian_coordinates(om, om, cth, phi))
-            both_photon_states = base_state(Photon(), D(), mom, AllPolarization())
+                mom = SFourMomentum{FLOAT_T}(_cartesian_coordinates(om, om, cth, phi))
+                both_photon_states = base_state(Photon(), D(), mom, AllPolarization())
 
-            # property test the photon states
-            @test isapprox((both_photon_states[1] * mom), 0.0, atol=ATOL, rtol=RTOL)
-            @test isapprox((both_photon_states[2] * mom), 0.0, atol=ATOL, rtol=RTOL)
-            @test isapprox(
-                (both_photon_states[1] * both_photon_states[1]), -1.0, atol=ATOL, rtol=RTOL
-            )
-            @test isapprox(
-                (both_photon_states[2] * both_photon_states[2]), -1.0, atol=ATOL, rtol=RTOL
-            )
-            @test isapprox(
-                (both_photon_states[1] * both_photon_states[2]), 0.0, atol=ATOL, rtol=RTOL
-            )
+                @test eltype(both_photon_states) == SLorentzVector{FLOAT_T}
 
-            # test the single polarization states
-            @test base_state(Photon(), D(), mom, PolarizationX()) == both_photon_states[1]
-            @test base_state(Photon(), D(), mom, PolarizationY()) == both_photon_states[2]
-            @test base_state(Photon(), D(), mom, PolX()) == both_photon_states[1]
-            @test base_state(Photon(), D(), mom, PolY()) == both_photon_states[2]
+                # property test the photon states
+                @test isapprox((both_photon_states[1] * mom), 0.0, atol = ATOL, rtol = RTOL)
+                @test isapprox((both_photon_states[2] * mom), 0.0, atol = ATOL, rtol = RTOL)
+                @test isapprox(
+                    (both_photon_states[1] * both_photon_states[1]),
+                    -one(FLOAT_T),
+                    atol = ATOL,
+                    rtol = RTOL,
+                )
+                @test isapprox(
+                    (both_photon_states[2] * both_photon_states[2]),
+                    -one(FLOAT_T),
+                    atol = ATOL,
+                    rtol = RTOL,
+                )
+                @test isapprox(
+                    (both_photon_states[1] * both_photon_states[2]),
+                    zero(FLOAT_T),
+                    atol = ATOL,
+                    rtol = RTOL,
+                )
 
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolX())) isa SVector
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolY())) isa SVector
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol())) isa SVector
+                # test the single polarization states
+                @test base_state(Photon(), D(), mom, PolarizationX()) ==
+                    both_photon_states[1]
+                @test base_state(Photon(), D(), mom, PolarizationY()) ==
+                    both_photon_states[2]
+                @test base_state(Photon(), D(), mom, PolX()) == both_photon_states[1]
+                @test base_state(Photon(), D(), mom, PolY()) == both_photon_states[2]
 
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolX()))[1] ==
-                both_photon_states[1]
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolY()))[1] ==
-                both_photon_states[2]
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol()))[1] ==
-                both_photon_states[1]
-            @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol()))[2] ==
-                both_photon_states[2]
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolX())) isa SVector
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolY())) isa SVector
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol())) isa SVector
+
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolX()))[1] ==
+                    both_photon_states[1]
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, PolY()))[1] ==
+                    both_photon_states[2]
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol()))[1] ==
+                    both_photon_states[1]
+                @test QEDbase._as_svec(base_state(Photon(), D(), mom, AllPol()))[2] ==
+                    both_photon_states[2]
+            end
         end
     end
 end

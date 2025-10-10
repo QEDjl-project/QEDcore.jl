@@ -14,7 +14,7 @@ This abstract type is meant to be extended by concrete types to represent boosts
 """
 abstract type AbstractAxisBoostParameter{T} <: QEDbase.AbstractBoostParameter end
 
-function (::Type{BP})(boost_val::Real) where {T<:Real,BP<:AbstractAxisBoostParameter{T}}
+function (::Type{BP})(boost_val::Real) where {T <: Real, BP <: AbstractAxisBoostParameter{T}}
     return BP(T(boost_val))
 end
 

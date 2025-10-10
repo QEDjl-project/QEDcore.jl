@@ -3,7 +3,7 @@ using StaticArrays
 
 unary_methods = [-, +]
 
-@testset "$LorentzVectorType" for LorentzVectorType in [SLorentzVector, MLorentzVector]
+@testset "$LorentzVectorType" for LorentzVectorType in [SLorentzVector]
     @testset "General Properties" begin
         LV = LorentzVectorType(rand(Float64, 4))
 
@@ -76,6 +76,9 @@ unary_methods = [-, +]
         @test @inferred(LV_mat * BS) == LV_BS
         @test @inferred(aBS * LV_mat) == LV_aBS
         @test @inferred(LV_aBS * LV_BS) == -60.0 + 0.0im
+
+        @test_throws MethodError LV_mat * aBS
+        @test_throws MethodError BS * LV_mat
     end #interface dirac tensor
 
     @testset "utility functions" begin
@@ -84,15 +87,3 @@ unary_methods = [-, +]
         @test isapprox(@inferred(getMagnitude(LV)), sqrt(14))
     end # utility functions
 end # LorentzVectorType
-
-@testset "different LorentzVectorTypes" begin
-    @testset "Artihmetics" begin
-        LV1 = SLorentzVector(1, 2, 3, 4)
-        LV2 = MLorentzVector(4, 3, 2, 1)
-
-        @test @inferred(LV1 + LV2) === SLorentzVector(5, 5, 5, 5)
-        @test @inferred(LV1 - LV2) === SLorentzVector(-3, -1, 1, 3)
-
-        @test LV1 * LV2 == -12.0
-    end
-end

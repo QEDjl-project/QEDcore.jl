@@ -66,26 +66,26 @@ coord_map(in_coords, out_coords)
     and momentum conservation for the process.
 
 """
-struct CoordinateMap{P,M,PSL<:AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
+struct CoordinateMap{P, M, PSL <: AbstractPhaseSpaceLayout} <: AbstractCoordinateMap
     proc::P
     model::M
     psl::PSL
 end
 
 # make the transform callable
-@inline function (coord_map::CoordinateMap{P,M,PSL})(
-    in_coords::Tuple
-) where {P,M,PSL<:AbstractInPhaseSpaceLayout}
+@inline function (coord_map::CoordinateMap{P, M, PSL})(
+        in_coords::Tuple
+    ) where {P, M, PSL <: AbstractInPhaseSpaceLayout}
     return build_momenta(coord_map.proc, coord_map.model, coord_map.psl, in_coords)
 end
 
 # make the transform callable
-@inline function (coord_map::CoordinateMap{P,M,PSL})(
-    in_coords::Tuple, out_coords::Tuple
-) where {P,M,PSL<:AbstractOutPhaseSpaceLayout}
+@inline function (coord_map::CoordinateMap{P, M, PSL})(
+        in_coords::Tuple, out_coords::Tuple
+    ) where {P, M, PSL <: AbstractOutPhaseSpaceLayout}
     in_moms = build_momenta(
         coord_map.proc, coord_map.model, in_phase_space_layout(coord_map.psl), in_coords
     )
     return in_moms,
-    build_momenta(coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords)
+        build_momenta(coord_map.proc, coord_map.model, in_moms, coord_map.psl, out_coords)
 end

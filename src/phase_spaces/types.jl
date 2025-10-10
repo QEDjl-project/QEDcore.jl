@@ -21,18 +21,18 @@ ParticleStateful: outgoing photon
 ```
 """
 struct ParticleStateful{
-    DIR<:ParticleDirection,SPECIES<:AbstractParticleType,ELEMENT<:AbstractFourMomentum
-} <: AbstractParticleStateful{DIR,SPECIES,ELEMENT}
+        DIR <: ParticleDirection, SPECIES <: AbstractParticleType, ELEMENT <: AbstractFourMomentum,
+    } <: AbstractParticleStateful{DIR, SPECIES, ELEMENT}
     dir::DIR
     species::SPECIES
     mom::ELEMENT
 
     function ParticleStateful(
-        dir::DIR, species::SPECIES, mom::ELEMENT
-    ) where {
-        DIR<:ParticleDirection,SPECIES<:AbstractParticleType,ELEMENT<:AbstractFourMomentum
-    }
-        return new{DIR,SPECIES,ELEMENT}(dir, species, mom)
+            dir::DIR, species::SPECIES, mom::ELEMENT
+        ) where {
+            DIR <: ParticleDirection, SPECIES <: AbstractParticleType, ELEMENT <: AbstractFourMomentum,
+        }
+        return new{DIR, SPECIES, ELEMENT}(dir, species, mom)
     end
 end
 
@@ -79,13 +79,13 @@ PhaseSpacePoint:
     A completely empty `PhaseSpacePoint` is not allowed.
 """
 struct PhaseSpacePoint{
-    PROC<:AbstractProcessDefinition,
-    MODEL<:AbstractModelDefinition,
-    PSL<:AbstractPhaseSpaceLayout,
-    IN_PARTICLES<:Tuple{Vararg{ParticleStateful}},
-    OUT_PARTICLES<:Tuple{Vararg{ParticleStateful}},
-    ELEMENT<:AbstractFourMomentum,
-} <: AbstractPhaseSpacePoint{PROC,MODEL,PSL,IN_PARTICLES,OUT_PARTICLES}
+        PROC <: AbstractProcessDefinition,
+        MODEL <: AbstractModelDefinition,
+        PSL <: AbstractPhaseSpaceLayout,
+        IN_PARTICLES <: Tuple{Vararg{ParticleStateful}},
+        OUT_PARTICLES <: Tuple{Vararg{ParticleStateful}},
+        ELEMENT <: AbstractFourMomentum,
+    } <: AbstractPhaseSpacePoint{PROC, MODEL, PSL, IN_PARTICLES, OUT_PARTICLES}
     proc::PROC
     model::MODEL
     psl::PSL
@@ -105,20 +105,20 @@ struct PhaseSpacePoint{
     Construct a [`PhaseSpacePoint`](@ref) from a process, model, phasespace definition and a tuple of [`ParticleStateful`](@ref)s.
     """
     function PhaseSpacePoint(
-        proc::PROC, model::MODEL, psl::PSL, in_p::IN_PARTICLES, out_p::OUT_PARTICLES
-    ) where {
-        PROC<:AbstractProcessDefinition,
-        MODEL<:AbstractModelDefinition,
-        PSL<:AbstractPhaseSpaceLayout,
-        IN_PARTICLES<:Tuple{Vararg{ParticleStateful}},
-        OUT_PARTICLES<:Tuple{Vararg{ParticleStateful}},
-    }
+            proc::PROC, model::MODEL, psl::PSL, in_p::IN_PARTICLES, out_p::OUT_PARTICLES
+        ) where {
+            PROC <: AbstractProcessDefinition,
+            MODEL <: AbstractModelDefinition,
+            PSL <: AbstractPhaseSpaceLayout,
+            IN_PARTICLES <: Tuple{Vararg{ParticleStateful}},
+            OUT_PARTICLES <: Tuple{Vararg{ParticleStateful}},
+        }
         # this entire check is compiled away every time, so there's no need to disable it for performance ever
         ELEMENT = _check_psp(
             incoming_particles(proc), outgoing_particles(proc), in_p, out_p
         )
 
-        return new{PROC,MODEL,PSL,IN_PARTICLES,OUT_PARTICLES,ELEMENT}(
+        return new{PROC, MODEL, PSL, IN_PARTICLES, OUT_PARTICLES, ELEMENT}(
             proc, model, psl, in_p, out_p
         )
     end
@@ -131,9 +131,9 @@ A partial type specialization on [`PhaseSpacePoint`](@ref) which can be used for
 
 See also: [`OutPhaseSpacePoint`](@ref)
 """
-InPhaseSpacePoint{P,M,D,IN,OUT,E} = PhaseSpacePoint{
-    P,M,D,IN,OUT,E
-} where {IN<:Tuple{ParticleStateful,Vararg},OUT<:Tuple{Vararg}}
+InPhaseSpacePoint{P, M, D, IN, OUT, E} = PhaseSpacePoint{
+    P, M, D, IN, OUT, E,
+} where {IN <: Tuple{ParticleStateful, Vararg}, OUT <: Tuple{Vararg}}
 
 """
     OutPhaseSpacePoint
@@ -142,6 +142,6 @@ A partial type specialization on [`PhaseSpacePoint`](@ref) which can be used for
 
 See also: [`InPhaseSpacePoint`](@ref)
 """
-OutPhaseSpacePoint{P,M,D,IN,OUT,E} = PhaseSpacePoint{
-    P,M,D,IN,OUT,E
-} where {IN<:Tuple{Vararg},OUT<:Tuple{ParticleStateful,Vararg}}
+OutPhaseSpacePoint{P, M, D, IN, OUT, E} = PhaseSpacePoint{
+    P, M, D, IN, OUT, E,
+} where {IN <: Tuple{Vararg}, OUT <: Tuple{ParticleStateful, Vararg}}

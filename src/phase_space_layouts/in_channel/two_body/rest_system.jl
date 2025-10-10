@@ -94,13 +94,13 @@ In this case, the rapidity of particle 2 is given, and its energy and momentum a
 - `ArgumentError` if invalid coordinates are used (e.g., unsupported coordinate types or
     incompatible indices).
 """
-struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinate} <:
-       AbstractTwoBodyRestSystem
+struct TwoBodyRestSystem{RESTIDX, COORD <: AbstractUnivariateCoordinate} <:
+    AbstractTwoBodyRestSystem
     coord::COORD
 
     function TwoBodyRestSystem{RESTIDX}(
-        coord_name::COORD
-    ) where {RESTIDX,COORD<:AbstractSingleParticleCoordinate{RESTIDX}}
+            coord_name::COORD
+        ) where {RESTIDX, COORD <: AbstractSingleParticleCoordinate{RESTIDX}}
         throw(
             InvalidInputError(
                 "the particle at rest and the particle parameterize by the coordinate must not have the same index",
@@ -109,15 +109,17 @@ struct TwoBodyRestSystem{RESTIDX,COORD<:AbstractUnivariateCoordinate} <:
     end
 
     function TwoBodyRestSystem{RESTIDX}(
-        coord_name::COORD
-    ) where {RESTIDX,RUNIDX,COORD<:AbstractSingleParticleCoordinate{RUNIDX}}
-        return new{RESTIDX,COORD}(coord_name)
+            coord_name::COORD
+        ) where {RESTIDX, RUNIDX, COORD <: AbstractSingleParticleCoordinate{RUNIDX}}
+        return new{RESTIDX, COORD}(coord_name)
     end
 
     function TwoBodyRestSystem{RESTIDX}(coord_name::CMSEnergy) where {RESTIDX}
-        return new{RESTIDX,CMSEnergy}(coord_name)
+        return new{RESTIDX, CMSEnergy}(coord_name)
     end
 end
+
+Base.broadcastable(psl::TwoBodyRestSystem) = Ref(psl)
 
 @inline TwoBodyRestSystem(::Val{RESTIDX}, coord_name) where {RESTIDX} =
     TwoBodyRestSystem{RESTIDX}(coord_name)
@@ -125,92 +127,100 @@ end
     TwoBodyRestSystem(Val(rest_idx), coord_name)
 @inline TwoBodyRestSystem(
     coord::COORD
-) where {RUNIDX,COORD<:AbstractSingleParticleCoordinate{RUNIDX}} =
+) where {RUNIDX, COORD <: AbstractSingleParticleCoordinate{RUNIDX}} =
     TwoBodyRestSystem{_the_other(RUNIDX)}(coord)
 TwoBodyRestSystem() = TwoBodyRestSystem(1, Energy(2))
 const TwoBodyTargetSystem{COORD} =
-    TwoBodyRestSystem{1,COORD} where {COORD<:AbstractUnivariateCoordinate}
+    TwoBodyRestSystem{1, COORD} where {COORD <: AbstractUnivariateCoordinate}
 TwoBodyTargetSystem() = TwoBodyTargetSystem(Energy(2))
 const TwoBodyBeamSystem{COORD} =
-    TwoBodyRestSystem{2,COORD} where {COORD<:AbstractUnivariateCoordinate}
+    TwoBodyRestSystem{2, COORD} where {COORD <: AbstractUnivariateCoordinate}
 TwoBodyBeamSystem() = TwoBodyBeamSystem(Energy(1))
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    ::AbstractPerturbativeModel,
-    ::TwoBodyRestSystem{RESTIDX,<:Energy{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
-    masses = mass.(incoming_particles(proc))
+        proc::AbstractProcessDefinition,
+        ::AbstractPerturbativeModel,
+        ::TwoBodyRestSystem{RESTIDX, <:Energy{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
+    T = eltype(in_coords)
+
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
-    P_rest = SFourMomentum(mass_rest, 0, 0, 0)
+    P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = masses[RUNIDX]
     energy_run = @inbounds in_coords[1]
 
-    rho_run = sqrt(energy_run^2 - mass_run^2)
-    P_run = SFourMomentum(energy_run, 0, 0, rho_run)
+    rho_run = sq_diff_sqrt(energy_run, - mass_run)
+    P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    ::AbstractPerturbativeModel,
-    ::TwoBodyRestSystem{RESTIDX,<:SpatialMagnitude{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
-    masses = mass.(incoming_particles(proc))
+        proc::AbstractProcessDefinition,
+        ::AbstractPerturbativeModel,
+        ::TwoBodyRestSystem{RESTIDX, <:SpatialMagnitude{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
+    T = eltype(in_coords)
+
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = masses[RESTIDX]
-    P_rest = SFourMomentum(mass_rest, 0, 0, 0)
+    P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = masses[RUNIDX]
     rho_run = @inbounds in_coords[1]
 
-    energy_run = sqrt(rho_run^2 + mass_run^2)
-    P_run = SFourMomentum(energy_run, 0, 0, rho_run)
+    energy_run = hypot(rho_run, mass_run)
+    P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractPerturbativeModel,
-    in_psl::TwoBodyRestSystem{RESTIDX,<:CMSEnergy},
-    in_coords,
-) where {RESTIDX}
+        proc::AbstractProcessDefinition,
+        model::AbstractPerturbativeModel,
+        in_psl::TwoBodyRestSystem{RESTIDX, <:CMSEnergy},
+        in_coords,
+    ) where {RESTIDX}
+    T = eltype(in_coords)
+
     RUNIDX = _the_other(RESTIDX)
 
-    masses = mass.(incoming_particles(proc))
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
-    P_rest = SFourMomentum(mass_rest, 0, 0, 0)
+    P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = @inbounds masses[RUNIDX]
     sqrt_s_run = @inbounds in_coords[1]
 
     energy_run = (sqrt_s_run^2 - mass_run^2 - mass_rest^2) / (2 * mass_rest)
-    rho_run = sqrt(energy_run^2 - mass_run^2)
+    rho_run = sq_diff_sqrt(energy_run, - mass_run)
 
-    P_run = SFourMomentum(energy_run, 0, 0, rho_run)
+    P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end
 
 function QEDbase._build_momenta(
-    proc::AbstractProcessDefinition,
-    model::AbstractPerturbativeModel,
-    in_psl::TwoBodyRestSystem{RESTIDX,<:Rapidity{RUNIDX}},
-    in_coords,
-) where {RESTIDX,RUNIDX}
-    masses = mass.(incoming_particles(proc))
+        proc::AbstractProcessDefinition,
+        model::AbstractPerturbativeModel,
+        in_psl::TwoBodyRestSystem{RESTIDX, <:Rapidity{RUNIDX}},
+        in_coords,
+    ) where {RESTIDX, RUNIDX}
+    T = eltype(in_coords)
+
+    masses = mass.(T, incoming_particles(proc))
     mass_rest = @inbounds masses[RESTIDX]
-    P_rest = SFourMomentum(mass_rest, 0, 0, 0)
+    P_rest = SFourMomentum{T}(mass_rest, 0, 0, 0)
 
     mass_run = @inbounds masses[RUNIDX]
     rapidity_run = @inbounds in_coords[1]
     energy_run = mass_run * cosh(rapidity_run)
     rho_run = mass_run * sinh(rapidity_run)
-    P_run = SFourMomentum(energy_run, 0, 0, rho_run)
+    P_run = SFourMomentum{T}(energy_run, 0, 0, rho_run)
 
     return _order_moms(RESTIDX, RUNIDX, P_rest, P_run)
 end

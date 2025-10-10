@@ -3,7 +3,7 @@ using Pkg
 # targeting the correct source code
 # this asumes the make.jl script is located in QEDcore.jl/docs
 project_path = Base.Filesystem.joinpath(Base.Filesystem.dirname(Base.source_path()), "..")
-Pkg.develop(; path=project_path)
+Pkg.develop(; path = project_path)
 
 using QEDbase
 using QEDcore
@@ -45,6 +45,7 @@ end
 literate_paths = [
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/particles.jl"),
     Base.Filesystem.joinpath(project_path, "docs/src/tutorial/vectors.jl"),
+    Base.Filesystem.joinpath(project_path, "docs/src/tutorial/constants.jl"),
 ]
 
 tutorial_output_dir = joinpath(project_path, "docs/src/generated/")
@@ -59,10 +60,12 @@ pages = [
         "Particles and Phase Space Points" =>
             joinpath(tutorial_output_dir_name, "particles.md"),
         "Matrix and Vector Types" => joinpath(tutorial_output_dir_name, "vectors.md"),
+        "Physical Constants" => joinpath(tutorial_output_dir_name, "constants.md"),
     ],
     "API reference" => [
         "Contents" => "library/outline.md",
         "Particles" => "library/particles.md",
+        "Constants" => "library/constants.md",
         "Coordinates" => "library/coordinates.md",
         "Phase Space Layout" => "library/phase_space_layout.md",
         "Phase Space Points" => "library/phasespacepoint.md",
@@ -76,30 +79,30 @@ pages = [
 try
     # generate markdown files with Literate.jl
     for file in literate_paths
-        Literate.markdown(file, tutorial_output_dir; documenter=true)
+        Literate.markdown(file, tutorial_output_dir; documenter = true)
     end
     # geneate docs with Documenter.jl
 
     makedocs(;
-        modules=[QEDcore],
-        checkdocs=:exports,
-        authors="Uwe Hernandez Acosta",
-        repo=Documenter.Remotes.GitHub("QEDjl-project", "QEDcore.jl"),
-        sitename="QEDcore.jl",
-        format=Documenter.HTML(;
-            prettyurls=get(ENV, "CI", "false") == "true",
-            canonical="https://qedjl-project.gitlab.io/QEDcore.jl",
-            assets=String[],
+        modules = [QEDcore],
+        checkdocs = :exports,
+        authors = "Uwe Hernandez Acosta",
+        repo = Documenter.Remotes.GitHub("QEDjl-project", "QEDcore.jl"),
+        sitename = "QEDcore.jl",
+        format = Documenter.HTML(;
+            prettyurls = get(ENV, "CI", "false") == "true",
+            canonical = "https://qedjl-project.gitlab.io/QEDcore.jl",
+            assets = String[],
         ),
-        pages=pages,
-        plugins=[bib, links],
+        pages = pages,
+        plugins = [bib, links],
     )
 finally
     # doing some garbage collection
     @info "GarbageCollection: remove generated landing page"
     rm(index_path)
     @info "GarbageCollection: remove generated tutorial files"
-    rm(tutorial_output_dir; recursive=true)
+    rm(tutorial_output_dir; recursive = true)
 end
 
-deploydocs(; repo="github.com/QEDjl-project/QEDcore.jl", push_preview=false)
+deploydocs(; repo = "github.com/QEDjl-project/QEDcore.jl", push_preview = false)

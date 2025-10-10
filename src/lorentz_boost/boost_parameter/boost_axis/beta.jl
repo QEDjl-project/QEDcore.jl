@@ -1,4 +1,3 @@
-
 ###########
 # Axis Beta
 ###########
@@ -22,9 +21,9 @@ These beta parameters are essential for performing axis-specific Lorentz boosts,
 """
 abstract type AbstractAxisBeta{T} <: AbstractAxisBoostParameter{T} end
 
-Base.:-(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
+Base.:-(beta::B) where {B <: AbstractAxisBeta} = B(-beta.param)
 
-_inv(beta::B) where {B<:AbstractAxisBeta} = B(-beta.param)
+_inv(beta::B) where {B <: AbstractAxisBeta} = B(-beta.param)
 
 @inline function _generic_axis_boost(en, comp, beta)
     b2 = beta^2
@@ -72,14 +71,14 @@ julia> boost = Boost(beta_x)
 Boost{BetaX{Float64}}(BetaX{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  2.886751345948129
  1.1547005383792517
  2.0
@@ -94,18 +93,18 @@ julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 * [Kinematics in PDG review](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf)
 
 """
-struct BetaX{T<:Real} <: AbstractAxisBeta{T}
+struct BetaX{T <: Real} <: AbstractAxisBeta{T}
     param::T
-    function BetaX{T}(beta::T) where {T<:Real}
+    function BetaX{T}(beta::T) where {T <: Real}
         -one(beta) <= beta < one(beta) ||
             throw(InvalidInputError("beta parameter <$beta> must be between zero and one"))
         return new{T}(beta)
     end
 end
 
-BetaX(beta::T) where {T<:Real} = BetaX{T}(beta)
+BetaX(beta::T) where {T <: Real} = BetaX{T}(beta)
 
-function QEDbase._transform(boost_param::BetaX, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaX, p::M) where {M <: AbstractFourMomentum}
     en = getE(p)
     px = getX(p)
 
@@ -154,14 +153,14 @@ julia> boost = Boost(beta_y)
 Boost{BetaY{Float64}}(BetaY{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  3.4641016151377553
  3.0
  0.0
@@ -176,9 +175,9 @@ julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 * [Kinematics in PDG review](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf)
 
 """
-struct BetaY{T<:Real} <: AbstractAxisBeta{T}
+struct BetaY{T <: Real} <: AbstractAxisBeta{T}
     param::T
-    function BetaY{T}(beta::T) where {T<:Real}
+    function BetaY{T}(beta::T) where {T <: Real}
         -one(beta) <= beta < one(beta) ||
             throw(InvalidInputError("beta parameter <$beta> must be between zero and one"))
         return new{T}(beta)
@@ -187,7 +186,7 @@ end
 
 BetaY(beta::T) where {T} = BetaY{T}(beta)
 
-function QEDbase._transform(boost_param::BetaY, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaY, p::M) where {M <: AbstractFourMomentum}
     en = getE(p)
     py = getY(p)
 
@@ -236,14 +235,14 @@ julia> boost = Boost(beta_z)
 Boost{BetaZ{Float64}}(BetaZ{Float64}(0.5))
 
 julia> p = SFourMomentum(4,3,2,1)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
  4.0
  3.0
  2.0
  1.0
 
 julia> p_prime = boost(p)
-4-element SFourMomentum with indices SOneTo(4):
+4-element SFourMomentum{Float64} with indices SOneTo(4):
   4.041451884327381
   3.0
   2.0
@@ -259,9 +258,9 @@ julia> @assert isapprox(p*p,p_prime*p_prime) # Invariant mass is preserved
 * [Kinematics in PDG review](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf)
 
 """
-struct BetaZ{T<:Real} <: AbstractAxisBeta{T}
+struct BetaZ{T <: Real} <: AbstractAxisBeta{T}
     param::T
-    function BetaZ{T}(beta::T) where {T<:Real}
+    function BetaZ{T}(beta::T) where {T <: Real}
         -one(beta) <= beta < one(beta) ||
             throw(InvalidInputError("beta parameter <$beta> must be between zero and one"))
         return new{T}(beta)
@@ -269,7 +268,7 @@ struct BetaZ{T<:Real} <: AbstractAxisBeta{T}
 end
 
 BetaZ(beta::T) where {T} = BetaZ{T}(beta)
-function QEDbase._transform(boost_param::BetaZ, p::M) where {M<:AbstractFourMomentum}
+function QEDbase._transform(boost_param::BetaZ, p::M) where {M <: AbstractFourMomentum}
     en = getE(p)
     pz = getZ(p)
 
