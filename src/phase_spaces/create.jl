@@ -139,6 +139,7 @@ end
     )
 
 Construct a [`PhaseSpacePoint`](@ref) from given coordinates by using the `_generate_momenta` interface.
+Alternative versions of this constructor exist using `SVector`s instead of `NTuple`s, and a version where only one `NTuple` or one `SVector` is given containing all coordinates.
 """
 function PhaseSpacePoint(
         proc::AbstractProcessDefinition,
@@ -149,6 +150,40 @@ function PhaseSpacePoint(
     ) where {N, M}
     in_ps, out_ps = QEDbase._build_momenta(proc, model, psl, in_coords, out_coords)
     return PhaseSpacePoint(proc, model, psl, in_ps, out_ps)
+end
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        coords::Tuple,
+    )
+
+    in_dim = phase_space_dimension(p, m, in_phase_space_layout(psl))
+    out_dim = phase_space_dimension(p, m, psl)
+    return PhaseSpacePoint(
+        p,
+        m,
+        psl,
+        ntuple(i -> coords[i], in_dim),
+        ntuple(i -> coords[in_dim + i], out_dim),
+    )
+end
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        coords::SVector,
+    )
+    return PhaseSpacePoint(p, m, psl, Tuple(coords))
+end
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        in_coords::SVector,
+        out_coords::SVector,
+    )
+    return PhaseSpacePoint(p, m, psl, Tuple(in_coords), Tuple(out_coords))
 end
 
 """
