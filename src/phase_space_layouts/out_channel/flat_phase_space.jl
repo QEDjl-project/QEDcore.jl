@@ -268,13 +268,16 @@ function _scale_rambo_moms(xi, masses, massless_moms)
     #return Tuple(map(x -> _scale_single_rambo_mom(xi, x...), zip(masses, massless_moms)))
 end
 
+_factorial_helper(::Val{0}) = 1
+_factorial_helper(::Val{N}) where {N} = N * _factorial_helper(Val(N - 1))
+
 # Kleiss 1985: 2.14
-function _massless_rambo_weight(ss::T, n) where {T <: Real}
-    return (T(pi) / 2)^(n - 1) * ss^(2 * n - 4) / (factorial(n - 1) * factorial(n - 2))
+function _massless_rambo_weight(ss::T, ::Val{N}) where {T <: Real, N}
+    return (T(pi) / 2)^(N - 1) * ss^(2 * N - 4) / (_factorial_helper(Val(N - 1)) * _factorial_helper(Val(N - 2)))
 end
 
 # Kleiss 1985: 4.11
-function _massive_rambo_weight(ss, out_moms, n)
+function _massive_rambo_weight(ss, out_moms, ::Val{N}) where {N}
     Es = getE.(out_moms)
     rhos = getRho.(out_moms)
 
@@ -282,8 +285,8 @@ function _massive_rambo_weight(ss, out_moms, n)
 
     fac1 = prod(rhos_over_Es)
     fac2 = inv(sum(rhos_over_Es .* rhos))
-    fac3 = sum(rhos)^(2 * n - 3)
-    fac4 = ss^(3 - 2 * n)
+    fac3 = sum(rhos)^(2 * N - 3)
+    fac4 = ss^(3 - 2 * N)
 
     return fac1 * fac2 * fac3 * fac4
 end
@@ -299,11 +302,11 @@ function QEDbase._phase_space_factor(
         PROC <: AbstractProcessDefinition, MODEL <: AbstractModelDefinition, PSL <: FlatPhaseSpaceLayout,
     }
     ss = _center_of_momentum_energy(psp)
-    n = number_incoming_particles(process(psp))
+    N = Val(number_incoming_particles(process(psp)))
     out_moms = momenta(psp, Outgoing())
 
-    massless_weight = _massless_rambo_weight(ss, n)
-    massive_weight = _massive_rambo_weight(ss, out_moms, n)
+    massless_weight = _massless_rambo_weight(ss, N)
+    massive_weight = _massive_rambo_weight(ss, out_moms, N)
 
     return massless_weight * massive_weight
 end
