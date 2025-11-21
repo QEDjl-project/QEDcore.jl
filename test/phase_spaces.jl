@@ -166,6 +166,33 @@ end
         @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_two_svectors)))
         @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_one_tuple)))
         @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_one_svector)))
+
+        @testset "wrong number of coordinates" begin
+
+            wrong_in_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, in_phase_space_layout(TESTPSL)) + 1)
+            wrong_out_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, TESTPSL) + 1)
+            wrong_in_coords_s = SVector(wrong_in_coords_t)
+            wrong_out_coords_s = SVector(wrong_out_coords_t)
+
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_t, out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, in_coords_t, wrong_out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_t, wrong_out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_s, out_coords_s
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, in_coords_s, wrong_out_coords_s
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_s, wrong_out_coords_s
+            )
+        end
     end
 
     @testset "Error handling from momenta" for (i, o) in

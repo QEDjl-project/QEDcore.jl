@@ -148,6 +148,20 @@ function PhaseSpacePoint(
         in_coords::NTuple{N, Real},
         out_coords::NTuple{M, Real},
     ) where {N, M}
+    in_dim = phase_space_dimension(proc, model, in_phase_space_layout(psl))
+
+    in_dim == length(in_coords) || throw(
+        ArgumentError(
+            "the in-phase-space dimension must match the number of in-coordinates"
+        )
+    )
+    out_dim = phase_space_dimension(proc, model, psl)
+
+    out_dim == length(out_coords) || throw(
+        ArgumentError(
+            "the out-phase-space dimension must match the number of out-coordinates"
+        )
+    )
     in_ps, out_ps = QEDbase._build_momenta(proc, model, psl, in_coords, out_coords)
     return PhaseSpacePoint(proc, model, psl, in_ps, out_ps)
 end
@@ -160,6 +174,12 @@ function PhaseSpacePoint(
 
     in_dim = phase_space_dimension(p, m, in_phase_space_layout(psl))
     out_dim = phase_space_dimension(p, m, psl)
+
+    in_dim + out_dim == length(coords) || throw(
+        ArgumentError(
+            "sum of in- and out-phase-space dimension must match the number of coordinates"
+        )
+    )
     return PhaseSpacePoint(
         p,
         m,
@@ -168,6 +188,7 @@ function PhaseSpacePoint(
         ntuple(i -> coords[in_dim + i], out_dim),
     )
 end
+
 function PhaseSpacePoint(
         p::AbstractProcessDefinition,
         m::AbstractModelDefinition,
@@ -176,6 +197,7 @@ function PhaseSpacePoint(
     )
     return PhaseSpacePoint(p, m, psl, Tuple(coords))
 end
+
 function PhaseSpacePoint(
         p::AbstractProcessDefinition,
         m::AbstractModelDefinition,
