@@ -18,6 +18,10 @@ if cpu_tests
         include("phase_space_layouts/in_channel/two_body/rest_system.jl")
     end
 
+    @time @safetestset "two body heads-on system" begin
+        include("phase_space_layouts/in_channel/two_body/heads_on.jl")
+    end
+
     @time @safetestset "flat phase space layout" begin
         include("phase_space_layouts/out_channel/flat_phase_space.jl")
     end

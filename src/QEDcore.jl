@@ -43,15 +43,13 @@ export coordinate_name, particle_index
 export AbstractTwoBodyInPhaseSpaceLayout
 export AbstractTwoBodyRestSystem, TwoBodyRestSystem, TwoBodyTargetSystem, TwoBodyBeamSystem
 export FlatPhaseSpaceLayout
+export HeadsOnSystem, PhotonElectronHeadsOnSystem, CenterOfMomentumSystem, XAxis, YAxis, ZAxis
 
 # coordinate maps
 export CoordinateMap
 export CoordinateMapCached
 
 # phase space
-export SphericalCoordinateSystem
-export CenterOfMomentumFrame, ElectronRestFrame
-export PhasespaceDefinition
 export ParticleStateful, PhaseSpacePoint, InPhaseSpacePoint, OutPhaseSpacePoint
 export spin, polarization, momenta, getindex
 
@@ -73,6 +71,10 @@ include("constants.jl")
 include("algebraic_objects/dirac_tensors/types.jl")
 include("algebraic_objects/dirac_tensors/multiplication.jl")
 
+include("particles/particle_types.jl")
+include("particles/propagators.jl")
+include("particles/states.jl")
+
 include("phase_spaces/types.jl")
 include("phase_spaces/access.jl")
 include("phase_spaces/create.jl")
@@ -89,6 +91,7 @@ include("coordinate_map/cached.jl")
 include("phase_space_layouts/in_channel/two_body/utils.jl")
 include("phase_space_layouts/in_channel/two_body/general.jl")
 include("phase_space_layouts/in_channel/two_body/rest_system.jl")
+include("phase_space_layouts/in_channel/two_body/heads_on.jl")
 
 include("phase_space_layouts/out_channel/flat_phase_space.jl")
 
@@ -104,8 +107,5 @@ include("lorentz_boost/boost_parameter/boost_vector/types.jl")
 include("lorentz_boost/boost_parameter/boost_vector/beta.jl")
 include("lorentz_boost/boost_parameter/boost_vector/utils.jl")
 
-include("particles/particle_types.jl")
-include("particles/propagators.jl")
-include("particles/states.jl")
 
 end
