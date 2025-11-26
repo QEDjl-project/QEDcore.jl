@@ -142,6 +142,59 @@ end
         @test test_psp[Outgoing(), 2] == out_ph
     end
 
+    @testset "Generation from coordinates" begin
+        in_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, in_phase_space_layout(TESTPSL)))
+        out_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, TESTPSL))
+        in_coords_s = SVector(in_coords_t)
+        out_coords_s = SVector(out_coords_t)
+
+        coords_t = (in_coords_t..., out_coords_t...)
+        coords_s = SVector(coords_t)
+        psp_two_tuples = PhaseSpacePoint(
+            process, model, psl, in_coords_t, out_coords_t
+        )
+        psp_two_svectors = PhaseSpacePoint(
+            process, model, psl, in_coords_s, out_coords_s
+        )
+        psp_one_tuple = PhaseSpacePoint(
+            process, model, psl, coords_t
+        )
+        psp_one_svector = PhaseSpacePoint(
+            process, model, psl, coords_s
+        )
+
+        @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_two_svectors)))
+        @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_one_tuple)))
+        @test all(isapprox.(momenta(psp_two_tuples), momenta(psp_one_svector)))
+
+        @testset "wrong number of coordinates" begin
+
+            wrong_in_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, in_phase_space_layout(TESTPSL)) + 1)
+            wrong_out_coords_t = ntuple(_ -> rand(RNG), phase_space_dimension(process, model, TESTPSL) + 1)
+            wrong_in_coords_s = SVector(wrong_in_coords_t)
+            wrong_out_coords_s = SVector(wrong_out_coords_t)
+
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_t, out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, in_coords_t, wrong_out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_t, wrong_out_coords_t
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_s, out_coords_s
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, in_coords_s, wrong_out_coords_s
+            )
+            @test_throws ArgumentError PhaseSpacePoint(
+                process, model, psl, wrong_in_coords_s, wrong_out_coords_s
+            )
+        end
+    end
+
     @testset "Error handling from momenta" for (i, o) in
         Iterators.product([1, 3, 4, 5], [1, 3, 4, 5])
         @test_throws InvalidInputError PhaseSpacePoint(

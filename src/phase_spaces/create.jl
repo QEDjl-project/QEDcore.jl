@@ -139,6 +139,7 @@ end
     )
 
 Construct a [`PhaseSpacePoint`](@ref) from given coordinates by using the `_generate_momenta` interface.
+Alternative versions of this constructor exist using `SVector`s instead of `NTuple`s, and a version where only one `NTuple` or one `SVector` is given containing all coordinates.
 """
 function PhaseSpacePoint(
         proc::AbstractProcessDefinition,
@@ -147,8 +148,64 @@ function PhaseSpacePoint(
         in_coords::NTuple{N, Real},
         out_coords::NTuple{M, Real},
     ) where {N, M}
+    in_dim = phase_space_dimension(proc, model, in_phase_space_layout(psl))
+
+    in_dim == length(in_coords) || throw(
+        ArgumentError(
+            "the in-phase-space dimension must match the number of in-coordinates"
+        )
+    )
+    out_dim = phase_space_dimension(proc, model, psl)
+
+    out_dim == length(out_coords) || throw(
+        ArgumentError(
+            "the out-phase-space dimension must match the number of out-coordinates"
+        )
+    )
     in_ps, out_ps = QEDbase._build_momenta(proc, model, psl, in_coords, out_coords)
     return PhaseSpacePoint(proc, model, psl, in_ps, out_ps)
+end
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        coords::Tuple,
+    )
+
+    in_dim = phase_space_dimension(p, m, in_phase_space_layout(psl))
+    out_dim = phase_space_dimension(p, m, psl)
+
+    in_dim + out_dim == length(coords) || throw(
+        ArgumentError(
+            "sum of in- and out-phase-space dimension must match the number of coordinates"
+        )
+    )
+    return PhaseSpacePoint(
+        p,
+        m,
+        psl,
+        ntuple(i -> coords[i], in_dim),
+        ntuple(i -> coords[in_dim + i], out_dim),
+    )
+end
+
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        coords::SVector,
+    )
+    return PhaseSpacePoint(p, m, psl, Tuple(coords))
+end
+
+function PhaseSpacePoint(
+        p::AbstractProcessDefinition,
+        m::AbstractModelDefinition,
+        psl::AbstractPhaseSpaceLayout,
+        in_coords::SVector,
+        out_coords::SVector,
+    )
+    return PhaseSpacePoint(p, m, psl, Tuple(in_coords), Tuple(out_coords))
 end
 
 """
